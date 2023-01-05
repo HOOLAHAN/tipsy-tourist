@@ -23,7 +23,7 @@ import {
 import { useState, useRef } from "react";
 import Geocode from "react-geocode";
 
-const center = { lat: 51.5033, lng: 0.1196 };
+const center = { lat: 51.5033, lng: -0.1196 };
 
 function App() {
   // loads google maps script
@@ -35,6 +35,9 @@ function App() {
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
+  const [pos1, setpos1] = useState(center);
+  const [pos2, setpos2] = useState(center);
+  const [pos3, setpos3] = useState(center);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -133,6 +136,9 @@ function App() {
           onLoad={(map) => setMap(map)}
         >
           <Marker position={center} />
+          <Marker position={{lat: 51.48277839999999, lng: -0.22983910000000002}} />
+          <Marker position={{lat: 51.50424579999999, lng: -0.15593620000000002}} />
+          <Marker position={{lat: 51.5257132, lng: -0.08203330000000002}} />
           {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />
           )}
