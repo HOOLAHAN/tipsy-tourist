@@ -131,7 +131,7 @@ function App() {
     startRef.current.value = "";
     finishRef.current.value = "";
   }
-
+  
   // styling
   return (
     <Flex
