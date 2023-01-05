@@ -27,7 +27,7 @@ const center = { lat: 51.5033, lng: 0.1196 };
 function App() {
   // loads google maps script
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "API-KEY", //process.env.REACT_APP_GOOGLE_MAPS_API,
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: ["places"],
   });
 
@@ -44,7 +44,7 @@ function App() {
   if (!isLoaded) {
     return <SkeletonText />;
   }
-
+  
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -67,7 +67,7 @@ function App() {
     startRef.current.value = "";
     finishRef.current.value = "";
   }
-
+  
   // styling
   return (
     <Flex
