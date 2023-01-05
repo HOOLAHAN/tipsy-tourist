@@ -156,10 +156,9 @@ function App() {
           }}
           onLoad={(map) => setMap(map)}
         >
-          <Marker position={center} />
-          <Marker position={pos1} />
-          <Marker position={pos2} />
-          <Marker position={pos3} />
+          {// < //Marker position={center} />
+}
+         
           {
             // <Marker position={{lat: 51.48277839999999, lng: -0.22983910000000002}} />}
             // <Marker position={{lat: 51.50424579999999, lng: -0.15593620000000002}} />}
