@@ -35,9 +35,9 @@ function App() {
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
-  const [pos1, setpos1] = useState(center);
-  const [pos2, setpos2] = useState(center);
-  const [pos3, setpos3] = useState(center);
+  const [pos1, setPos1] = useState(center);
+  const [pos2, setPos2] = useState(center);
+  const [pos3, setPos3] = useState(center);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -61,16 +61,16 @@ function App() {
     const lngDiff = (end[1] - start[1]) / 4;
     console.log(`thirds lat:${latDiff} lng:${lngDiff}`);
     //return [latDiff, lngDiff]
-    let startLat = start[0]
-    let startLng = start[1]
-    let plotPoints = [[startLat, startLng]]
-    for(let i= 0; i < 4; i++) {
-
-      startLat += latDiff
-      startLng += lngDiff
-      plotPoints.push([startLat, startLng])
+    let startLat = start[0];
+    let startLng = start[1];
+    let plotPoints = [{ lat: startLat, lng: startLng }];
+    for (let i = 0; i < 4; i++) {
+      startLat += latDiff;
+      startLng += lngDiff;
+      plotPoints.push({ lat: startLat, lng: startLng });
     }
-    console.log(plotPoints);
+    // console.log(plotPoints);
+    return plotPoints;
   };
 
   const geocode = async (address) => {
@@ -86,22 +86,43 @@ function App() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
+    const start = await geocode(startRef.current.value);
+    const end = await geocode(finishRef.current.value);
+    console.log(`start ${start}`);
+    console.log(`end ${end}`);
+    const plotPoints = findThirdPoints(start, end);
+    console.log(plotPoints);
+
+    const waypoints = [
+      {
+        location: plotPoints[1],
+        stopover: true,
+      },
+      {
+        location: plotPoints[2],
+        stopover: true,
+      },
+      {
+        location: plotPoints[3],
+        stopover: true,
+      },
+    ];
     // eslint-disable-next-line no-undef
     const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
       origin: startRef.current.value,
       destination: finishRef.current.value,
+      waypoints: waypoints,
+      optimizeWaypoints: true,
       // eslint-disable-next-line no-undef
       travelMode: google.maps.TravelMode.WALKING,
     });
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
 
-    const start = await geocode(startRef.current.value);
-    const end = await geocode(finishRef.current.value);
-    console.log(`start ${start}`);
-    console.log(`end ${end}`);
-    const midpoint = findThirdPoints(start, end);
+    setPos1(plotPoints[1]);
+    setPos2(plotPoints[2]);
+    setPos3(plotPoints[3]);
   }
 
   function clearRoute() {
@@ -136,9 +157,14 @@ function App() {
           onLoad={(map) => setMap(map)}
         >
           <Marker position={center} />
-          <Marker position={{lat: 51.48277839999999, lng: -0.22983910000000002}} />
-          <Marker position={{lat: 51.50424579999999, lng: -0.15593620000000002}} />
-          <Marker position={{lat: 51.5257132, lng: -0.08203330000000002}} />
+          <Marker position={pos1} />
+          <Marker position={pos2} />
+          <Marker position={pos3} />
+          {
+            // <Marker position={{lat: 51.48277839999999, lng: -0.22983910000000002}} />}
+            // <Marker position={{lat: 51.50424579999999, lng: -0.15593620000000002}} />}
+            // <Marker position={{lat: 51.5257132, lng: -0.08203330000000002}} />}
+          }
           {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />
           )}
