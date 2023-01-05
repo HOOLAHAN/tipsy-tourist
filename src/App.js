@@ -27,7 +27,7 @@ const center = { lat: 51.5033, lng: 0.1196 };
 function App() {
   // loads google maps script
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'API-KEY', //process.env.REACT_APP_GOOGLE_MAPS_API,
+    googleMapsApiKey: "API-KEY", //process.env.REACT_APP_GOOGLE_MAPS_API,
     libraries: ["places"],
   });
 
@@ -90,7 +90,7 @@ function App() {
             mapTypeControl: false,
             fullScreenControl: false,
           }}
-          onLoad={map => setMap(map)}
+          onLoad={(map) => setMap(map)}
         >
           <Marker position={center} />
           {directionsResponse && (
@@ -106,9 +106,9 @@ function App() {
         bgColor="white"
         shadow="base"
         minW="container.md"
-        zIndex='1'
+        zIndex="1"
       >
-        <HStack spacing={2} justifyContent='space-between'>
+        <HStack spacing={2} justifyContent="space-between">
           <Autocomplete>
             <Input type="text" placeholder="Start" ref={startRef} />
           </Autocomplete>
@@ -125,7 +125,7 @@ function App() {
             >
               Plan my Tipsy Tour!
             </Button>
-            
+
             <IconButton
               aria-label="center back"
               icon={<FaTimes />}
