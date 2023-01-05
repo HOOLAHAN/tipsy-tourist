@@ -1,3 +1,4 @@
+// ADD IN YOUR API KEY ON LINE 30
 // Chakra styling
 import {
   Box,
@@ -12,26 +13,32 @@ import {
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
-import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } from "@react-google-maps/api"; // provides 'is loaded'
-import { useState, useRef } from 'react';
+import {
+  useJsApiLoader,
+  GoogleMap,
+  Marker,
+  Autocomplete,
+  DirectionsRenderer,
+} from "@react-google-maps/api"; // provides 'is loaded'
+import { useState, useRef } from "react";
 
 const center = { lat: 51.5033, lng: 0.1196 };
 
 function App() {
   // loads google maps script
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'API_KEY', //process.env.GOOGLE_MAPS_API
-    libraries: ['places']
+    googleMapsApiKey: 'API-KEY', //process.env.REACT_APP_GOOGLE_MAPS_API,
+    libraries: ["places"],
   });
 
-  const [map, setMap] = useState(/** @type google.maps.Map */ (null))
-  const [directionsResponse, setDirectionsResponse] = useState(null)
-  const [distance, setDistance] = useState('')
+  const [map, setMap] = useState(/** @type google.maps.Map */ (null));
+  const [directionsResponse, setDirectionsResponse] = useState(null);
+  const [distance, setDistance] = useState("");
 
   /** @type React.MutableRefObject<HTMLInputElement> */
-  const startRef = useRef()
+  const startRef = useRef();
   /** @type React.MutableRefObject<HTMLInputElement> */
-  const finishRef = useRef()
+  const finishRef = useRef();
 
   // if script does not load, display SkeletonText
   if (!isLoaded) {
@@ -39,27 +46,26 @@ function App() {
   }
 
   async function calculateRoute() {
-    if (startRef.current.value === '' || finishRef.current.value === '') {
-      return
+    if (startRef.current.value === "" || finishRef.current.value === "") {
+      return;
     }
     // eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService()
+    const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
       origin: startRef.current.value,
       destination: finishRef.current.value,
       // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.WALKING
-    })
-    setDirectionsResponse(results)
-    setDistance(results.routes[0].legs[0].distance.text)
+      travelMode: google.maps.TravelMode.WALKING,
+    });
+    setDirectionsResponse(results);
+    setDistance(results.routes[0].legs[0].distance.text);
   }
 
   function clearRoute() {
-    setDirectionsResponse(null)
-    setDistance('')
-    startRef.current.value = ''
-    finishRef.current.value = ''
-
+    setDirectionsResponse(null);
+    setDistance("");
+    startRef.current.value = "";
+    finishRef.current.value = "";
   }
 
   // styling
@@ -69,7 +75,6 @@ function App() {
       position="relative"
       flexDirection="column"
       alignItems="center"
-      bgColor="teal.200"
       h="100vh"
       w="100vw"
     >
@@ -87,10 +92,10 @@ function App() {
           }}
           onLoad={map => setMap(map)}
         >
-
           <Marker position={center} />
-          {directionsResponse && <DirectionsRenderer directions={directionsResponse} /> }
-          
+          {directionsResponse && (
+            <DirectionsRenderer directions={directionsResponse} />
+          )}
         </GoogleMap>
       </Box>
 
@@ -101,19 +106,26 @@ function App() {
         bgColor="white"
         shadow="base"
         minW="container.md"
-        zIndex="modal"
+        zIndex='1'
       >
-        <HStack spacing={4}>
+        <HStack spacing={2} justifyContent='space-between'>
           <Autocomplete>
             <Input type="text" placeholder="Start" ref={startRef} />
-          </Autocomplete>  
+          </Autocomplete>
           <Autocomplete>
             <Input type="text" placeholder="Finish" ref={finishRef} />
           </Autocomplete>
+
           <ButtonGroup>
-            <Button leftIcon={<FaBeer />} colorScheme="green" type="submit" onClick={calculateRoute}>
+            <Button
+              leftIcon={<FaBeer />}
+              colorScheme="green"
+              type="submit"
+              onClick={calculateRoute}
+            >
               Plan my Tipsy Tour!
             </Button>
+            
             <IconButton
               aria-label="center back"
               icon={<FaTimes />}
