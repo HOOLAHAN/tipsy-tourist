@@ -21,13 +21,14 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
 import { useState, useRef } from "react";
+import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: 0.1196 };
 
 function App() {
   // loads google maps script
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "API-KEY", //process.env.REACT_APP_GOOGLE_MAPS_API,
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: ["places"],
   });
 
@@ -45,6 +46,22 @@ function App() {
     return <SkeletonText />;
   }
 
+  const findMidpoint = (start, end) => {
+    const lat = (end[0] + start[0]) / 2;
+    const lng = (end[1] + start[1]) / 2;
+    console.log(`midpoint lat:${lat} lng:${lng}`);
+    return [lat, lng];
+  };
+
+  const geocode = async (address) => {
+    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+    const response = await Geocode.fromAddress(address);
+
+    const { lat, lng } = response.results[0].geometry.location;
+    const array = [lat, lng];
+    return array;
+  };
+
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -59,6 +76,12 @@ function App() {
     });
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
+
+    const start = await geocode(startRef.current.value);
+    const end = await geocode(finishRef.current.value);
+    console.log(`start ${start}`);
+    console.log(`end ${end}`);
+    const midpoint = findMidpoint(start, end);
   }
 
   function clearRoute() {
