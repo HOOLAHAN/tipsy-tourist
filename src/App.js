@@ -53,6 +53,23 @@ function App() {
     return [lat, lng];
   };
 
+  const findThirdPoints = (start, end) => {
+    const latDiff = (end[0] - start[0]) / 4;
+    const lngDiff = (end[1] - start[1]) / 4;
+    console.log(`thirds lat:${latDiff} lng:${lngDiff}`);
+    //return [latDiff, lngDiff]
+    let startLat = start[0]
+    let startLng = start[1]
+    let plotPoints = [[startLat, startLng]]
+    for(let i= 0; i < 4; i++) {
+
+      startLat += latDiff
+      startLng += lngDiff
+      plotPoints.push([startLat, startLng])
+    }
+    console.log(plotPoints);
+  };
+
   const geocode = async (address) => {
     Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     const response = await Geocode.fromAddress(address);
@@ -81,7 +98,7 @@ function App() {
     const end = await geocode(finishRef.current.value);
     console.log(`start ${start}`);
     console.log(`end ${end}`);
-    const midpoint = findMidpoint(start, end);
+    const midpoint = findThirdPoints(start, end);
   }
 
   function clearRoute() {
