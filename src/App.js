@@ -1,6 +1,8 @@
 // ADD IN YOUR API KEY ON LINE 30
 // Chakra styling
-import Locations from "./Locations2";
+import Locations from "./Locations";
+import Attractions from "./Attractions";
+
 import {
   Box,
   Button,
@@ -91,15 +93,26 @@ function App() {
     const end = await geocode(finishRef.current.value);
     const plotPoints = findThirdPoints(start, end);
     console.log(plotPoints);
+    
     const pub1 = await Locations(plotPoints[1].lat, plotPoints[1].lng);
     const pub1Data = pub1.results[0].geometry.location;
+    const attraction1 = await Attractions(plotPoints[1].lat, plotPoints[1].lng);
+    const attraction1Data = attraction1.results[0].geometry.location;
+
     const pub2 = await Locations(plotPoints[2].lat, plotPoints[2].lng);
     const pub2Data = pub2.results[0].geometry.location;
+    const attraction2 = await Attractions(plotPoints[2].lat, plotPoints[2].lng);
+    const attraction2Data = attraction2.results[0].geometry.location;
+    
     const pub3 = await Locations(plotPoints[3].lat, plotPoints[3].lng);
     const pub3Data = pub3.results[0].geometry.location;
-    console.log(`pub ${pub1Data}`);
-    console.log(`start ${start}`);
-    console.log(`end ${end}`);
+    const attraction3 = await Attractions(plotPoints[3].lat, plotPoints[3].lng);
+    const attraction3Data = attraction3.results[0].geometry.location;
+    
+    
+    console.log(`TESTING ${attraction1Data}`);
+    // console.log(`start ${start}`);
+    // console.log(`end ${end}`);
 
     const waypoints = [
       {
@@ -107,11 +120,23 @@ function App() {
         stopover: true,
       },
       {
+        location: attraction1Data,
+        stopover: true,
+      },
+      {
         location: pub2Data,
         stopover: true,
       },
       {
+        location: attraction2Data,
+        stopover: true,
+      },
+      {
         location: pub3Data,
+        stopover: true,
+      },
+      {
+        location: attraction3Data,
         stopover: true,
       },
     ];
