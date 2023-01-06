@@ -11,8 +11,11 @@ import {
   Input,
   SkeletonText,
   Text,
+  Image
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
+
+import tipsyTouristLogo from "./images/logo.png"
 
 import {
   useJsApiLoader,
@@ -182,6 +185,7 @@ function App() {
         zIndex="1"
       >
         <HStack spacing={2} justifyContent="space-between">
+          <Image boxSize='70px' objectFit='cover' src={tipsyTouristLogo} alt="logo"/>
           <Autocomplete>
             <Input type="text" placeholder="Start" ref={startRef} />
           </Autocomplete>
