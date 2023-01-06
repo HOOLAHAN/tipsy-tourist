@@ -9,5 +9,7 @@ async function Locations() {
   return data
 }
 
-export default Locations;
+//Locations()
+
+module.exports = Locations;
 
