@@ -1,6 +1,6 @@
 // ADD IN YOUR API KEY ON LINE 30
 // Chakra styling
-import Locations from "./Locations";
+import Locations from "./Locations2";
 import {
   Box,
   Button,
@@ -84,25 +84,31 @@ function App() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
-    Locations()
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
-    console.log(`start ${start}`);
-    console.log(`end ${end}`);
     const plotPoints = findThirdPoints(start, end);
     console.log(plotPoints);
+    const pub1 = await Locations(plotPoints[1].lat, plotPoints[1].lng);
+    const pub1Data = pub1.results[0].geometry.location;
+    const pub2 = await Locations(plotPoints[2].lat, plotPoints[2].lng);
+    const pub2Data = pub2.results[0].geometry.location;
+    const pub3 = await Locations(plotPoints[3].lat, plotPoints[3].lng);
+    const pub3Data = pub3.results[0].geometry.location;
+    console.log(`pub ${pub1Data}`);
+    console.log(`start ${start}`);
+    console.log(`end ${end}`);
 
     const waypoints = [
       {
-        location: plotPoints[1],
+        location: pub1Data,
         stopover: true,
       },
       {
-        location: plotPoints[2],
+        location: pub2Data,
         stopover: true,
       },
       {
-        location: plotPoints[3],
+        location: pub3Data,
         stopover: true,
       },
     ];
@@ -118,7 +124,6 @@ function App() {
     });
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
-
   }
 
   function clearRoute() {
@@ -152,9 +157,10 @@ function App() {
           }}
           onLoad={(map) => setMap(map)}
         >
-          {// < //Marker position={center} />
-}
-         
+          {
+            // < //Marker position={center} />
+          }
+
           {
             // <Marker position={{lat: 51.48277839999999, lng: -0.22983910000000002}} />}
             // <Marker position={{lat: 51.50424579999999, lng: -0.15593620000000002}} />}
