@@ -85,6 +85,12 @@ function App() {
     return array;
   };
 
+  async function getPub(plotPoints) {
+    const pub = await Locations(plotPoints.lat, plotPoints.lng);
+    const pubData = pub.results[0].geometry.location;
+    return pubData
+  }
+
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -92,27 +98,22 @@ function App() {
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
     const plotPoints = findThirdPoints(start, end);
-    console.log(plotPoints);
-    
-    const pub1 = await Locations(plotPoints[1].lat, plotPoints[1].lng);
-    const pub1Data = pub1.results[0].geometry.location;
+
+
+    const pub1Data = await getPub(plotPoints[1])
+    const pub2Data = await getPub(plotPoints[2])
+    const pub3Data = await getPub(plotPoints[3])
+
     const attraction1 = await Attractions(plotPoints[1].lat, plotPoints[1].lng);
     const attraction1Data = attraction1.results[0].geometry.location;
-
-    const pub2 = await Locations(plotPoints[2].lat, plotPoints[2].lng);
-    const pub2Data = pub2.results[0].geometry.location;
     const attraction2 = await Attractions(plotPoints[2].lat, plotPoints[2].lng);
     const attraction2Data = attraction2.results[0].geometry.location;
-    
-    const pub3 = await Locations(plotPoints[3].lat, plotPoints[3].lng);
-    const pub3Data = pub3.results[0].geometry.location;
     const attraction3 = await Attractions(plotPoints[3].lat, plotPoints[3].lng);
     const attraction3Data = attraction3.results[0].geometry.location;
-    
-    
-    console.log(`TESTING ${attraction1Data}`);
-    // console.log(`start ${start}`);
-    // console.log(`end ${end}`);
+
+    console.log(`pub ${pub1Data}`);
+    console.log(`start ${start}`);
+    console.log(`end ${end}`);
 
     const waypoints = [
       {
