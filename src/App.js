@@ -1,5 +1,6 @@
 // ADD IN YOUR API KEY ON LINE 30
 // Chakra styling
+import Locations from "./Locations";
 import {
   Box,
   Button,
@@ -35,9 +36,6 @@ function App() {
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
-  const [pos1, setPos1] = useState(center);
-  const [pos2, setPos2] = useState(center);
-  const [pos3, setPos3] = useState(center);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -86,6 +84,7 @@ function App() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
+    Locations()
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
     console.log(`start ${start}`);
@@ -120,9 +119,6 @@ function App() {
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
 
-    setPos1(plotPoints[1]);
-    setPos2(plotPoints[2]);
-    setPos3(plotPoints[3]);
   }
 
   function clearRoute() {
@@ -131,7 +127,7 @@ function App() {
     startRef.current.value = "";
     finishRef.current.value = "";
   }
-  
+
   // styling
   return (
     <Flex
