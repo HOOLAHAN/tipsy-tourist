@@ -1,5 +1,5 @@
-async function Locations(lat, lng) {
-  const resp = await fetch("http://localhost:4000/places", {
+async function Attractions(lat, lng) {
+  const resp = await fetch("http://localhost:4000/attractions", {
     method: "post",
     headers: {
       Accept: "application/json",
@@ -18,4 +18,4 @@ async function Locations(lat, lng) {
   return data;
 }
 
-module.exports = Locations;
+module.exports = Attractions;
