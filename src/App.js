@@ -197,7 +197,7 @@ function App() {
         zIndex="1"
       >
         <HStack spacing={2} justifyContent="space-between">
-          <Image boxSize='70px' objectFit='cover' src={tipsyTouristLogo} alt="logo"/>
+          <Image boxSize='60px' objectFit='cover' src={tipsyTouristLogo} alt="logo"/>
           <Autocomplete>
             <Input type="text" placeholder="Start" ref={startRef} />
           </Autocomplete>
