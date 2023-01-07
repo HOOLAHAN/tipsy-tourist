@@ -2,11 +2,11 @@
 <div>
 Makers final engineering project created by Iain Hoolahan, Kay Watts, Tim Buller & Will Lines.
 <h5>
-<a href='https://github.com/kwatts949/banking_app/blob/main/README.md#Specification'> Specification </a> <span> · </span>
-<a href='https://github.com/kwatts949/banking_app/blob/main/README.md#Installation'> Installation </a><span> · </span>
-<a href='https://github.com/kwatts949/banking_app/blob/main/README.md#Running-locally'> Running locally</a><span> · </span>
-<a href='https://github.com/kwatts949/banking_app/blob/main/README.md#Testing'> Testing </a><span> · </span>
-<a href='https://github.com/kwatts949/banking_app/blob/main/README.md#Process'> Process </a>  
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Specification'> Specification </a> <span> · </span>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Installation'> Installation </a><span> · </span>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Running-locally'> Running locally</a><span> · </span>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Testing'> Testing </a><span> · </span>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Process'> Process </a>  
 <h5>
 </div>
 
@@ -50,14 +50,14 @@ npm start
 cd tipsy_tourist
 npm start
 ```
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Open [http://localhost:3000](http://localhost:3000) to view the app in your browser.
 
 # Process
 
 <h4>User Stories</h4>
-<a href='https://github.com/kwatts949/banking_app/wiki/User-Stories'> You can view the list of user stories here </a>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/wiki/User-Stories'> You can view the list of user stories here </a>
 <h4>Thought Process</h4>
-<a href='https://github.com/kwatts949/banking_app/wiki/Thought-Process'> You can view our thought process & details of how we created the app here </a>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/wiki/Thought-Process'> You can view our thought process & details of how we created the app here </a>
 <h4>Diagram</h4>
-<a href='https://github.com/kwatts949/banking_app/wiki/Diagram'> You can view a diagram solution here </a>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/wiki/Diagram'> You can view a diagram solution here </a>
 
