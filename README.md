@@ -9,7 +9,7 @@ Makers final engineering project created by Iain Hoolahan, Kay Watts, Tim Buller
 <h5>
 </div>
 
-# Specification
+# Spec
 
 An app to plot a pub crawl whilst taking in the sights along the way!
 
