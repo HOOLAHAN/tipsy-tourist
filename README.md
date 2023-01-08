@@ -1,6 +1,7 @@
-<h1> Tipsy Tourist <h1> 
+# Tipsy Tourist
 <div>
-Makers final engineering project created by Iain Hoolahan, Kay Watts, Tim Buller & Will Lines.
+<h4>
+Makers final engineering project created by Iain Hoolahan, Kay Watts, Tim Buller & Will Lines.</h4>
 <h5>
 <a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Spec'> Spec </a> <span> · </span>
 <a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Installation'> Installation </a><span> · </span>
