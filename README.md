@@ -1,70 +1,72 @@
-# Getting Started with Create React App
+# Tipsy Tourist
+<div>
+<h4>
+Makers final engineering project created by Iain Hoolahan, Kay Watts, Tim Buller & Will Lines.</h4>
+<h5>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Spec'> Spec </a> <span> · </span>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Installation'> Installation </a><span> · </span>
+<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Running-locally'> Running locally</a>
+<h5>
+</div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Spec
 
-## Available Scripts
+An app to plot a pub crawl whilst taking in the sights along the way!
 
-In the project directory, you can run:
+# Installation
 
-### `npm start`
+## Backend
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Clone the repo at https://github.com/williamlines/tipsy-tourist-server.git
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+In terminal (Mac), run:
 
-### `npm test`
+```
+cd tipsy_tourist_server
+npm install
+```
+You will need to request a google API key at https://cloud.google.com/ and then create a new file apiKey.js in the src directory with the following code:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+const apiKey = "<YOUR-API-KEY>"
+module.exports = apiKey
+```
 
-### `npm run build`
+## Frontend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Clone this repo
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+In terminal (Mac), run:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+cd tipsy_tourist
+npm install
+```
+Create a new file apiKey.js in the src directory with the following code:
 
-### `npm run eject`
+```
+const apiKey = "<YOUR-API-KEY>"
+module.exports = apiKey
+```
+Additionally, create a .env.local file and add in this code:
+```
+REACT_APP_GOOGLE_MAPS_API_KEY= "<YOUR-API-KEY>
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Running locally
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Backend
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+cd tipsy_tourist_server
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Frontend
 
-## Learn More
+```
+cd tipsy_tourist
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Open [http://localhost:3000](http://localhost:3000) to view the app in your browser.

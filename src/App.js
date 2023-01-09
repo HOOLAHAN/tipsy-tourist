@@ -13,11 +13,11 @@ import {
   Input,
   SkeletonText,
   Text,
-  Image
+  Image,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
-import tipsyTouristLogo from "./images/logo.png"
+import tipsyTouristLogo from "./images/logo.png";
 
 import {
   useJsApiLoader,
@@ -88,7 +88,7 @@ function App() {
   async function getPub(plotPoints) {
     const pub = await Locations(plotPoints.lat, plotPoints.lng);
     const pubData = pub.results[0].geometry.location;
-    return pubData
+    return pubData;
   }
 
   async function calculateRoute() {
@@ -99,10 +99,9 @@ function App() {
     const end = await geocode(finishRef.current.value);
     const plotPoints = findThirdPoints(start, end);
 
-
-    const pub1Data = await getPub(plotPoints[1])
-    const pub2Data = await getPub(plotPoints[2])
-    const pub3Data = await getPub(plotPoints[3])
+    const pub1Data = await getPub(plotPoints[1]);
+    const pub2Data = await getPub(plotPoints[2]);
+    const pub3Data = await getPub(plotPoints[3]);
 
     const attraction1 = await Attractions(plotPoints[1].lat, plotPoints[1].lng);
     const attraction1Data = attraction1.results[0].geometry.location;
@@ -211,7 +210,12 @@ function App() {
         zIndex="1"
       >
         <HStack spacing={2} justifyContent="space-between">
-          <Image boxSize='70px' objectFit='cover' src={tipsyTouristLogo} alt="logo"/>
+          <Image
+            boxSize="70px"
+            objectFit="cover"
+            src={tipsyTouristLogo}
+            alt="logo"
+          />
           <Autocomplete>
             <Input type="text" placeholder="Start" ref={startRef} />
           </Autocomplete>
