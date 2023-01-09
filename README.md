@@ -25,6 +25,12 @@ In terminal (Mac), run:
 cd tipsy_tourist_server
 npm install
 ```
+You will need to request a google API key at https://cloud.google.com/ and then create a new file apiKey.js in the src directory with the following code:
+
+```
+const apiKey = "<YOUR-API-KEY>"
+module.exports = apiKey
+```
 
 ## Frontend
 
@@ -35,6 +41,16 @@ In terminal (Mac), run:
 ```
 cd tipsy_tourist
 npm install
+```
+Create a new file apiKey.js in the src directory with the following code:
+
+```
+const apiKey = "<YOUR-API-KEY>"
+module.exports = apiKey
+```
+Additionally, create a .env.local file and add in this code:
+```
+REACT_APP_GOOGLE_MAPS_API_KEY= "<YOUR-API-KEY>
 ```
 
 # Running locally
