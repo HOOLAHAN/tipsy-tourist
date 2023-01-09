@@ -17,6 +17,7 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Heading,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
@@ -86,7 +87,7 @@ function App() {
 
   async function getPub(plotPoints) {
     const pub = await Locations(plotPoints.lat, plotPoints.lng);
-    const pubData = pub.results[0].geometry.location;
+    const pubData = pub.results[0];
     return pubData;
   }
 
@@ -97,13 +98,23 @@ function App() {
       const data = await getPub(point);
       pubData.push(data);
     });
-    console.log(pubData);
   }
 
   async function getAttraction(plotPoints) {
     const attraction = await Attractions(plotPoints.lat, plotPoints.lng);
-    const attractionData = attraction.results[0].geometry.location;
+    const attractionData = attraction.results[0];
     return attractionData;
+  }
+
+  async function getAllAttractions(plotPoints) {
+    const attractionData = [];
+
+    plotPoints.forEach(async (point) => {
+      const data = await getAttraction(point);
+      attractionData.push(data);
+    });
+    console.log("attr")
+    console.log(attractionData)
   }
 
   async function calculateRoute() {
@@ -119,6 +130,7 @@ function App() {
     ///const plotPoints = findPlotPoints(start, end, 3);
 
     const pubData = getAllPubs(pubPlotPoints);
+    const attractionData = getAllAttractions(attractionPlotPoints);
 
     // const pub1Data = await getPub(plotPoints[1]);
     // const pub2Data = await getPub(plotPoints[2]);
@@ -226,6 +238,7 @@ function App() {
         minW="container.md"
         zIndex="1"
       >
+        <Heading align="center">Tipsy Tourist</Heading>
         <HStack spacing={2} justifyContent="space-between">
           <Image
             boxSize="60px"
@@ -281,23 +294,6 @@ function App() {
             </NumberInputStepper>
           </NumberInput>
         </HStack>
-
-        <Button
-          colorScheme="blue"
-          onClick={() => {
-            console.log(pubStops);
-          }}
-        >
-          pubs
-        </Button>
-        <Button
-          colorScheme="blue"
-          onClick={() => {
-            console.log(attractionStops);
-          }}
-        >
-          attractions
-        </Button>
 
         <HStack spacing={4} mt={4} justifyContent="space-between">
           <Text>Total distance (walking): {distance} </Text>
