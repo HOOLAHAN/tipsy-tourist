@@ -92,11 +92,16 @@ function App() {
   async function getAllPubs(plotPoints) {
     const pubData = [];
 
-    plotPoints.forEach(async (point) => {
-      const data = await getPub(point);
-      pubData.push([data]);
+    //plotPoints.forEach(async (point) => {
+    //  const data = await getPub(point);
+    //  pubData.push(data);
+    //});
+    //return pubData;
+    const promises = plotPoints.map((point) => {
+      return getPub(point);
     });
-    return pubData;
+    const pubsInfo = await Promise.all(promises)
+    return pubsInfo
   }
 
   async function getAttraction(plotPoints) {
@@ -192,7 +197,7 @@ function App() {
     });
     console.log("waypointsArray");
     console.log(waypointsArray);
-    return waypointsArray
+    return waypointsArray;
   }
 
   function clearRoute() {
