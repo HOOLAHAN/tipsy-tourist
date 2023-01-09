@@ -52,6 +52,7 @@ function App() {
   const [distance, setDistance] = useState("");
   const [pubStops, setPubStops] = useState(3);
   const [attractionStops, setAttractionStops] = useState(1);
+  const [combinedStops, setCombinedStops] = useState([]);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -117,14 +118,6 @@ function App() {
   }
 
 
-
-  // function consolePubs(arrayPubs) {
-  //   console.log(arrayPubs[0])
-
-  // }
-  
-  
-
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -139,43 +132,13 @@ function App() {
 
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
+    const combinationArray = pubData.concat(attractionData);
+    console.log("mob")
+    console.log(combinationArray)
+    setCombinedStops(combinationArray);
 
     const waypoints = calculateWaypoints(pubData, attractionData);
 
-    // const pub1Data = await getPub(plotPoints[1]);
-    // const pub2Data = await getPub(plotPoints[2]);
-    // const pub3Data = await getPub(plotPoints[3]);
-    //
-    // const attraction1Data = await getAttraction(plotPoints[1]);
-    // const attraction2Data = await getAttraction(plotPoints[2]);
-    // const attraction3Data = await getAttraction(plotPoints[3]);
-
-    // const waypoints = [
-    //   {
-    //     location: pub1Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: attraction1Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: pub2Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: attraction2Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: pub3Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: attraction3Data,
-    //     stopover: true,
-    //   },
-    // ];
     // eslint-disable-next-line no-undef
     const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
@@ -355,9 +318,9 @@ function App() {
           zIndex="1"
           >
         <HStack>
-          {/* <Text>
-            {pubInfo.name}
-          </Text> */}
+          <Text>
+            {/* {combinedStops[0].name} */}
+          </Text>
         </HStack>
       </Box>
 
