@@ -1,5 +1,3 @@
-// ADD IN YOUR API KEY ON LINE 30
-// Chakra styling
 import Locations from "./Locations";
 import Attractions from "./Attractions";
 
@@ -22,7 +20,6 @@ import tipsyTouristLogo from "./images/logo.png";
 import {
   useJsApiLoader,
   GoogleMap,
-  Marker,
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
@@ -31,11 +28,14 @@ import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
 
+// define libraries outside of functional component to prevent useEffect() from triggering each rerender
+const libraries = ['places'];
+
 function App() {
   // loads google maps script
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
+    libraries,
   });
 
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
@@ -52,18 +52,10 @@ function App() {
     return <SkeletonText />;
   }
 
-  const findMidpoint = (start, end) => {
-    const lat = (end[0] + start[0]) / 2;
-    const lng = (end[1] + start[1]) / 2;
-    console.log(`midpoint lat:${lat} lng:${lng}`);
-    return [lat, lng];
-  };
-
   const findThirdPoints = (start, end) => {
     const latDiff = (end[0] - start[0]) / 4;
     const lngDiff = (end[1] - start[1]) / 4;
     console.log(`thirds lat:${latDiff} lng:${lngDiff}`);
-    //return [latDiff, lngDiff]
     let startLat = start[0];
     let startLng = start[1];
     let plotPoints = [{ lat: startLat, lng: startLng }];
@@ -188,12 +180,6 @@ function App() {
           {
             // < //Marker position={center} />
           }
-
-          {
-            // <Marker position={{lat: 51.48277839999999, lng: -0.22983910000000002}} />}
-            // <Marker position={{lat: 51.50424579999999, lng: -0.15593620000000002}} />}
-            // <Marker position={{lat: 51.5257132, lng: -0.08203330000000002}} />}
-          }
           {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />
           )}
@@ -211,7 +197,7 @@ function App() {
       >
         <HStack spacing={2} justifyContent="space-between">
           <Image
-            boxSize="70px"
+            boxSize="60px"
             objectFit="cover"
             src={tipsyTouristLogo}
             alt="logo"
