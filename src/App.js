@@ -81,11 +81,24 @@ function App() {
     return array;
   };
 
+  const mockPubs = []
+
   async function getPub(plotPoints) {
     const pub = await Locations(plotPoints.lat, plotPoints.lng);
     const pubData = pub.results[0].geometry.location;
+    mockPubs.push(pub.results[0])
+    console.log(mockPubs[0].name)
     return pubData;
   }
+
+
+
+  function consolePubs(arrayPubs) {
+    console.log(arrayPubs[0])
+
+  }
+  
+  
 
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
@@ -258,9 +271,12 @@ function App() {
           minW="container.md"
           zIndex="1"
           >
-        <HStack>
-          <Text>placeholder text</Text>
-        </HStack>
+            <Button
+              leftIcon={<FaBeer />}
+              colorScheme="green"
+              type="submit"
+              onClick={consolePubs(mockPubs)}
+            ></Button>
       </Box>
 
     </Flex>
