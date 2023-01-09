@@ -12,6 +12,11 @@ import {
   SkeletonText,
   Text,
   Image,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
@@ -29,7 +34,7 @@ import Geocode from "react-geocode";
 const center = { lat: 51.5033, lng: -0.1196 };
 
 // define libraries outside of functional component to prevent useEffect() from triggering each rerender
-const libraries = ['places'];
+const libraries = ["places"];
 
 function App() {
   // loads google maps script
@@ -209,6 +214,7 @@ function App() {
             <Input type="text" placeholder="Finish" ref={finishRef} />
           </Autocomplete>
 
+
           <ButtonGroup>
             <Button
               leftIcon={<FaBeer />}
@@ -226,6 +232,26 @@ function App() {
             />
           </ButtonGroup>
         </HStack>
+          <HStack spacing={4} mt={4} justifyContent="left">
+            <Text> Number of pubs: </Text>
+            <NumberInput defaultValue={3} min={1} max={10}>
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+
+            <Text> Number of attractions: </Text>
+            <NumberInput defaultValue={3} min={1} max={10}>
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </HStack>
+
         <HStack spacing={4} mt={4} justifyContent="space-between">
           <Text>Total distance (walking): {distance} </Text>
           <IconButton
