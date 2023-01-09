@@ -46,6 +46,8 @@ function App() {
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
+  const [pubStops, setPubStops] = useState(3);
+  const [attractionStops, setAttractionStops] = useState(1);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -158,6 +160,14 @@ function App() {
     finishRef.current.value = "";
   }
 
+  function handlePubs(value) {
+    setPubStops(value);
+  }
+
+  function handleAttractions(value) {
+    setAttractionStops(value);
+  }
+
   // styling
   return (
     <Flex
@@ -182,9 +192,6 @@ function App() {
           }}
           onLoad={(map) => setMap(map)}
         >
-          {
-            // < //Marker position={center} />
-          }
           {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />
           )}
@@ -214,7 +221,6 @@ function App() {
             <Input type="text" placeholder="Finish" ref={finishRef} />
           </Autocomplete>
 
-
           <ButtonGroup>
             <Button
               leftIcon={<FaBeer />}
@@ -232,25 +238,47 @@ function App() {
             />
           </ButtonGroup>
         </HStack>
-          <HStack spacing={4} mt={4} justifyContent="left">
-            <Text> Number of pubs: </Text>
-            <NumberInput defaultValue={3} min={1} max={10}>
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+        <HStack spacing={4} mt={4} justifyContent="left">
+          <Text> Number of pubs: </Text>
+          <NumberInput defaultValue={3} min={1} max={7} onChange={handlePubs}>
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
 
-            <Text> Number of attractions: </Text>
-            <NumberInput defaultValue={3} min={1} max={10}>
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-          </HStack>
+          <Text> Number of attractions: </Text>
+          <NumberInput
+            defaultValue={1}
+            min={1}
+            max={3}
+            onChange={handleAttractions}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </HStack>
+
+        <Button
+          colorScheme="blue"
+          onClick={() => {
+            console.log(pubStops);
+          }}
+        >
+          pubs
+        </Button>
+        <Button
+          colorScheme="blue"
+          onClick={() => {
+            console.log(attractionStops);
+          }}
+        >
+          attractions
+        </Button>
 
         <HStack spacing={4} mt={4} justifyContent="space-between">
           <Text>Total distance (walking): {distance} </Text>
