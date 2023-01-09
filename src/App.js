@@ -95,13 +95,11 @@ function App() {
   }
 
   async function getAllPubs(plotPoints) {
-    const pubData = [];
-
     const promises = plotPoints.map((point) => {
       return getPub(point);
     });
-    const pubsInfo = await Promise.all(promises)
-    return pubsInfo
+    const pubsInfo = await Promise.all(promises);
+    return pubsInfo;
   }
 
   async function getAttraction(plotPoints) {
@@ -111,13 +109,11 @@ function App() {
   }
 
   async function getAllAttractions(plotPoints) {
-    const attractionData = [];
-
-    plotPoints.forEach(async (point) => {
-      const data = await getAttraction(point);
-      attractionData.push(data);
+    const promises = plotPoints.map((point) => {
+      return getAttraction(point);
     });
-    return attractionData;
+    const AttragetAllAttractionsInfo = await Promise.all(promises);
+    return AttragetAllAttractionsInfo;
   }
 
 
@@ -196,31 +192,29 @@ function App() {
 
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-    console.log("pubData");
-    console.log(pubData);
-    pubData.forEach((pub) => {
-      console.log(pub);
-      waypointsArray.push(pub[0]);
-      console.log("location");
-      console.log(pub.geometry.location);
-    });
-    console.log("waypointsArray");
-    console.log(waypointsArray);
-    return waypointsArray;
-  }
 
-  function calculateWaypoints(pubData, attractionData) {
-    const waypointsArray = [];
     console.log("pubData");
     console.log(pubData);
+
     pubData.forEach((pub) => {
-      console.log(pub);
-      waypointsArray.push(pub[0]);
-      console.log("location");
-      console.log(pub.geometry.location);
+      const obj = {
+        location: pub.geometry.location,
+        stopover: true,
+      };
+      console.log(obj);
+      waypointsArray.push(obj);
+    });
+    attractionData.forEach((attraction) => {
+      const obj = {
+        location: attraction.geometry.location,
+        stopover: true,
+      };
+      console.log(obj);
+      waypointsArray.push(obj);
     });
     console.log("waypointsArray");
     console.log(waypointsArray);
+
     return waypointsArray;
   }
 
