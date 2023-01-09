@@ -59,19 +59,19 @@ function App() {
     return <SkeletonText />;
   }
 
-  const findThirdPoints = (start, end) => {
-    const latDiff = (end[0] - start[0]) / 4;
-    const lngDiff = (end[1] - start[1]) / 4;
+  const findPlotPoints = (start, end, stopsNum) => {
+    const latDiff = (end[0] - start[0]) / (stopsNum - 1);
+    const lngDiff = (end[1] - start[1]) / (stopsNum - 1);
     console.log(`thirds lat:${latDiff} lng:${lngDiff}`);
     let startLat = start[0];
     let startLng = start[1];
     let plotPoints = [{ lat: startLat, lng: startLng }];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < stopsNum - 1; i++) {
       startLat += latDiff;
       startLng += lngDiff;
       plotPoints.push({ lat: startLat, lng: startLng });
     }
-    // console.log(plotPoints);
+    console.log(plotPoints);
     return plotPoints;
   };
 
@@ -90,24 +90,43 @@ function App() {
     return pubData;
   }
 
+  async function getAllPubs(plotPoints) {
+    const pubData = [];
+
+    plotPoints.forEach(async (point) => {
+      const data = await getPub(point);
+      pubData.push(data);
+    });
+    console.log(pubData);
+  }
+
+  async function getAttraction(plotPoints) {
+    const attraction = await Attractions(plotPoints.lat, plotPoints.lng);
+    const attractionData = attraction.results[0].geometry.location;
+    return attractionData;
+  }
+
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
-    const plotPoints = findThirdPoints(start, end);
 
-    const pub1Data = await getPub(plotPoints[1]);
-    const pub2Data = await getPub(plotPoints[2]);
-    const pub3Data = await getPub(plotPoints[3]);
+    const pubPlotPoints = findPlotPoints(start, end, pubStops);
+    const attractionPlotPoints = findPlotPoints(start, end, attractionStops);
 
-    const attraction1 = await Attractions(plotPoints[1].lat, plotPoints[1].lng);
-    const attraction1Data = attraction1.results[0].geometry.location;
-    const attraction2 = await Attractions(plotPoints[2].lat, plotPoints[2].lng);
-    const attraction2Data = attraction2.results[0].geometry.location;
-    const attraction3 = await Attractions(plotPoints[3].lat, plotPoints[3].lng);
-    const attraction3Data = attraction3.results[0].geometry.location;
+    ///const plotPoints = findPlotPoints(start, end, 3);
+
+    const pubData = getAllPubs(pubPlotPoints);
+
+    // const pub1Data = await getPub(plotPoints[1]);
+    // const pub2Data = await getPub(plotPoints[2]);
+    // const pub3Data = await getPub(plotPoints[3]);
+    //
+    // const attraction1Data = await getAttraction(plotPoints[1]);
+    // const attraction2Data = await getAttraction(plotPoints[2]);
+    // const attraction3Data = await getAttraction(plotPoints[3]);
 
     console.log(`pub ${pub1Data}`);
     console.log(`start ${start}`);
