@@ -63,7 +63,6 @@ function App() {
   const findPlotPoints = (start, end, stopsNum) => {
     const latDiff = (end[0] - start[0]) / (stopsNum - 1);
     const lngDiff = (end[1] - start[1]) / (stopsNum - 1);
-    console.log(`thirds lat:${latDiff} lng:${lngDiff}`);
     let startLat = start[0];
     let startLng = start[1];
     let plotPoints = [{ lat: startLat, lng: startLng }];
@@ -72,7 +71,6 @@ function App() {
       startLng += lngDiff;
       plotPoints.push({ lat: startLat, lng: startLng });
     }
-    console.log(plotPoints);
     return plotPoints;
   };
 
@@ -96,8 +94,9 @@ function App() {
 
     plotPoints.forEach(async (point) => {
       const data = await getPub(point);
-      pubData.push(data);
+      pubData.push([data]);
     });
+    return pubData;
   }
 
   async function getAttraction(plotPoints) {
@@ -113,8 +112,7 @@ function App() {
       const data = await getAttraction(point);
       attractionData.push(data);
     });
-    console.log("attr")
-    console.log(attractionData)
+    return attractionData;
   }
 
   async function calculateRoute() {
@@ -129,8 +127,10 @@ function App() {
 
     ///const plotPoints = findPlotPoints(start, end, 3);
 
-    const pubData = getAllPubs(pubPlotPoints);
-    const attractionData = getAllAttractions(attractionPlotPoints);
+    const pubData = await getAllPubs(pubPlotPoints);
+    const attractionData = await getAllAttractions(attractionPlotPoints);
+
+    const waypoints = calculateWaypoints(pubData, attractionData);
 
     // const pub1Data = await getPub(plotPoints[1]);
     // const pub2Data = await getPub(plotPoints[2]);
@@ -140,36 +140,32 @@ function App() {
     // const attraction2Data = await getAttraction(plotPoints[2]);
     // const attraction3Data = await getAttraction(plotPoints[3]);
 
-    console.log(`pub ${pub1Data}`);
-    console.log(`start ${start}`);
-    console.log(`end ${end}`);
-
-    const waypoints = [
-      {
-        location: pub1Data,
-        stopover: true,
-      },
-      {
-        location: attraction1Data,
-        stopover: true,
-      },
-      {
-        location: pub2Data,
-        stopover: true,
-      },
-      {
-        location: attraction2Data,
-        stopover: true,
-      },
-      {
-        location: pub3Data,
-        stopover: true,
-      },
-      {
-        location: attraction3Data,
-        stopover: true,
-      },
-    ];
+    // const waypoints = [
+    //   {
+    //     location: pub1Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: attraction1Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: pub2Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: attraction2Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: pub3Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: attraction3Data,
+    //     stopover: true,
+    //   },
+    // ];
     // eslint-disable-next-line no-undef
     const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
@@ -182,6 +178,21 @@ function App() {
     });
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
+  }
+
+  function calculateWaypoints(pubData, attractionData) {
+    const waypointsArray = [];
+    console.log("pubData");
+    console.log(pubData);
+    pubData.forEach((pub) => {
+      console.log(pub);
+      waypointsArray.push(pub[0]);
+      console.log("location");
+      console.log(pub.geometry.location);
+    });
+    console.log("waypointsArray");
+    console.log(waypointsArray);
+    return waypointsArray
   }
 
   function clearRoute() {
