@@ -45,6 +45,7 @@ function App() {
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
+  // const [pubInfo, setPubInfo] = useState([]);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -81,22 +82,23 @@ function App() {
     return array;
   };
 
-  const mockPubs = []
+  // const mockPubs = []
 
   async function getPub(plotPoints) {
     const pub = await Locations(plotPoints.lat, plotPoints.lng);
     const pubData = pub.results[0].geometry.location;
-    mockPubs.push(pub.results[0])
-    console.log(mockPubs[0].name)
+    // mockPubs.push(pub.results[0])
+    // setPubInfo(mockPubs)
+    // console.log(mockPubs[0].name)
     return pubData;
   }
 
 
 
-  function consolePubs(arrayPubs) {
-    console.log(arrayPubs[0])
+  // function consolePubs(arrayPubs) {
+  //   console.log(arrayPubs[0])
 
-  }
+  // }
   
   
 
@@ -271,12 +273,11 @@ function App() {
           minW="container.md"
           zIndex="1"
           >
-            <Button
-              leftIcon={<FaBeer />}
-              colorScheme="green"
-              type="submit"
-              onClick={consolePubs(mockPubs)}
-            ></Button>
+        <HStack>
+          {/* <Text>
+            {pubInfo.name}
+          </Text> */}
+        </HStack>
       </Box>
 
     </Flex>
