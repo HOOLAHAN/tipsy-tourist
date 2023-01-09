@@ -11,7 +11,8 @@ import {
   Input,
   SkeletonText,
   Text,
-  Image,
+  Image
+
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
@@ -23,7 +24,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
-import { useState, useRef } from "react";
+import { useState, useRef, React} from "react";
 import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
@@ -37,6 +38,9 @@ function App() {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
+
+  // const { isOpen, onOpen, onClose } = useDisclosure()
+  // const btnRef = React.useRef()
 
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
@@ -144,6 +148,9 @@ function App() {
     });
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
+    console.log("Tim")
+    // RouteSummary();
+    console.log("Iain")
   }
 
   function clearRoute() {
@@ -163,6 +170,8 @@ function App() {
       h="100vh"
       w="100vw"
     >
+
+
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
         <GoogleMap
@@ -208,7 +217,6 @@ function App() {
           <Autocomplete>
             <Input type="text" placeholder="Finish" ref={finishRef} />
           </Autocomplete>
-
           <ButtonGroup>
             <Button
               leftIcon={<FaBeer />}
@@ -236,6 +244,25 @@ function App() {
           />
         </HStack>
       </Box>
+
+      <Box
+          height="100px"
+          width="40px"
+          position="absolute"
+          top="80%"
+          p={4}
+          borderRadius="lg"
+          mt={4}
+          bgColor="white"
+          shadow="base"
+          minW="container.md"
+          zIndex="1"
+          >
+        <HStack>
+          <Text>placeholder text</Text>
+        </HStack>
+      </Box>
+
     </Flex>
   );
 }
