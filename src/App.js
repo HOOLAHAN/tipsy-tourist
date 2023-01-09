@@ -11,8 +11,13 @@ import {
   Input,
   SkeletonText,
   Text,
-  Image
-
+  Image,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Heading,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
@@ -30,7 +35,7 @@ import Geocode from "react-geocode";
 const center = { lat: 51.5033, lng: -0.1196 };
 
 // define libraries outside of functional component to prevent useEffect() from triggering each rerender
-const libraries = ['places'];
+const libraries = ["places"];
 
 function App() {
   // loads google maps script
@@ -45,7 +50,8 @@ function App() {
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
-  // const [pubInfo, setPubInfo] = useState([]);
+  const [pubStops, setPubStops] = useState(3);
+  const [attractionStops, setAttractionStops] = useState(1);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -57,19 +63,17 @@ function App() {
     return <SkeletonText />;
   }
 
-  const findThirdPoints = (start, end) => {
-    const latDiff = (end[0] - start[0]) / 4;
-    const lngDiff = (end[1] - start[1]) / 4;
-    console.log(`thirds lat:${latDiff} lng:${lngDiff}`);
+  const findPlotPoints = (start, end, stopsNum) => {
+    const latDiff = (end[0] - start[0]) / (stopsNum - 1);
+    const lngDiff = (end[1] - start[1]) / (stopsNum - 1);
     let startLat = start[0];
     let startLng = start[1];
     let plotPoints = [{ lat: startLat, lng: startLng }];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < stopsNum - 1; i++) {
       startLat += latDiff;
       startLng += lngDiff;
       plotPoints.push({ lat: startLat, lng: startLng });
     }
-    // console.log(plotPoints);
     return plotPoints;
   };
 
@@ -86,11 +90,34 @@ function App() {
 
   async function getPub(plotPoints) {
     const pub = await Locations(plotPoints.lat, plotPoints.lng);
-    const pubData = pub.results[0].geometry.location;
-    // mockPubs.push(pub.results[0])
-    // setPubInfo(mockPubs)
-    // console.log(mockPubs[0].name)
+    const pubData = pub.results[0];
     return pubData;
+  }
+
+  async function getAllPubs(plotPoints) {
+    const pubData = [];
+
+    const promises = plotPoints.map((point) => {
+      return getPub(point);
+    });
+    const pubsInfo = await Promise.all(promises)
+    return pubsInfo
+  }
+
+  async function getAttraction(plotPoints) {
+    const attraction = await Attractions(plotPoints.lat, plotPoints.lng);
+    const attractionData = attraction.results[0];
+    return attractionData;
+  }
+
+  async function getAllAttractions(plotPoints) {
+    const attractionData = [];
+
+    plotPoints.forEach(async (point) => {
+      const data = await getAttraction(point);
+      attractionData.push(data);
+    });
+    return attractionData;
   }
 
 
@@ -108,49 +135,51 @@ function App() {
     }
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
-    const plotPoints = findThirdPoints(start, end);
 
-    const pub1Data = await getPub(plotPoints[1]);
-    const pub2Data = await getPub(plotPoints[2]);
-    const pub3Data = await getPub(plotPoints[3]);
+    const pubPlotPoints = findPlotPoints(start, end, pubStops);
+    const attractionPlotPoints = findPlotPoints(start, end, attractionStops);
 
-    const attraction1 = await Attractions(plotPoints[1].lat, plotPoints[1].lng);
-    const attraction1Data = attraction1.results[0].geometry.location;
-    const attraction2 = await Attractions(plotPoints[2].lat, plotPoints[2].lng);
-    const attraction2Data = attraction2.results[0].geometry.location;
-    const attraction3 = await Attractions(plotPoints[3].lat, plotPoints[3].lng);
-    const attraction3Data = attraction3.results[0].geometry.location;
+    ///const plotPoints = findPlotPoints(start, end, 3);
 
-    console.log(`pub ${pub1Data}`);
-    console.log(`start ${start}`);
-    console.log(`end ${end}`);
+    const pubData = await getAllPubs(pubPlotPoints);
+    const attractionData = await getAllAttractions(attractionPlotPoints);
 
-    const waypoints = [
-      {
-        location: pub1Data,
-        stopover: true,
-      },
-      {
-        location: attraction1Data,
-        stopover: true,
-      },
-      {
-        location: pub2Data,
-        stopover: true,
-      },
-      {
-        location: attraction2Data,
-        stopover: true,
-      },
-      {
-        location: pub3Data,
-        stopover: true,
-      },
-      {
-        location: attraction3Data,
-        stopover: true,
-      },
-    ];
+    const waypoints = calculateWaypoints(pubData, attractionData);
+
+    // const pub1Data = await getPub(plotPoints[1]);
+    // const pub2Data = await getPub(plotPoints[2]);
+    // const pub3Data = await getPub(plotPoints[3]);
+    //
+    // const attraction1Data = await getAttraction(plotPoints[1]);
+    // const attraction2Data = await getAttraction(plotPoints[2]);
+    // const attraction3Data = await getAttraction(plotPoints[3]);
+
+    // const waypoints = [
+    //   {
+    //     location: pub1Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: attraction1Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: pub2Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: attraction2Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: pub3Data,
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: attraction3Data,
+    //     stopover: true,
+    //   },
+    // ];
     // eslint-disable-next-line no-undef
     const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
@@ -163,9 +192,36 @@ function App() {
     });
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
-    console.log("Tim")
-    // RouteSummary();
-    console.log("Iain")
+  }
+
+  function calculateWaypoints(pubData, attractionData) {
+    const waypointsArray = [];
+    console.log("pubData");
+    console.log(pubData);
+    pubData.forEach((pub) => {
+      console.log(pub);
+      waypointsArray.push(pub[0]);
+      console.log("location");
+      console.log(pub.geometry.location);
+    });
+    console.log("waypointsArray");
+    console.log(waypointsArray);
+    return waypointsArray;
+  }
+
+  function calculateWaypoints(pubData, attractionData) {
+    const waypointsArray = [];
+    console.log("pubData");
+    console.log(pubData);
+    pubData.forEach((pub) => {
+      console.log(pub);
+      waypointsArray.push(pub[0]);
+      console.log("location");
+      console.log(pub.geometry.location);
+    });
+    console.log("waypointsArray");
+    console.log(waypointsArray);
+    return waypointsArray;
   }
 
   function clearRoute() {
@@ -173,6 +229,14 @@ function App() {
     setDistance("");
     startRef.current.value = "";
     finishRef.current.value = "";
+  }
+
+  function handlePubs(value) {
+    setPubStops(value);
+  }
+
+  function handleAttractions(value) {
+    setAttractionStops(value);
   }
 
   // styling
@@ -201,9 +265,6 @@ function App() {
           }}
           onLoad={(map) => setMap(map)}
         >
-          {
-            // < //Marker position={center} />
-          }
           {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />
           )}
@@ -219,6 +280,7 @@ function App() {
         minW="container.md"
         zIndex="1"
       >
+        <Heading align="center">Tipsy Tourist</Heading>
         <HStack spacing={2} justifyContent="space-between">
           <Image
             boxSize="60px"
@@ -249,6 +311,31 @@ function App() {
             />
           </ButtonGroup>
         </HStack>
+        <HStack spacing={4} mt={4} justifyContent="left">
+          <Text> Number of pubs: </Text>
+          <NumberInput defaultValue={3} min={1} max={7} onChange={handlePubs}>
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+
+          <Text> Number of attractions: </Text>
+          <NumberInput
+            defaultValue={1}
+            min={1}
+            max={3}
+            onChange={handleAttractions}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </HStack>
+
         <HStack spacing={4} mt={4} justifyContent="space-between">
           <Text>Total distance (walking): {distance} </Text>
           <IconButton
