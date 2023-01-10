@@ -125,6 +125,7 @@ function App() {
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
+    
 
     console.log(combinationArray)
     setCombinedStops(combinationArray);
@@ -181,6 +182,20 @@ function App() {
   function handleAttractions(value) {
     setAttractionStops(value);
   }
+
+  const showLocations = () => {
+    console.log("work please")
+    return(
+      <HStack spacing={4} mt={4} justifyContent="right" z-index="1">
+        <Text>
+          {/* {combinedStops[0].name} */}
+          Placeholder
+      </Text>
+      </HStack>    
+    ) 
+  }
+
+  console.log(combinedStops)
 
   // styling
   return (
@@ -301,14 +316,13 @@ function App() {
           bgColor="white"
           shadow="base"
           minW="container.md"
-          zIndex="1"
+          zIndex="2"
           >
-        <HStack>
-          <Text>
-            {/* {combinedStops[0].name} */}
-            Placeholder
-          </Text>
-        </HStack>
+      <ButtonGroup>
+        <Button colorScheme="green" type="submit" onClick={showLocations}>click here</Button>    
+      </ButtonGroup>      
+        
+        
       </Box>
     </Flex>
   );
