@@ -7,6 +7,7 @@ import {
   ButtonGroup,
   Flex,
   HStack,
+  VStack,
   IconButton,
   Input,
   SkeletonText,
@@ -183,19 +184,49 @@ function App() {
     setAttractionStops(value);
   }
 
-  const showLocations = () => {
+  const ShowLocations = () => {
     console.log("work please")
-    return(
-      <HStack spacing={4} mt={4} justifyContent="right" z-index="1">
-        <Text>
-          {/* {combinedStops[0].name} */}
-          Placeholder
-      </Text>
-      </HStack>    
+    if (combinedStops.length > 0) {
+      return(
+        <Box
+        height="100px"
+        width="40px"
+        position="absolute"
+        top="80%"
+        p={4}
+        borderRadius="lg"
+        mt={4}
+        bgColor="white"
+        shadow="base"
+        minW="container.md"
+        zIndex="2"
+        >
+        <HStack spacing={4} mt={4} justifyContent="left" z-index="1">
+          {combinedStops.map((result) => (
+            <LocationsCard key={result.place_id} {...result} />
+          ))}
+        </HStack>
+      </Box>
     ) 
+    } 
   }
 
-  console.log(combinedStops)
+  const LocationsCard = (result) => {
+    return (
+      <VStack 
+      justifyContent="left" 
+      shadow="base"         
+      borderRadius="lg"
+      >
+        <Text>
+          {result.name}
+        </Text>
+        <Text>
+          Rating: {result.rating}
+        </Text>
+      </VStack>
+    ) 
+  }
 
   // styling
   return (
@@ -207,8 +238,6 @@ function App() {
       h="100vh"
       w="100vw"
     >
-
-
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
         <GoogleMap
@@ -304,26 +333,7 @@ function App() {
           />
         </HStack>
       </Box>
-
-      <Box
-          height="100px"
-          width="40px"
-          position="absolute"
-          top="80%"
-          p={4}
-          borderRadius="lg"
-          mt={4}
-          bgColor="white"
-          shadow="base"
-          minW="container.md"
-          zIndex="2"
-          >
-      <ButtonGroup>
-        <Button colorScheme="green" type="submit" onClick={showLocations}>click here</Button>    
-      </ButtonGroup>      
-        
-        
-      </Box>
+      <ShowLocations/>
     </Flex>
   );
 }
