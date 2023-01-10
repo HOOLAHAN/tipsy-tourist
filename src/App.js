@@ -126,7 +126,7 @@ function App() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
-
+    setHasError(false);
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
@@ -211,7 +211,8 @@ function App() {
       return (
         <Alert status="warning">
           <AlertIcon />
-          Route changed
+          Your route has been automatically shortened due to a lack of viable
+          stops along your route.
         </Alert>
       );
     } else {
@@ -285,12 +286,12 @@ function App() {
             src={tipsyTouristLogo}
             alt="logo"
           />
-          {/*<Autocomplete>*/}
-          <Input type="text" placeholder="Start" ref={startRef} />
-          {/*</Autocomplete>*/}
-          {/*<Autocomplete>*/}
-          <Input type="text" placeholder="Finish" ref={finishRef} />
-          {/*</Autocomplete>*/}
+          <Autocomplete>
+            <Input type="text" placeholder="Start" ref={startRef} />
+          </Autocomplete>
+          <Autocomplete>
+            <Input type="text" placeholder="Finish" ref={finishRef} />
+          </Autocomplete>
 
           <ButtonGroup>
             <Button
