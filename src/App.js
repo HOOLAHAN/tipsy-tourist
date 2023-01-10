@@ -127,10 +127,12 @@ function App() {
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
+    const filteredCombinationArray = combinationArray.filter(location => location !== undefined);
     
 
-    console.log(combinationArray)
-    setCombinedStops(combinationArray);
+    console.log(combinationArray);
+    console.log(filteredCombinationArray);
+    setCombinedStops(filteredCombinationArray);
 
     const waypoints = calculateWaypoints(pubData, attractionData);
 
