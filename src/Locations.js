@@ -18,4 +18,4 @@ async function Locations(lat, lng) {
   return data;
 }
 
-module.exports = Locations;
+export default Locations;

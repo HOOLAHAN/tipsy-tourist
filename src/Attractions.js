@@ -18,4 +18,4 @@ async function Attractions(lat, lng) {
   return data;
 }
 
-module.exports = Attractions;
+export default Attractions;
