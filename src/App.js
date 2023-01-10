@@ -1,6 +1,6 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
-// import Photos from "./Photos"
+import star from "./images/star.png";
 
 import {
   Box,
@@ -13,6 +13,7 @@ import {
   Input,
   SkeletonText,
   Text,
+  Center,
   Image,
   NumberInput,
   NumberInputField,
@@ -45,7 +46,6 @@ function App() {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
-  // const { isOpen, onOpen, onClose } = useDisclosure();
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
@@ -185,18 +185,19 @@ function App() {
     setAttractionStops(value);
   }
 
+  
+
   const ShowLocations = () => {
-    console.log("work please")
     if (combinedStops.length > 0) {
       return(
         <Box
-        height="500px"
+        height="300px"
         // width="40px"
         position="absolute"
-        top="70%"
+        top="60%"
         p={1}
         borderRadius="lg"
-        // mt={4}
+        // m={4}
         shadow="base"
         minW="container.md"
         zIndex="2"
@@ -206,33 +207,46 @@ function App() {
             <LocationsCard key={result.place_id} {...result} />
           ))}
         </HStack>
+        {/* <Example /> */}
       </Box>
     ) 
     } 
   }
 
-
-
   const LocationsCard = (result) => {
 
-    const link = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${result.photos[0].photo_reference}&key=AIzaSyAClY9_kADthBPqnHO_HxNhW5wIN_B0c8c`
+    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=AIzaSyAClY9_kADthBPqnHO_HxNhW5wIN_B0c8c`
     return (
-      <VStack 
+      <Box      
       justifyContent="left" 
       shadow="base"         
       borderRadius="lg"
       bgColor="white"
-      height="100px"
-
+      height="300px"
+      m={10}
       >
-        <Text>
+      <VStack>
+        <Center>
+          <Text as='b'>
           {result.name}
-        </Text>
+          </Text>
+        </Center>
+
+        <HStack>
+          <Text>
+          Rating: {result.rating} 
+          </Text>
+          <Image src={star} alt='' width='20px' />
+        </HStack>
         <Text>
-          Rating: {result.rating}
+          Price: {result.price_level}/5 
         </Text>
-        <Image src={link} alt="no image" objectFit="cover"/>
+        <Text as='i'>
+          Address: {result.vicinity} 
+        </Text>
+        <Image src={imageLink} alt="no image" height='300px' maxW='350px' maxH='150px'/>
       </VStack>
+      </Box>
     ) 
   }
 
