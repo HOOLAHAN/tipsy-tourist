@@ -128,6 +128,7 @@ function App() {
       return;
     }
     setHasError(false);
+    setRouteError(false);
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
@@ -139,15 +140,21 @@ function App() {
 
     const waypoints = calculateWaypoints(pubData, attractionData);
     // DIRECTIONS SERVICE DEFINED NOW AT LINE 70
-    const results = await directionsService.route({
-      origin: startRef.current.value,
-      destination: finishRef.current.value,
-      waypoints: waypoints,
-      optimizeWaypoints: true,
-      // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.WALKING,
-    });
-    
+    let results = null;
+    try {
+      results = await directionsService.route({
+        origin: startRef.current.value,
+        destination: finishRef.current.value,
+        waypoints: waypoints,
+        optimizeWaypoints: true,
+        // eslint-disable-next-line no-undef
+        travelMode: google.maps.TravelMode.WALKING,
+      });
+    } catch (error) {
+      console.log(error);
+      setRouteError(true);
+    }
+
     setDirectionsResponse(results);
     console.log("Results");
     console.log(results.routes[0].legs);
