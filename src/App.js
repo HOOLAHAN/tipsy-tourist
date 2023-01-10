@@ -244,6 +244,7 @@ function App() {
     finishRef.current.value = "";
     console.log(directionsResponse);
     setHasError(false);
+    setRouteError(false);
   }
 
   function handlePubs(value) {
