@@ -21,6 +21,10 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Heading,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
@@ -49,9 +53,12 @@ function App() {
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
+  const [time, setTime] = useState("");
   const [pubStops, setPubStops] = useState(3);
   const [attractionStops, setAttractionStops] = useState(1);
   const [combinedStops, setCombinedStops] = useState([]);
+  const [hasError, setHasError] = useState(false);
+  const [routeError, setRouteError] = useState(false);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -62,6 +69,9 @@ function App() {
   if (!isLoaded) {
     return <SkeletonText />;
   }
+
+  // eslint-disable-next-line no-undef
+  const directionsService = new google.maps.DirectionsService();
 
   const findPlotPoints = (start, end, stopsNum) => {
     const latDiff = (end[0] - start[0]) / (stopsNum - 1);
@@ -88,6 +98,7 @@ function App() {
 
   async function getPub(plotPoints) {
     const pub = await Locations(plotPoints.lat, plotPoints.lng);
+
     const pubData = pub.results[0];
     return pubData;
   }
@@ -118,6 +129,8 @@ function App() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
+    setHasError(false);
+    setRouteError(false);
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
@@ -135,19 +148,42 @@ function App() {
     setCombinedStops(filteredCombinationArray);
 
     const waypoints = calculateWaypoints(pubData, attractionData);
+    // DIRECTIONS SERVICE DEFINED NOW AT LINE 70
+    let results = null;
+    try {
+      results = await directionsService.route({
+        origin: startRef.current.value,
+        destination: finishRef.current.value,
+        waypoints: waypoints,
+        optimizeWaypoints: true,
+        // eslint-disable-next-line no-undef
+        travelMode: google.maps.TravelMode.WALKING,
+      });
+    } catch (error) {
+      console.log(error);
+      setRouteError(true);
+    }
 
-    // eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
-    const results = await directionsService.route({
-      origin: startRef.current.value,
-      destination: finishRef.current.value,
-      waypoints: waypoints,
-      optimizeWaypoints: true,
-      // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.WALKING,
-    });
     setDirectionsResponse(results);
-    setDistance(results.routes[0].legs[0].distance.text);
+    console.log("Results");
+    console.log(results.routes[0].legs);
+    setDistance(calculateDistance(results));
+    setTime(calculateTime(results));
+  }
+
+  function calculateTime(results) {
+    let distance = 0;
+    results.routes[0].legs.forEach((leg) => {
+      distance += leg.duration.value;
+    });
+    return `${Math.floor(distance / 60)} mins`;
+  }
+  function calculateDistance(results) {
+    let distance = 0;
+    results.routes[0].legs.forEach((leg) => {
+      distance += leg.distance.value;
+    });
+    return `${distance / 1000} km`;
   }
 
   function calculateWaypoints(pubData, attractionData) {
@@ -155,28 +191,65 @@ function App() {
 
 
     pubData.forEach((pub) => {
-      const obj = {
-        location: pub.geometry.location,
-        stopover: true,
-      };
-      waypointsArray.push(obj);
+      if (pub === undefined) {
+        setHasError(true);
+        return;
+      } else {
+        const obj = {
+          location: pub.geometry.location,
+          stopover: true,
+        };
+        console.log(obj);
+        waypointsArray.push(obj);
+      }
     });
     attractionData.forEach((attraction) => {
-      const obj = {
-        location: attraction.geometry.location,
-        stopover: true,
-      };
-      waypointsArray.push(obj);
+      if (attraction === undefined) {
+        setHasError(true);
+        return;
+      } else {
+        const obj = {
+          location: attraction.geometry.location,
+          stopover: true,
+        };
+        console.log(obj);
+        waypointsArray.push(obj);
+      }
     });
 
     return waypointsArray;
   }
 
+  function RouteAlert() {
+    if (routeError) {
+      return (
+        <Alert status="error">
+          <AlertIcon />
+          No viable routes found.
+        </Alert>
+      );
+    } else if (hasError) {
+      return (
+        <Alert status="warning">
+          <AlertIcon />
+          Your route has been automatically shortened due to a lack of viable
+          stops along your route.
+        </Alert>
+      );
+    } else {
+      return;
+    }
+  }
+
   function clearRoute() {
     setDirectionsResponse(null);
     setDistance("");
+
     startRef.current.value = "";
     finishRef.current.value = "";
+    console.log(directionsResponse);
+    setHasError(false);
+    setRouteError(false);
   }
 
   function handlePubs(value) {
@@ -264,6 +337,7 @@ function App() {
     >
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
+
         <GoogleMap
           center={center}
           zoom={15}
@@ -313,8 +387,7 @@ function App() {
               onClick={calculateRoute}
             >
               Plan my Tipsy Tour!
-            </Button>
-
+            </Button>{" "}
             <IconButton
               aria-label="center back"
               icon={<FaTimes />}
@@ -349,6 +422,7 @@ function App() {
 
         <HStack spacing={4} mt={4} justifyContent="space-between">
           <Text>Total distance (walking): {distance} </Text>
+          <Text>Total time (walking): {time} </Text>
           <IconButton
             aria-label="center back"
             icon={<FaLocationArrow />}
@@ -356,6 +430,7 @@ function App() {
             onClick={() => map.panTo(center)}
           />
         </HStack>
+        <RouteAlert />
       </Box>
       <ShowLocations/>
     </Flex>
