@@ -1,6 +1,6 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
-// import RouteAlert from "./Alert.js";
+import star from "./images/star.png";
 
 import {
   Box,
@@ -8,10 +8,12 @@ import {
   ButtonGroup,
   Flex,
   HStack,
+  VStack,
   IconButton,
   Input,
   SkeletonText,
   Text,
+  Center,
   Image,
   NumberInput,
   NumberInputField,
@@ -24,9 +26,9 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
-import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
-import tipsyTouristLogo from "./images/logo.png";
+import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
+import tipsyTouristLogo3 from "./images/logo3.svg";
 
 import {
   useJsApiLoader,
@@ -34,7 +36,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
-import { useState, useRef, useDisclosure } from "react";
+import { useState, useRef, React } from "react";
 import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
@@ -48,13 +50,13 @@ function App() {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
-
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
   const [time, setTime] = useState("");
   const [pubStops, setPubStops] = useState(3);
   const [attractionStops, setAttractionStops] = useState(1);
+  const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
 
@@ -122,7 +124,7 @@ function App() {
     const AttragetAllAttractionsInfo = await Promise.all(promises);
     return AttragetAllAttractionsInfo;
   }
-
+  
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -137,6 +139,13 @@ function App() {
 
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
+    const combinationArray = pubData.concat(attractionData);
+    const filteredCombinationArray = combinationArray.filter(location => location !== undefined);
+    
+
+    console.log(combinationArray);
+    console.log(filteredCombinationArray);
+    setCombinedStops(filteredCombinationArray);
 
     const waypoints = calculateWaypoints(pubData, attractionData);
     // DIRECTIONS SERVICE DEFINED NOW AT LINE 70
@@ -180,8 +189,6 @@ function App() {
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
 
-    console.log("pubData");
-    console.log(pubData);
 
     pubData.forEach((pub) => {
       if (pub === undefined) {
@@ -209,8 +216,6 @@ function App() {
         waypointsArray.push(obj);
       }
     });
-    console.log("waypointsArray");
-    console.log(waypointsArray);
 
     return waypointsArray;
   }
@@ -253,6 +258,71 @@ function App() {
 
   function handleAttractions(value) {
     setAttractionStops(value);
+  }
+
+  
+
+  const ShowLocations = () => {
+    if (combinedStops.length > 0) {
+      return(
+        <Box
+        height="300px"
+        // width="40px"
+        position="absolute"
+        top="60%"
+        p={1}
+        borderRadius="lg"
+        // m={4}
+        shadow="base"
+        minW="container.md"
+        zIndex="2"
+        >
+        <HStack spacing={4} mt={4} justifyContent="left" z-index="1">
+          {combinedStops.map((result) => (
+            <LocationsCard key={result.place_id} {...result} />
+          ))}
+        </HStack>
+        {/* <Example /> */}
+      </Box>
+    ) 
+    } 
+  }
+
+  const LocationsCard = (result) => {
+
+    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=AIzaSyAClY9_kADthBPqnHO_HxNhW5wIN_B0c8c`
+    return (
+      <Box      
+      justifyContent="left" 
+      shadow="base"         
+      borderRadius="lg"
+      bgColor="white"
+      height="300px"
+      m={10}
+      >
+      <VStack>
+        <Center>
+          <Text as='b'>
+          {result.name}
+          </Text>
+        </Center>
+
+        <HStack>
+          <Text>
+          Rating: {result.rating} 
+          </Text>
+          <Image src={star} alt='' width='20px' />
+        </HStack>
+        <Text>
+          Price: {result.price_level}/5 
+        </Text>
+        <Text as='i'>
+          Address: {result.vicinity} 
+        </Text>
+        <Image src={imageLink} alt="no image" height='300px' maxW='350px' maxH='150px'/>
+      </VStack>
+      </Box>
+    ) 
   }
 
   // styling
@@ -300,7 +370,7 @@ function App() {
           <Image
             boxSize="60px"
             objectFit="cover"
-            src={tipsyTouristLogo}
+            src={tipsyTouristLogo3}
             alt="logo"
           />
           <Autocomplete>
@@ -309,7 +379,6 @@ function App() {
           <Autocomplete>
             <Input type="text" placeholder="Finish" ref={finishRef} />
           </Autocomplete>
-
           <ButtonGroup>
             <Button
               leftIcon={<FaBeer />}
@@ -363,6 +432,7 @@ function App() {
         </HStack>
         <RouteAlert />
       </Box>
+      <ShowLocations/>
     </Flex>
   );
 }
