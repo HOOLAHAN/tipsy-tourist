@@ -1,5 +1,6 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
+// import Photos from "./Photos"
 
 import {
   Box,
@@ -189,14 +190,13 @@ function App() {
     if (combinedStops.length > 0) {
       return(
         <Box
-        height="100px"
-        width="40px"
+        height="500px"
+        // width="40px"
         position="absolute"
-        top="80%"
-        p={4}
+        top="70%"
+        p={1}
         borderRadius="lg"
-        mt={4}
-        bgColor="white"
+        // mt={4}
         shadow="base"
         minW="container.md"
         zIndex="2"
@@ -211,12 +211,19 @@ function App() {
     } 
   }
 
+
+
   const LocationsCard = (result) => {
+
+    const link = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${result.photos[0].photo_reference}&key=AIzaSyAClY9_kADthBPqnHO_HxNhW5wIN_B0c8c`
     return (
       <VStack 
       justifyContent="left" 
       shadow="base"         
       borderRadius="lg"
+      bgColor="white"
+      height="100px"
+
       >
         <Text>
           {result.name}
@@ -224,6 +231,7 @@ function App() {
         <Text>
           Rating: {result.rating}
         </Text>
+        <Image src={link} alt="no image" objectFit="cover"/>
       </VStack>
     ) 
   }
