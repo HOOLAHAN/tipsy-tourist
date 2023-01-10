@@ -1,5 +1,6 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
+// import RouteAlert from "./Alert.js";
 
 import {
   Box,
@@ -18,6 +19,10 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Heading,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
@@ -29,7 +34,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
-import { useState, useRef } from "react";
+import { useState, useRef, useDisclosure } from "react";
 import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
@@ -49,6 +54,7 @@ function App() {
   const [distance, setDistance] = useState("");
   const [pubStops, setPubStops] = useState(3);
   const [attractionStops, setAttractionStops] = useState(1);
+  const [hasError, setHasError] = useState(false);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -150,7 +156,10 @@ function App() {
     console.log(pubData);
 
     pubData.forEach((pub) => {
-      if (pub === undefined) return;
+      if (pub === undefined) {
+        setHasError(true);
+        return;
+      }
       else {
         const obj = {
           location: pub.geometry.location,
@@ -161,8 +170,10 @@ function App() {
       }
     });
     attractionData.forEach((attraction) => {
-      if (attraction === undefined) return;
-      else {
+      if (attraction === undefined) {
+        setHasError(true);
+        return;
+      } else {
         const obj = {
           location: attraction.geometry.location,
           stopover: true,
@@ -175,6 +186,16 @@ function App() {
     console.log(waypointsArray);
 
     return waypointsArray;
+  }
+
+  function RouteAlert() {
+    if (hasError)
+      return (
+        <Alert status="warning">
+          <AlertIcon />
+          Route altered
+        </Alert>
+      );
   }
 
   function clearRoute() {
@@ -204,6 +225,7 @@ function App() {
     >
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
+
         <GoogleMap
           center={center}
           zoom={15}
@@ -254,8 +276,7 @@ function App() {
               onClick={calculateRoute}
             >
               Plan my Tipsy Tour!
-            </Button>
-
+            </Button>{" "}
             <IconButton
               aria-label="center back"
               icon={<FaTimes />}
@@ -297,6 +318,7 @@ function App() {
             onClick={() => map.panTo(center)}
           />
         </HStack>
+        <RouteAlert />
       </Box>
     </Flex>
   );
