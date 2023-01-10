@@ -19,9 +19,9 @@ import {
   NumberDecrementStepper,
   Heading,
 } from "@chakra-ui/react";
-import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
 
-import tipsyTouristLogo from "./images/logo.png";
+import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
+import tipsyTouristLogo3 from "./images/logo3.svg";
 
 import {
   useJsApiLoader,
@@ -29,7 +29,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
-import { useState, useRef, React} from "react";
+import { useState, useRef, React } from "react";
 import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
@@ -43,10 +43,7 @@ function App() {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
-
-  // const { isOpen, onOpen, onClose } = useDisclosure()
-  // const btnRef = React.useRef()
-
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
@@ -87,8 +84,6 @@ function App() {
     return array;
   };
 
-  // const mockPubs = []
-
   async function getPub(plotPoints) {
     const pub = await Locations(plotPoints.lat, plotPoints.lng);
     const pubData = pub.results[0];
@@ -116,8 +111,7 @@ function App() {
     const AttragetAllAttractionsInfo = await Promise.all(promises);
     return AttragetAllAttractionsInfo;
   }
-
-
+  
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -128,12 +122,10 @@ function App() {
     const pubPlotPoints = findPlotPoints(start, end, pubStops);
     const attractionPlotPoints = findPlotPoints(start, end, attractionStops);
 
-    ///const plotPoints = findPlotPoints(start, end, 3);
-
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
-    console.log("mob")
+
     console.log(combinationArray)
     setCombinedStops(combinationArray);
 
@@ -156,15 +148,12 @@ function App() {
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
 
-    console.log("pubData");
-    console.log(pubData);
 
     pubData.forEach((pub) => {
       const obj = {
         location: pub.geometry.location,
         stopover: true,
       };
-      console.log(obj);
       waypointsArray.push(obj);
     });
     attractionData.forEach((attraction) => {
@@ -172,11 +161,8 @@ function App() {
         location: attraction.geometry.location,
         stopover: true,
       };
-      console.log(obj);
       waypointsArray.push(obj);
     });
-    console.log("waypointsArray");
-    console.log(waypointsArray);
 
     return waypointsArray;
   }
@@ -242,7 +228,7 @@ function App() {
           <Image
             boxSize="60px"
             objectFit="cover"
-            src={tipsyTouristLogo}
+            src={tipsyTouristLogo3}
             alt="logo"
           />
           <Autocomplete>
@@ -320,10 +306,10 @@ function App() {
         <HStack>
           <Text>
             {/* {combinedStops[0].name} */}
+            Placeholder
           </Text>
         </HStack>
       </Box>
-
     </Flex>
   );
 }
