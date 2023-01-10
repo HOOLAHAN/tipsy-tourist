@@ -145,8 +145,18 @@ function App() {
       // eslint-disable-next-line no-undef
       travelMode: google.maps.TravelMode.WALKING,
     });
-    setDirectionsResponse(results);
+    setDirectionsResponse(calculateDistance(results));
+    console.log('Results')
+    console.log(results.routes[0].legs)
     setDistance(results.routes[0].legs[0].distance.text);
+  }
+
+  function calculateDistance(results) {
+    let distance = 0
+    results.routes[0].legs.forEach((leg) => {
+      distance += leg.distance.value
+    })
+    return distance
   }
 
   function calculateWaypoints(pubData, attractionData) {
@@ -189,12 +199,14 @@ function App() {
 
   function RouteAlert() {
     if (hasError)
-      return (
+      {return (
         <Alert status="warning">
           <AlertIcon />
-          Route altered
+          Route changed
         </Alert>
-      );
+      ) } else {
+        return 
+      }
   }
 
   function clearRoute() {
@@ -204,6 +216,7 @@ function App() {
     startRef.current.value = "";
     finishRef.current.value = "";
     console.log(directionsResponse);
+    setHasError(false)
   }
 
   function handlePubs(value) {
@@ -262,12 +275,12 @@ function App() {
             src={tipsyTouristLogo}
             alt="logo"
           />
-          <Autocomplete>
+         { /*<Autocomplete>*/}
             <Input type="text" placeholder="Start" ref={startRef} />
-          </Autocomplete>
-          <Autocomplete>
+          {/*</Autocomplete>*/}
+          { /*<Autocomplete>*/}
             <Input type="text" placeholder="Finish" ref={finishRef} />
-          </Autocomplete>
+            {/*</Autocomplete>*/}
 
           <ButtonGroup>
             <Button
