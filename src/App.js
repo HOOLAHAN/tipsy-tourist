@@ -52,6 +52,7 @@ function App() {
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
+  const [time, setTime] = useState("");
   const [pubStops, setPubStops] = useState(3);
   const [attractionStops, setAttractionStops] = useState(1);
   const [hasError, setHasError] = useState(false);
@@ -145,18 +146,26 @@ function App() {
       // eslint-disable-next-line no-undef
       travelMode: google.maps.TravelMode.WALKING,
     });
-    setDirectionsResponse(calculateDistance(results));
-    console.log('Results')
-    console.log(results.routes[0].legs)
-    setDistance(results.routes[0].legs[0].distance.text);
+    setDirectionsResponse(results);
+    console.log("Results");
+    console.log(results.routes[0].legs);
+    setDistance(calculateDistance(results));
+    setTime(calculateTime(results));
   }
 
-  function calculateDistance(results) {
-    let distance = 0
+  function calculateTime(results) {
+    let distance = 0;
     results.routes[0].legs.forEach((leg) => {
-      distance += leg.distance.value
-    })
-    return distance
+      distance += leg.duration.value;
+    });
+    return `${Math.floor(distance / 60)} mins`;
+  }
+  function calculateDistance(results) {
+    let distance = 0;
+    results.routes[0].legs.forEach((leg) => {
+      distance += leg.distance.value;
+    });
+    return `${distance / 1000} km`;
   }
 
   function calculateWaypoints(pubData, attractionData) {
@@ -198,15 +207,16 @@ function App() {
   }
 
   function RouteAlert() {
-    if (hasError)
-      {return (
+    if (hasError) {
+      return (
         <Alert status="warning">
           <AlertIcon />
           Route changed
         </Alert>
-      ) } else {
-        return 
-      }
+      );
+    } else {
+      return;
+    }
   }
 
   function clearRoute() {
@@ -216,7 +226,7 @@ function App() {
     startRef.current.value = "";
     finishRef.current.value = "";
     console.log(directionsResponse);
-    setHasError(false)
+    setHasError(false);
   }
 
   function handlePubs(value) {
@@ -275,12 +285,12 @@ function App() {
             src={tipsyTouristLogo}
             alt="logo"
           />
-         { /*<Autocomplete>*/}
-            <Input type="text" placeholder="Start" ref={startRef} />
+          {/*<Autocomplete>*/}
+          <Input type="text" placeholder="Start" ref={startRef} />
           {/*</Autocomplete>*/}
-          { /*<Autocomplete>*/}
-            <Input type="text" placeholder="Finish" ref={finishRef} />
-            {/*</Autocomplete>*/}
+          {/*<Autocomplete>*/}
+          <Input type="text" placeholder="Finish" ref={finishRef} />
+          {/*</Autocomplete>*/}
 
           <ButtonGroup>
             <Button
@@ -325,6 +335,7 @@ function App() {
 
         <HStack spacing={4} mt={4} justifyContent="space-between">
           <Text>Total distance (walking): {distance} </Text>
+          <Text>Total time (walking): {time} </Text>
           <IconButton
             aria-label="center back"
             icon={<FaLocationArrow />}
