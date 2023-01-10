@@ -66,6 +66,9 @@ function App() {
     return <SkeletonText />;
   }
 
+  // eslint-disable-next-line no-undef
+  const directionsService = new google.maps.DirectionsService();
+
   const findPlotPoints = (start, end, stopsNum) => {
     const latDiff = (end[0] - start[0]) / (stopsNum - 1);
     const lngDiff = (end[1] - start[1]) / (stopsNum - 1);
@@ -122,21 +125,18 @@ function App() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
+
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
     const pubPlotPoints = findPlotPoints(start, end, pubStops);
     const attractionPlotPoints = findPlotPoints(start, end, attractionStops);
 
-    ///const plotPoints = findPlotPoints(start, end, 3);
-
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
 
     const waypoints = calculateWaypoints(pubData, attractionData);
-
-    // eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
+    // DIRECTIONS SERVICE DEFINED NOW AT LINE 70
     const results = await directionsService.route({
       origin: startRef.current.value,
       destination: finishRef.current.value,
@@ -159,8 +159,7 @@ function App() {
       if (pub === undefined) {
         setHasError(true);
         return;
-      }
-      else {
+      } else {
         const obj = {
           location: pub.geometry.location,
           stopover: true,
@@ -201,8 +200,10 @@ function App() {
   function clearRoute() {
     setDirectionsResponse(null);
     setDistance("");
+
     startRef.current.value = "";
     finishRef.current.value = "";
+    console.log(directionsResponse);
   }
 
   function handlePubs(value) {
