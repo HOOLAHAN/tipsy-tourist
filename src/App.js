@@ -85,6 +85,7 @@ function App() {
 
   async function getPub(plotPoints) {
     const pub = await Locations(plotPoints.lat, plotPoints.lng);
+
     const pubData = pub.results[0];
     return pubData;
   }
@@ -128,40 +129,6 @@ function App() {
 
     const waypoints = calculateWaypoints(pubData, attractionData);
 
-    // const pub1Data = await getPub(plotPoints[1]);
-    // const pub2Data = await getPub(plotPoints[2]);
-    // const pub3Data = await getPub(plotPoints[3]);
-    //
-    // const attraction1Data = await getAttraction(plotPoints[1]);
-    // const attraction2Data = await getAttraction(plotPoints[2]);
-    // const attraction3Data = await getAttraction(plotPoints[3]);
-
-    // const waypoints = [
-    //   {
-    //     location: pub1Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: attraction1Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: pub2Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: attraction2Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: pub3Data,
-    //     stopover: true,
-    //   },
-    //   {
-    //     location: attraction3Data,
-    //     stopover: true,
-    //   },
-    // ];
     // eslint-disable-next-line no-undef
     const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
@@ -183,20 +150,26 @@ function App() {
     console.log(pubData);
 
     pubData.forEach((pub) => {
-      const obj = {
-        location: pub.geometry.location,
-        stopover: true,
-      };
-      console.log(obj);
-      waypointsArray.push(obj);
+      if (pub === undefined) return;
+      else {
+        const obj = {
+          location: pub.geometry.location,
+          stopover: true,
+        };
+        console.log(obj);
+        waypointsArray.push(obj);
+      }
     });
     attractionData.forEach((attraction) => {
-      const obj = {
-        location: attraction.geometry.location,
-        stopover: true,
-      };
-      console.log(obj);
-      waypointsArray.push(obj);
+      if (attraction === undefined) return;
+      else {
+        const obj = {
+          location: attraction.geometry.location,
+          stopover: true,
+        };
+        console.log(obj);
+        waypointsArray.push(obj);
+      }
     });
     console.log("waypointsArray");
     console.log(waypointsArray);
