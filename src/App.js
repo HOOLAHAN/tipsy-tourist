@@ -56,6 +56,7 @@ function App() {
   const [pubStops, setPubStops] = useState(3);
   const [attractionStops, setAttractionStops] = useState(1);
   const [hasError, setHasError] = useState(false);
+  const [routeError, setRouteError] = useState(false);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -146,6 +147,7 @@ function App() {
       // eslint-disable-next-line no-undef
       travelMode: google.maps.TravelMode.WALKING,
     });
+    
     setDirectionsResponse(results);
     console.log("Results");
     console.log(results.routes[0].legs);
@@ -207,7 +209,14 @@ function App() {
   }
 
   function RouteAlert() {
-    if (hasError) {
+    if (routeError) {
+      return (
+        <Alert status="error">
+          <AlertIcon />
+          No viable routes found.
+        </Alert>
+      );
+    } else if (hasError) {
       return (
         <Alert status="warning">
           <AlertIcon />
