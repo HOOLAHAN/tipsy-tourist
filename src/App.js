@@ -23,8 +23,6 @@ import {
   Heading,
   Alert,
   AlertIcon,
-  AlertTitle,
-  AlertDescription,
 } from "@chakra-ui/react";
 
 import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
@@ -124,7 +122,7 @@ function App() {
     const AttragetAllAttractionsInfo = await Promise.all(promises);
     return AttragetAllAttractionsInfo;
   }
-  
+
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -140,8 +138,9 @@ function App() {
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
-    const filteredCombinationArray = combinationArray.filter(location => location !== undefined);
-    
+    const filteredCombinationArray = combinationArray.filter(
+      (location) => location !== undefined
+    );
 
     console.log(combinationArray);
     console.log(filteredCombinationArray);
@@ -188,7 +187,6 @@ function App() {
 
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-
 
     pubData.forEach((pub) => {
       if (pub === undefined) {
@@ -260,70 +258,68 @@ function App() {
     setAttractionStops(value);
   }
 
-  
-
   const ShowLocations = () => {
     if (combinedStops.length > 0) {
-      return(
+      return (
         <Box
-        height="300px"
-        // width="40px"
-        position="absolute"
-        top="60%"
-        p={1}
-        borderRadius="lg"
-        // m={4}
-        shadow="base"
-        minW="container.md"
-        zIndex="2"
+          height="300px"
+          // width="40px"
+          position="absolute"
+          top="60%"
+          // p={1}
+          borderRadius="lg"
+          // m={4}
+          shadow="base"
+          minW="container.md"
+          zIndex="2"
         >
-        <HStack spacing={4} mt={4} justifyContent="left" z-index="1">
-          {combinedStops.map((result) => (
-            <LocationsCard key={result.place_id} {...result} />
-          ))}
-        </HStack>
-        {/* <Example /> */}
-      </Box>
-    ) 
-    } 
-  }
+          <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
+            {combinedStops.map((result) => (
+              <LocationsCard key={result.place_id} {...result} />
+            ))}
+          </HStack>
+          {/* <Example /> */}
+        </Box>
+      );
+    }
+  };
 
   const LocationsCard = (result) => {
-
-    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
     return (
-      <Box      
-      justifyContent="left" 
-      shadow="base"         
-      borderRadius="lg"
-      bgColor="white"
-      height="300px"
-      m={10}
-      >
-      <VStack>
-        <Center>
-          <Text as='b'>
-          {result.name}
-          </Text>
-        </Center>
+      <Box
+        justifyContent="left"
+        shadow="base"
+        borderRadius="lg"
+        bgColor="white"
+        height="250px"
 
-        <HStack>
-          {/*<Text>
+        //m={10}
+      >
+        <VStack>
+          <Center>
+            <Text isTruncated as="b" fontSize="xs" justifyContent="center">
+              {result.name}
+            </Text>
+          </Center>
+
+          <HStack>
+            {/*<Text>
           Rating: {result.rating} 
     </Text>*/}
-          {/*<Image src={star} alt='' width='20px' />*/}
-        </HStack>
-       { /*<Text>
+            {/*<Image src={star} alt='' width='20px' />*/}
+          </HStack>
+          {/*<Text>
           Price: {result.price_level}/5 
     </Text>*/}
-        {/*<Text as='i'>
+          {/*<Text as='i'>
           Address: {result.vicinity} 
   </Text>*/}
-        <Image src={imageLink} alt="no image" height='300px' maxW='350px' maxH='150px'/>
-      </VStack>
+          <Image src={imageLink} alt="no image" boxSize="200px" maxW="200px" />
+        </VStack>
       </Box>
-    ) 
-  }
+    );
+  };
 
   // styling
   return (
@@ -432,7 +428,7 @@ function App() {
         </HStack>
         <RouteAlert />
       </Box>
-      <ShowLocations/>
+      <ShowLocations />
     </Flex>
   );
 }
