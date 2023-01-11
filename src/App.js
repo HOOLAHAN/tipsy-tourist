@@ -1,7 +1,7 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
 import Details from "./Details"
-import star from "./images/star.png";
+// import star from "./images/star.png";
 
 import {
   Box,
@@ -24,14 +24,23 @@ import {
   Heading,
   Alert,
   AlertIcon,
+  Link,
 } from "@chakra-ui/react";
+
+import {
+  StarIcon,
+  LinkIcon,
+  PhoneIcon,
+} from "@chakra-ui/icons";
 
 import {
   FaEyeSlash,
   FaEye,
   FaLocationArrow,
   FaTimes,
-  FaBeer, FaBus, FaCar, FaWalking, FaBicycle,
+  FaBeer,
+  FaHome
+  // FaBus, FaCar, FaWalking, FaBicycle,
 } from "react-icons/fa"; // icons
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
@@ -45,7 +54,7 @@ import { useState, useRef, React } from "react";
 import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
-const apiKey = require("./apiKey")
+// const apiKey = require("./apiKey")
 
 // define libraries outside of functional component to prevent useEffect() from triggering each rerender
 const libraries = ["places"];
@@ -66,8 +75,16 @@ function App() {
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
   const [showBox, setShowBox] = useState(true);
-  const [travelMethod, setTravelMethod] = useState("WALKING")
-  const [locationCardData, setLocationCardData] = useState({name: "has not updated yet"});
+  // const [travelMethod, setTravelMethod] = useState("WALKING")
+  const [locationCardData, setLocationCardData] = useState({
+    name: "placeholder name",
+    rating: "placeholder rating",
+    website: "placeholder website",
+    formatted_phone_number: "placeholder phone number",
+    vicinity: "placeholder address",
+    photos: ["placeholder URL"]
+});
+
 
 
   /** @type React.MutableRefObject<HTMLInputElement> */
@@ -307,33 +324,21 @@ function App() {
         borderRadius="lg"
         bgColor="#38A169"
         height="250px"
-
-        //m={10}
       >
         <VStack>
+          <HStack>
           <Center>
             <Text isTruncated as="b" fontSize="xs" justifyContent="center" color="white">
               {result.name}
             </Text>
           </Center>
-      <Button               
-        leftIcon={<FaEye />}
-        colorScheme="green"
-        type="submit"
-        onClick={() => getDetails(result.place_id)}>
-      </Button>
-          <HStack>
-            {/*<Text>
-          Rating: {result.rating} 
-    </Text>*/}
-            {/*<Image src={star} alt='' width='20px' />*/}
+            <Button               
+              leftIcon={<FaEye />}
+              colorScheme="green"
+              type="submit"
+              onClick={() => getDetails(result.place_id)}>
+            </Button>
           </HStack>
-          {/*<Text>
-          Price: {result.price_level}/5 
-    </Text>*/}
-          {/*<Text as='i'>
-          Address: {result.vicinity} 
-  </Text>*/}
           <Image src={imageLink} alt="no image" boxSize="200px" maxW="200px" />
         </VStack>
       </Box>
@@ -341,6 +346,7 @@ function App() {
   };
 
   const LocationDetailsCard = () => {
+    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
     return (
       <Box
       p={4}
@@ -354,12 +360,28 @@ function App() {
           <Text as='b'>
             {locationCardData.name}
           </Text>
+          <Box display='flex' mt='2' alignItems='center'>
+          {Array(5)
+            .fill('')
+            .map((_, i) => (
+              <StarIcon
+                key={i}
+                color={i < locationCardData.rating ? 'yellow.500' : 'gray.300'}
+              />
+            ))}
+            </Box>
+          <Link href={locationCardData.website} >
+           <LinkIcon/> 
+           {locationCardData.website} 
+          </Link>
           <Text>
-            {locationCardData.website}
-          </Text>
-          <Text>
+            <PhoneIcon/>
             {locationCardData.formatted_phone_number}
           </Text>
+          <Text icon={<FaHome />}>
+          {locationCardData.vicinity}
+          </Text>
+          <Image src={imageLink} alt="no image" maxW="300px" />
         </VStack>
       </Box>
     ) 
