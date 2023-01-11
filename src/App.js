@@ -23,8 +23,6 @@ import {
   Heading,
   Alert,
   AlertIcon,
-  AlertTitle,
-  AlertDescription,
 } from "@chakra-ui/react";
 
 import {
@@ -32,7 +30,7 @@ import {
   FaEye,
   FaLocationArrow,
   FaTimes,
-  FaBeer,
+  FaBeer, FaBus, FaCar, FaWalking, FaBicycle,
 } from "react-icons/fa"; // icons
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
@@ -66,6 +64,7 @@ function App() {
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
   const [showBox, setShowBox] = useState(true);
+  const [travelMethod, setTravelMethod] = useState("WALKING")
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -131,7 +130,7 @@ function App() {
     const AttragetAllAttractionsInfo = await Promise.all(promises);
     return AttragetAllAttractionsInfo;
   }
-
+  
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -165,7 +164,7 @@ function App() {
         waypoints: waypoints,
         optimizeWaypoints: true,
         // eslint-disable-next-line no-undef
-        travelMode: google.maps.TravelMode.WALKING,
+        travelMode: google.maps.TravelMode[travelMethod],
       });
     } catch (error) {
       console.log(error);
@@ -174,7 +173,8 @@ function App() {
 
     setDirectionsResponse(results);
     console.log("Results");
-    console.log(results.routes[0].legs);
+    // console.log(results.routes[0].legs);
+    console.log(results);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
   }
@@ -196,6 +196,7 @@ function App() {
 
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
+
 
     pubData.forEach((pub) => {
       if (pub === undefined) {
@@ -267,22 +268,23 @@ function App() {
     setAttractionStops(value);
   }
 
+  
+
   const ShowLocations = () => {
     if (combinedStops.length > 0) {
-      return (
+      return(
         <Box
           height="300px"
           // width="40px"
           position="absolute"
-          top="60%"
-          p={1}
+          top="70%"
+          // p={1}
           borderRadius="lg"
           // m={4}
-          shadow="base"
           minW="container.md"
           zIndex="2"
         >
-          <HStack spacing={4} mt={4} justifyContent="left" z-index="1">
+          <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
             {combinedStops.map((result) => (
               <LocationsCard key={result.place_id} {...result} />
             ))}
@@ -300,30 +302,35 @@ function App() {
         justifyContent="left"
         shadow="base"
         borderRadius="lg"
-        bgColor="white"
-        height="300px"
-        m={10}
+        bgColor="#38A169"
+        height="250px"
+
+        //m={10}
       >
         <VStack>
           <Center>
-            <Text as="b">{result.name}</Text>
+            <Text isTruncated as="b" fontSize="xs" justifyContent="center" color="white">
+              {result.name}
+            </Text>
           </Center>
 
           <HStack>
-            <Text>Rating: {result.rating}</Text>
-            <Image src={star} alt="" width="20px" />
+            {/*<Text>
+          Rating: {result.rating} 
+    </Text>*/}
+            {/*<Image src={star} alt='' width='20px' />*/}
           </HStack>
-          <Text>Price: {result.price_level}/5</Text>
-          <Text as="i">Address: {result.vicinity}</Text>
-          <Image
-            src={imageLink}
-            alt="no image"
-            height="300px"
-            maxW="350px"
-            maxH="150px"
-          />
+          {/*<Text>
+          Price: {result.price_level}/5 
+    </Text>*/}
+          {/*<Text as='i'>
+          Address: {result.vicinity} 
+  </Text>*/}
+          <Image src={imageLink} alt="no image" boxSize="200px" maxW="200px" />
         </VStack>
       </Box>
+    );
+  };
     );
   };
 
