@@ -1,7 +1,6 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
 import Details from "./Details"
-// import star from "./images/star.png";
 
 import {
   Box,
@@ -34,7 +33,7 @@ import {
 } from "@chakra-ui/icons";
 
 import {
-  FaEyeSlash,
+  // FaEyeSlash,
   FaEye,
   FaLocationArrow,
   FaTimes,
@@ -54,7 +53,6 @@ import { useState, useRef, React } from "react";
 import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
-// const apiKey = require("./apiKey")
 
 // define libraries outside of functional component to prevent useEffect() from triggering each rerender
 const libraries = ["places"];
@@ -74,7 +72,8 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
-  const [showBox, setShowBox] = useState(true);
+  const [boxZIndex, setBoxZIndex ] = useState("-1")
+  const [drawerZIndex, setDrawerZIndex ] = useState("-1")
   const [travelMethod, setTravelMethod] = useState("WALKING")
   const [locationCardData, setLocationCardData] = useState({
     name: "placeholder name",
@@ -194,11 +193,9 @@ function App() {
     }
     
     setDirectionsResponse(results);
-    console.log("Results");
-    // console.log(results.routes[0].legs);
-    console.log(results);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
+    setDrawerZIndex("1");
   }
   
   function calculateTime(results) {
@@ -296,21 +293,24 @@ function App() {
       return(
         <Box
           height="300px"
-          // width="40px"
           position="absolute"
           top="70%"
-          // p={1}
           borderRadius="lg"
-          // m={4}
           minW="container.md"
-          zIndex="2"
+          zIndex={drawerZIndex}
         >
           <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
             {combinedStops.map((result) => (
               <LocationsCard key={result.place_id} {...result} />
-            ))}
+              ))}
+              <IconButton
+                  position="top"
+                  aria-label="center back"
+                  icon={<FaTimes />}
+                  colorScheme="green"
+                  onClick={()=> {setDrawerZIndex("-1")}}
+              />
           </HStack>
-          {/* <Example /> */}
         </Box>
       );
     }
@@ -337,7 +337,8 @@ function App() {
               leftIcon={<FaEye />}
               colorScheme="green"
               type="submit"
-              onClick={() => getDetails(result.place_id)}>
+              onClick={() => {getDetails(result.place_id) ; setBoxZIndex("1")}}
+              >
             </Button>
           </HStack>
           <Image src={imageLink} alt="no image" boxSize="200px" maxW="200px" />
@@ -356,8 +357,13 @@ function App() {
       bgColor="white"
       shadow="base"
       minW="container.sm"
-      zIndex="1">
+      zIndex={boxZIndex}>
         <VStack>
+          <IconButton
+              aria-label="center back"
+              icon={<FaTimes />}
+              onClick={()=> {setBoxZIndex("-1")}}
+          />
           <Text as='b'>
             {locationCardData.name}
           </Text>
@@ -396,20 +402,6 @@ async function getDetails(place_id) {
   setLocationCardData(locationData) 
   return locationData;
 }
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
 
 // styling
   return (
@@ -489,7 +481,6 @@ async function getDetails(place_id) {
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
-
           <Text> Number of attractions: </Text>
           <NumberInput
             defaultValue={1}
@@ -504,7 +495,6 @@ async function getDetails(place_id) {
             </NumberInputStepper>
           </NumberInput>
         </HStack>
-
         <HStack spacing={4} mt={4} justifyContent="space-between">
           <Text>Total distance (walking): {distance} </Text>
           <Text>Total time (walking): {time} </Text>
@@ -517,7 +507,6 @@ async function getDetails(place_id) {
         </HStack>
         <RouteAlert />
       </Box>
-      {/* <RoutePlanBox /> */}
       <ShowLocations />
       <LocationDetailsCard/>
     </Flex>
