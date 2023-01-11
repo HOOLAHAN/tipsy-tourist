@@ -1,6 +1,6 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
-import star from "./images/star.png";
+import Details from "./Details"
 
 import {
   Box,
@@ -23,14 +23,23 @@ import {
   Heading,
   Alert,
   AlertIcon,
+  Link,
 } from "@chakra-ui/react";
 
 import {
-  FaEyeSlash,
+  StarIcon,
+  LinkIcon,
+  PhoneIcon,
+} from "@chakra-ui/icons";
+
+import {
+  // FaEyeSlash,
   FaEye,
   FaLocationArrow,
   FaTimes,
-  FaBeer, FaBus, FaCar, FaWalking, FaBicycle,
+  FaBeer,
+  FaHome
+  // FaBus, FaCar, FaWalking, FaBicycle,
 } from "react-icons/fa"; // icons
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
@@ -63,8 +72,19 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
-  const [showBox, setShowBox] = useState(true);
+  const [boxZIndex, setBoxZIndex ] = useState("-1")
+  const [drawerZIndex, setDrawerZIndex ] = useState("-1")
   const [travelMethod, setTravelMethod] = useState("WALKING")
+  const [locationCardData, setLocationCardData] = useState({
+    name: "placeholder name",
+    rating: "placeholder rating",
+    website: "placeholder website",
+    formatted_phone_number: "placeholder phone number",
+    vicinity: "placeholder address",
+    photos: ["placeholder URL"]
+});
+
+
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -123,6 +143,7 @@ function App() {
     return attractionData;
   }
 
+  
   async function getAllAttractions(plotPoints) {
     const promises = plotPoints.map((point) => {
       return getAttraction(point);
@@ -142,7 +163,7 @@ function App() {
 
     const pubPlotPoints = findPlotPoints(start, end, pubStops);
     const attractionPlotPoints = findPlotPoints(start, end, attractionStops);
-
+    
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
@@ -153,7 +174,7 @@ function App() {
     console.log(combinationArray);
     console.log(filteredCombinationArray);
     setCombinedStops(filteredCombinationArray);
-
+    
     const waypoints = calculateWaypoints(pubData, attractionData);
     // DIRECTIONS SERVICE DEFINED NOW AT LINE 70
     let results = null;
@@ -170,15 +191,13 @@ function App() {
       console.log(error);
       setRouteError(true);
     }
-
+    
     setDirectionsResponse(results);
-    console.log("Results");
-    // console.log(results.routes[0].legs);
-    console.log(results);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
+    setDrawerZIndex("1");
   }
-
+  
   function calculateTime(results) {
     let distance = 0;
     results.routes[0].legs.forEach((leg) => {
@@ -193,11 +212,11 @@ function App() {
     });
     return `${distance / 1000} km`;
   }
-
+  
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-
-
+    
+    
     pubData.forEach((pub) => {
       if (pub === undefined) {
         setHasError(true);
@@ -224,10 +243,10 @@ function App() {
         waypointsArray.push(obj);
       }
     });
-
+    
     return waypointsArray;
   }
-
+  
   function RouteAlert() {
     if (routeError) {
       return (
@@ -248,49 +267,50 @@ function App() {
       return;
     }
   }
-
+  
   function clearRoute() {
     setDirectionsResponse(null);
     setDistance("");
-
+    
     startRef.current.value = "";
     finishRef.current.value = "";
     console.log(directionsResponse);
     setHasError(false);
     setRouteError(false);
   }
-
+  
   function handlePubs(value) {
     setPubStops(value);
     console.log(value)
   }
-
+  
   function handleAttractions(value) {
     setAttractionStops(value);
   }
-
   
-
   const ShowLocations = () => {
     if (combinedStops.length > 0) {
       return(
         <Box
           height="300px"
-          // width="40px"
           position="absolute"
           top="70%"
-          // p={1}
           borderRadius="lg"
-          // m={4}
           minW="container.md"
-          zIndex="2"
+          zIndex={drawerZIndex}
         >
           <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
             {combinedStops.map((result) => (
               <LocationsCard key={result.place_id} {...result} />
-            ))}
+              ))}
+              <IconButton
+                  position="top"
+                  aria-label="center back"
+                  icon={<FaTimes />}
+                  colorScheme="green"
+                  onClick={()=> {setDrawerZIndex("-1")}}
+              />
           </HStack>
-          {/* <Example /> */}
         </Box>
       );
     }
@@ -305,47 +325,83 @@ function App() {
         borderRadius="lg"
         bgColor="#38A169"
         height="250px"
-
-        //m={10}
       >
         <VStack>
+          <HStack>
           <Center>
             <Text isTruncated as="b" fontSize="xs" justifyContent="center" color="white">
               {result.name}
             </Text>
           </Center>
-
-          <HStack>
-            {/*<Text>
-          Rating: {result.rating} 
-    </Text>*/}
-            {/*<Image src={star} alt='' width='20px' />*/}
+            <Button               
+              leftIcon={<FaEye />}
+              colorScheme="green"
+              type="submit"
+              onClick={() => {getDetails(result.place_id) ; setBoxZIndex("1")}}
+              >
+            </Button>
           </HStack>
-          {/*<Text>
-          Price: {result.price_level}/5 
-    </Text>*/}
-          {/*<Text as='i'>
-          Address: {result.vicinity} 
-  </Text>*/}
           <Image src={imageLink} alt="no image" boxSize="200px" maxW="200px" />
         </VStack>
       </Box>
     );
   };
 
-  
+  const LocationDetailsCard = () => {
+    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    return (
+      <Box
+      p={4}
+      borderRadius="lg"
+      mt={4}
+      bgColor="white"
+      shadow="base"
+      minW="container.sm"
+      zIndex={boxZIndex}>
+        <VStack>
+          <IconButton
+              aria-label="center back"
+              icon={<FaTimes />}
+              onClick={()=> {setBoxZIndex("-1")}}
+          />
+          <Text as='b'>
+            {locationCardData.name}
+          </Text>
+          <Box display='flex' mt='2' alignItems='center'>
+          {Array(5)
+            .fill('')
+            .map((_, i) => (
+              <StarIcon
+                key={i}
+                color={i < locationCardData.rating ? 'yellow.500' : 'gray.300'}
+              />
+            ))}
+            </Box>
+          <Link href={locationCardData.website} >
+           <LinkIcon/> 
+           {locationCardData.website} 
+          </Link>
+          <Text>
+            <PhoneIcon/>
+            {locationCardData.formatted_phone_number}
+          </Text>
+          <Text icon={<FaHome />}>
+          {locationCardData.vicinity}
+          </Text>
+          <Image src={imageLink} alt="no image" maxW="300px" />
+        </VStack>
+      </Box>
+    ) 
+  } 
 
-
-
-
-
-
-
-
-
-
-
-
+async function getDetails(place_id) {
+  const place = await Details(place_id);
+  console.log(place)
+  const locationData = place.result;
+  // console.log(locationData)
+  setLocationCardData(locationData) 
+  return locationData;
+}
 
 // styling
   return (
@@ -425,7 +481,6 @@ function App() {
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
-
           <Text> Number of attractions: </Text>
           <NumberInput
             defaultValue={1}
@@ -440,7 +495,6 @@ function App() {
             </NumberInputStepper>
           </NumberInput>
         </HStack>
-
         <HStack spacing={4} mt={4} justifyContent="space-between">
           <Text>Total distance (walking): {distance} </Text>
           <Text>Total time (walking): {time} </Text>
@@ -453,8 +507,8 @@ function App() {
         </HStack>
         <RouteAlert />
       </Box>
-      {/* <RoutePlanBox /> */}
       <ShowLocations />
+      <LocationDetailsCard/>
     </Flex>
   );
 }
