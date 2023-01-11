@@ -333,19 +333,17 @@ function App() {
     );
   };
 
-  
+  function handleCar() {
+    setTravelMethod("DRIVING")
+  }
 
+  function handleBicycling() {
+    setTravelMethod("BICYCLING")
+  }
 
-
-
-
-
-
-
-
-
-
-
+  function handleWalking() {
+    setTravelMethod("WALKING")
+  }
 
 // styling
   return (
@@ -401,6 +399,28 @@ function App() {
             <Input type="text" placeholder="Finish" ref={finishRef} />
           </Autocomplete>
           <ButtonGroup>
+          <IconButton
+            aria-label="car"
+            icon={<FaCar color={travelMethod === "DRIVING" ? "white" : "black"} /> }
+            isRound
+            onClick={handleCar}
+            style={{ backgroundColor: travelMethod === "DRIVING" ? "#38A169" : "#EDF2F7",
+            icon: travelMethod === "DRIVING" ? "white" : "black"}}        
+          />
+          <IconButton
+            aria-label="bike"
+            icon={<FaBicycle color={travelMethod === "BICYCLING" ? "white" : "black"} />}
+            isRound
+            onClick={handleBicycling}
+            style={{ backgroundColor: travelMethod === "BICYCLING" ? "#38A169" : "#EDF2F7" }}
+          />
+          <IconButton
+            aria-label="walk"
+            icon={<FaWalking color={travelMethod === "WALKING" ? "white" : "black"} />}
+            isRound
+            onClick={handleWalking}
+            style={{ backgroundColor: travelMethod === "WALKING" ? "#38A169" : "#EDF2F7" }}
+          />
             <Button
               leftIcon={<FaBeer />}
               colorScheme="green"
@@ -442,8 +462,8 @@ function App() {
         </HStack>
 
         <HStack spacing={4} mt={4} justifyContent="space-between">
-          <Text>Total distance (walking): {distance} </Text>
-          <Text>Total time (walking): {time} </Text>
+          <Text>Total distance ({travelMethod.toLowerCase()}): {distance} </Text>
+          <Text>Total time ({travelMethod.toLowerCase()}): {time} </Text>
           <IconButton
             aria-label="center back"
             icon={<FaLocationArrow />}
