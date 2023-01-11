@@ -27,7 +27,13 @@ import {
   AlertDescription,
 } from "@chakra-ui/react";
 
-import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
+import {
+  FaEyeSlash,
+  FaEye,
+  FaLocationArrow,
+  FaTimes,
+  FaBeer,
+} from "react-icons/fa"; // icons
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
 import {
@@ -59,6 +65,7 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
+  const [showBox, setShowBox] = useState(true);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -124,7 +131,7 @@ function App() {
     const AttragetAllAttractionsInfo = await Promise.all(promises);
     return AttragetAllAttractionsInfo;
   }
-  
+
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -140,8 +147,9 @@ function App() {
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
-    const filteredCombinationArray = combinationArray.filter(location => location !== undefined);
-    
+    const filteredCombinationArray = combinationArray.filter(
+      (location) => location !== undefined
+    );
 
     console.log(combinationArray);
     console.log(filteredCombinationArray);
@@ -188,7 +196,6 @@ function App() {
 
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-
 
     pubData.forEach((pub) => {
       if (pub === undefined) {
@@ -260,70 +267,201 @@ function App() {
     setAttractionStops(value);
   }
 
-  
-
   const ShowLocations = () => {
     if (combinedStops.length > 0) {
-      return(
+      return (
         <Box
-        height="300px"
-        // width="40px"
-        position="absolute"
-        top="60%"
-        p={1}
-        borderRadius="lg"
-        // m={4}
-        shadow="base"
-        minW="container.md"
-        zIndex="2"
+          height="300px"
+          // width="40px"
+          position="absolute"
+          top="60%"
+          p={1}
+          borderRadius="lg"
+          // m={4}
+          shadow="base"
+          minW="container.md"
+          zIndex="2"
         >
-        <HStack spacing={4} mt={4} justifyContent="left" z-index="1">
-          {combinedStops.map((result) => (
-            <LocationsCard key={result.place_id} {...result} />
-          ))}
-        </HStack>
-        {/* <Example /> */}
-      </Box>
-    ) 
-    } 
-  }
+          <HStack spacing={4} mt={4} justifyContent="left" z-index="1">
+            {combinedStops.map((result) => (
+              <LocationsCard key={result.place_id} {...result} />
+            ))}
+          </HStack>
+          {/* <Example /> */}
+        </Box>
+      );
+    }
+  };
 
   const LocationsCard = (result) => {
-
-    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=AIzaSyAClY9_kADthBPqnHO_HxNhW5wIN_B0c8c`
+    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
     return (
-      <Box      
-      justifyContent="left" 
-      shadow="base"         
-      borderRadius="lg"
-      bgColor="white"
-      height="300px"
-      m={10}
+      <Box
+        justifyContent="left"
+        shadow="base"
+        borderRadius="lg"
+        bgColor="white"
+        height="300px"
+        m={10}
       >
-      <VStack>
-        <Center>
-          <Text as='b'>
-          {result.name}
-          </Text>
-        </Center>
+        <VStack>
+          <Center>
+            <Text as="b">{result.name}</Text>
+          </Center>
 
-        <HStack>
-          <Text>
-          Rating: {result.rating} 
-          </Text>
-          <Image src={star} alt='' width='20px' />
-        </HStack>
-        <Text>
-          Price: {result.price_level}/5 
-        </Text>
-        <Text as='i'>
-          Address: {result.vicinity} 
-        </Text>
-        <Image src={imageLink} alt="no image" height='300px' maxW='350px' maxH='150px'/>
-      </VStack>
+          <HStack>
+            <Text>Rating: {result.rating}</Text>
+            <Image src={star} alt="" width="20px" />
+          </HStack>
+          <Text>Price: {result.price_level}/5</Text>
+          <Text as="i">Address: {result.vicinity}</Text>
+          <Image
+            src={imageLink}
+            alt="no image"
+            height="300px"
+            maxW="350px"
+            maxH="150px"
+          />
+        </VStack>
       </Box>
-    ) 
-  }
+    );
+  };
+
+  const RoutePlanBox = () => {
+    if (showBox) {
+      return (
+        <Box
+          p={4}
+          borderRadius="lg"
+          mt={4}
+          bgColor="white"
+          shadow="base"
+          minW="container.md"
+          zIndex="1"
+        >
+          <HStack spacing={2} justifyContent="space-between">
+            <HStack> </HStack>
+            <HStack spacing={2} justifyContent="center">
+              <Heading align="center">Tipsy Tourist</Heading>
+            </HStack>
+            <IconButton
+              icon={<FaEye />}
+              isRound
+              onClick={() => {
+                setShowBox(false);
+              }}
+            />
+          </HStack>
+          <HStack spacing={2} justifyContent="space-between">
+            <Image
+              boxSize="60px"
+              objectFit="cover"
+              src={tipsyTouristLogo3}
+              alt="logo"
+            />
+            <Autocomplete>
+              <Input type="text" placeholder="Start" ref={startRef} />
+            </Autocomplete>
+            <Autocomplete>
+              <Input type="text" placeholder="Finish" ref={finishRef} />
+            </Autocomplete>
+            <ButtonGroup>
+              <Button
+                leftIcon={<FaBeer />}
+                colorScheme="green"
+                type="submit"
+                onClick={calculateRoute}
+              >
+                Plan my Tipsy Tour!
+              </Button>{" "}
+              <IconButton
+                aria-label="center back"
+                icon={<FaTimes />}
+                onClick={clearRoute}
+              />
+            </ButtonGroup>
+          </HStack>
+          <HStack spacing={4} mt={4} justifyContent="left">
+            <Text> Number of pubs: </Text>
+            <NumberInput
+              size="md"
+              maxW={24}
+              defaultValue={3}
+              min={1}
+              max={7}
+              onChange={handlePubs}
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+
+            <Text> Number of attractions: </Text>
+            <NumberInput
+              size="md"
+              maxW={24}
+              defaultValue={1}
+              min={1}
+              max={3}
+              onChange={handleAttractions}
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </HStack>
+
+          <HStack spacing={4} mt={4} justifyContent="space-between">
+            <Text>Total distance (walking): {distance} </Text>
+            <Text>Total time (walking): {time} </Text>
+
+            <HStack spacing={4} mt={4} justifyContent="right">
+              <IconButton
+                aria-label="center back"
+                icon={<FaLocationArrow />}
+                isRound
+                onClick={() => map.panTo(center)}
+              />
+            </HStack>
+          </HStack>
+          <RouteAlert />
+        </Box>
+      );
+    } else {
+      return (
+        <Box
+          p={4}
+          borderRadius="lg"
+          mt={4}
+          bgColor="white"
+          shadow="base"
+          minW="container.md"
+          zIndex="1"
+        >
+          <HStack spacing={2} justifyContent="space-between">
+            <Image
+              boxSize="60px"
+              objectFit="cover"
+              src={tipsyTouristLogo3}
+              alt="logo"
+            />
+            <Heading align="center">Tipsy Tourist</Heading>
+            <IconButton
+              icon={<FaEyeSlash />}
+              isRound
+              onClick={() => {
+                setShowBox(true);
+              }}
+            />
+          </HStack>
+        </Box>
+      );
+    }
+  };
 
   // styling
   return (
@@ -355,84 +493,8 @@ function App() {
           )}
         </GoogleMap>
       </Box>
-
-      <Box
-        p={4}
-        borderRadius="lg"
-        mt={4}
-        bgColor="white"
-        shadow="base"
-        minW="container.md"
-        zIndex="1"
-      >
-        <Heading align="center">Tipsy Tourist</Heading>
-        <HStack spacing={2} justifyContent="space-between">
-          <Image
-            boxSize="60px"
-            objectFit="cover"
-            src={tipsyTouristLogo3}
-            alt="logo"
-          />
-          <Autocomplete>
-            <Input type="text" placeholder="Start" ref={startRef} />
-          </Autocomplete>
-          <Autocomplete>
-            <Input type="text" placeholder="Finish" ref={finishRef} />
-          </Autocomplete>
-          <ButtonGroup>
-            <Button
-              leftIcon={<FaBeer />}
-              colorScheme="green"
-              type="submit"
-              onClick={calculateRoute}
-            >
-              Plan my Tipsy Tour!
-            </Button>{" "}
-            <IconButton
-              aria-label="center back"
-              icon={<FaTimes />}
-              onClick={clearRoute}
-            />
-          </ButtonGroup>
-        </HStack>
-        <HStack spacing={4} mt={4} justifyContent="left">
-          <Text> Number of pubs: </Text>
-          <NumberInput defaultValue={3} min={1} max={7} onChange={handlePubs}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-
-          <Text> Number of attractions: </Text>
-          <NumberInput
-            defaultValue={1}
-            min={1}
-            max={3}
-            onChange={handleAttractions}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </HStack>
-
-        <HStack spacing={4} mt={4} justifyContent="space-between">
-          <Text>Total distance (walking): {distance} </Text>
-          <Text>Total time (walking): {time} </Text>
-          <IconButton
-            aria-label="center back"
-            icon={<FaLocationArrow />}
-            isRound
-            onClick={() => map.panTo(center)}
-          />
-        </HStack>
-        <RouteAlert />
-      </Box>
-      <ShowLocations/>
+      <RoutePlanBox />
+      <ShowLocations />
     </Flex>
   );
 }
