@@ -308,17 +308,17 @@ function App() {
         </Center>
 
         <HStack>
-          <Text>
+          {/*<Text>
           Rating: {result.rating} 
-          </Text>
-          <Image src={star} alt='' width='20px' />
+    </Text>*/}
+          {/*<Image src={star} alt='' width='20px' />*/}
         </HStack>
-        <Text>
+       { /*<Text>
           Price: {result.price_level}/5 
-        </Text>
-        <Text as='i'>
+    </Text>*/}
+        {/*<Text as='i'>
           Address: {result.vicinity} 
-        </Text>
+  </Text>*/}
         <Image src={imageLink} alt="no image" height='300px' maxW='350px' maxH='150px'/>
       </VStack>
       </Box>
