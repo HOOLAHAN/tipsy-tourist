@@ -423,7 +423,7 @@ function App() {
           />
             <Button
               leftIcon={<FaBeer />}
-              colorScheme="green"
+              colorScheme= {travelMethod === "DRIVING" ? "red" : "green"}
               type="submit"
               onClick={calculateRoute}
             >
