@@ -438,7 +438,7 @@ function App() {
         </HStack>
         <HStack spacing={4} mt={4} justifyContent="left">
           <Text> Number of pubs: </Text>
-          <NumberInput defaultValue={3} min={1} max={7} onChange={handlePubs}>
+          <NumberInput defaultValue={travelMethod === "DRIVING" ? 1 : 3} min={1} max={travelMethod === "DRIVING" ? 1 : 7} onChange={handlePubs}>
             <NumberInputField />
             <NumberInputStepper>
               <NumberIncrementStepper />
