@@ -1,5 +1,6 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
+import Details from "./Details"
 import star from "./images/star.png";
 
 import {
@@ -23,11 +24,11 @@ import {
   Heading,
   Alert,
   AlertIcon,
-  AlertTitle,
-  AlertDescription,
+  // AlertTitle,
+  // AlertDescription,
 } from "@chakra-ui/react";
 
-import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
+import { FaLocationArrow, FaTimes, FaBeer, FaEye } from "react-icons/fa"; // icons
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
 import {
@@ -40,6 +41,7 @@ import { useState, useRef, React } from "react";
 import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
+const apiKey = require("./apiKey")
 
 // define libraries outside of functional component to prevent useEffect() from triggering each rerender
 const libraries = ["places"];
@@ -59,6 +61,8 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
+  const [locationCardData, setLocationCardData] = useState({name: "has not updated yet"});
+
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -117,6 +121,7 @@ function App() {
     return attractionData;
   }
 
+  
   async function getAllAttractions(plotPoints) {
     const promises = plotPoints.map((point) => {
       return getAttraction(point);
@@ -136,17 +141,17 @@ function App() {
 
     const pubPlotPoints = findPlotPoints(start, end, pubStops);
     const attractionPlotPoints = findPlotPoints(start, end, attractionStops);
-
+    
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
     const filteredCombinationArray = combinationArray.filter(location => location !== undefined);
     
-
+    
     console.log(combinationArray);
     console.log(filteredCombinationArray);
     setCombinedStops(filteredCombinationArray);
-
+    
     const waypoints = calculateWaypoints(pubData, attractionData);
     // DIRECTIONS SERVICE DEFINED NOW AT LINE 70
     let results = null;
@@ -163,14 +168,14 @@ function App() {
       console.log(error);
       setRouteError(true);
     }
-
+    
     setDirectionsResponse(results);
     console.log("Results");
     console.log(results.routes[0].legs);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
   }
-
+  
   function calculateTime(results) {
     let distance = 0;
     results.routes[0].legs.forEach((leg) => {
@@ -185,11 +190,11 @@ function App() {
     });
     return `${distance / 1000} km`;
   }
-
+  
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-
-
+    
+    
     pubData.forEach((pub) => {
       if (pub === undefined) {
         setHasError(true);
@@ -216,10 +221,10 @@ function App() {
         waypointsArray.push(obj);
       }
     });
-
+    
     return waypointsArray;
   }
-
+  
   function RouteAlert() {
     if (routeError) {
       return (
@@ -240,28 +245,26 @@ function App() {
       return;
     }
   }
-
+  
   function clearRoute() {
     setDirectionsResponse(null);
     setDistance("");
-
+    
     startRef.current.value = "";
     finishRef.current.value = "";
     console.log(directionsResponse);
     setHasError(false);
     setRouteError(false);
   }
-
+  
   function handlePubs(value) {
     setPubStops(value);
   }
-
+  
   function handleAttractions(value) {
     setAttractionStops(value);
   }
-
   
-
   const ShowLocations = () => {
     if (combinedStops.length > 0) {
       return(
@@ -280,17 +283,15 @@ function App() {
         <HStack spacing={4} mt={4} justifyContent="left" z-index="1">
           {combinedStops.map((result) => (
             <LocationsCard key={result.place_id} {...result} />
-          ))}
+            ))}
         </HStack>
-        {/* <Example /> */}
       </Box>
     ) 
-    } 
+  } 
   }
 
   const LocationsCard = (result) => {
-
-    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=AIzaSyAClY9_kADthBPqnHO_HxNhW5wIN_B0c8c`
+    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${apiKey}`
     return (
       <Box      
       justifyContent="left" 
@@ -306,7 +307,12 @@ function App() {
           {result.name}
           </Text>
         </Center>
-
+      <Button               
+        leftIcon={<FaEye />}
+        colorScheme="green"
+        type="submit"
+        onClick={() => getDetails(result.place_id)}>
+      </Button>
         <HStack>
           <Text>
           Rating: {result.rating} 
@@ -324,6 +330,41 @@ function App() {
       </Box>
     ) 
   }
+  
+  const LocationDetailsCard = () => {
+      return (
+        <Box
+        p={4}
+        borderRadius="lg"
+        mt={4}
+        bgColor="white"
+        shadow="base"
+        minW="container.sm"
+        zIndex="1">
+          <VStack>
+            <Text as='b'>
+              {locationCardData.name}
+            </Text>
+            <Text>
+              {locationCardData.website}
+            </Text>
+            <Text>
+              {locationCardData.formatted_phone_number}
+            </Text>
+          </VStack>
+        </Box>
+      ) 
+    } 
+  
+  async function getDetails(place_id) {
+    const place = await Details(place_id);
+    console.log(place)
+    const locationData = place.result;
+    // console.log(locationData)
+    setLocationCardData(locationData) 
+    return locationData;
+  }
+  
 
   // styling
   return (
@@ -432,7 +473,8 @@ function App() {
         </HStack>
         <RouteAlert />
       </Box>
-      <ShowLocations/>
+      <ShowLocations />
+      <LocationDetailsCard />
     </Flex>
   );
 }
