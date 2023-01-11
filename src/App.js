@@ -23,11 +23,9 @@ import {
   Heading,
   Alert,
   AlertIcon,
-  AlertTitle,
-  AlertDescription,
 } from "@chakra-ui/react";
 
-import { FaLocationArrow, FaTimes, FaBeer } from "react-icons/fa"; // icons
+import { FaLocationArrow, FaTimes, FaBeer, FaBus, FaCar, FaWalking, FaBicycle } from "react-icons/fa"; // icons
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
 import {
@@ -59,6 +57,7 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
+  const [travelMethod, setTravelMethod] = useState("WALKING")
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -124,7 +123,7 @@ function App() {
     const AttragetAllAttractionsInfo = await Promise.all(promises);
     return AttragetAllAttractionsInfo;
   }
-  
+
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -140,8 +139,9 @@ function App() {
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
-    const filteredCombinationArray = combinationArray.filter(location => location !== undefined);
-    
+    const filteredCombinationArray = combinationArray.filter(
+      (location) => location !== undefined
+    );
 
     console.log(combinationArray);
     console.log(filteredCombinationArray);
@@ -157,7 +157,7 @@ function App() {
         waypoints: waypoints,
         optimizeWaypoints: true,
         // eslint-disable-next-line no-undef
-        travelMode: google.maps.TravelMode.WALKING,
+        travelMode: google.maps.TravelMode[travelMethod],
       });
     } catch (error) {
       console.log(error);
@@ -166,7 +166,8 @@ function App() {
 
     setDirectionsResponse(results);
     console.log("Results");
-    console.log(results.routes[0].legs);
+    // console.log(results.routes[0].legs);
+    console.log(results);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
   }
@@ -188,7 +189,6 @@ function App() {
 
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-
 
     pubData.forEach((pub) => {
       if (pub === undefined) {
@@ -260,70 +260,67 @@ function App() {
     setAttractionStops(value);
   }
 
-  
-
   const ShowLocations = () => {
     if (combinedStops.length > 0) {
-      return(
+      return (
         <Box
-        height="300px"
-        // width="40px"
-        position="absolute"
-        top="60%"
-        p={1}
-        borderRadius="lg"
-        // m={4}
-        shadow="base"
-        minW="container.md"
-        zIndex="2"
+          height="300px"
+          // width="40px"
+          position="absolute"
+          top="70%"
+          // p={1}
+          borderRadius="lg"
+          // m={4}
+          minW="container.md"
+          zIndex="2"
         >
-        <HStack spacing={4} mt={4} justifyContent="left" z-index="1">
-          {combinedStops.map((result) => (
-            <LocationsCard key={result.place_id} {...result} />
-          ))}
-        </HStack>
-        {/* <Example /> */}
-      </Box>
-    ) 
-    } 
-  }
+          <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
+            {combinedStops.map((result) => (
+              <LocationsCard key={result.place_id} {...result} />
+            ))}
+          </HStack>
+          {/* <Example /> */}
+        </Box>
+      );
+    }
+  };
 
   const LocationsCard = (result) => {
-
-    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=AIzaSyAClY9_kADthBPqnHO_HxNhW5wIN_B0c8c`
+    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
     return (
-      <Box      
-      justifyContent="left" 
-      shadow="base"         
-      borderRadius="lg"
-      bgColor="white"
-      height="300px"
-      m={10}
-      >
-      <VStack>
-        <Center>
-          <Text as='b'>
-          {result.name}
-          </Text>
-        </Center>
+      <Box
+        justifyContent="left"
+        shadow="base"
+        borderRadius="lg"
+        bgColor="#38A169"
+        height="250px"
 
-        <HStack>
-          <Text>
+        //m={10}
+      >
+        <VStack>
+          <Center>
+            <Text isTruncated as="b" fontSize="xs" justifyContent="center" color="white">
+              {result.name}
+            </Text>
+          </Center>
+
+          <HStack>
+            {/*<Text>
           Rating: {result.rating} 
-          </Text>
-          <Image src={star} alt='' width='20px' />
-        </HStack>
-        <Text>
+    </Text>*/}
+            {/*<Image src={star} alt='' width='20px' />*/}
+          </HStack>
+          {/*<Text>
           Price: {result.price_level}/5 
-        </Text>
-        <Text as='i'>
+    </Text>*/}
+          {/*<Text as='i'>
           Address: {result.vicinity} 
-        </Text>
-        <Image src={imageLink} alt="no image" height='300px' maxW='350px' maxH='150px'/>
-      </VStack>
+  </Text>*/}
+          <Image src={imageLink} alt="no image" boxSize="200px" maxW="200px" />
+        </VStack>
       </Box>
-    ) 
-  }
+    );
+  };
 
   // styling
   return (
@@ -380,19 +377,32 @@ function App() {
             <Input type="text" placeholder="Finish" ref={finishRef} />
           </Autocomplete>
           <ButtonGroup>
-            <Button
+            <IconButton
+            aria-label="walk"
+            icon={<FaWalking />}
+            isRound
+            onClick={() => map.panTo(center)}
+          />
+            <IconButton
+            aria-label="drive"
+            icon={<FaCar />}
+            isRound
+            onClick={() => map.panTo(center)}
+          />
+            <IconButton
+            aria-label="cycle"
+            icon={<FaBicycle />}
+            isRound
+            onClick={() => map.panTo(center)}
+          />
+          <Button
               leftIcon={<FaBeer />}
               colorScheme="green"
               type="submit"
               onClick={calculateRoute}
             >
               Plan my Tipsy Tour!
-            </Button>{" "}
-            <IconButton
-              aria-label="center back"
-              icon={<FaTimes />}
-              onClick={clearRoute}
-            />
+          </Button>{" "}
           </ButtonGroup>
         </HStack>
         <HStack spacing={4} mt={4} justifyContent="left">
@@ -432,7 +442,7 @@ function App() {
         </HStack>
         <RouteAlert />
       </Box>
-      <ShowLocations/>
+      <ShowLocations />
     </Flex>
   );
 }
