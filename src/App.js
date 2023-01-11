@@ -75,7 +75,7 @@ function App() {
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
   const [showBox, setShowBox] = useState(true);
-  // const [travelMethod, setTravelMethod] = useState("WALKING")
+  const [travelMethod, setTravelMethod] = useState("WALKING")
   const [locationCardData, setLocationCardData] = useState({
     name: "placeholder name",
     rating: "placeholder rating",
@@ -284,6 +284,7 @@ function App() {
   
   function handlePubs(value) {
     setPubStops(value);
+    console.log(value)
   }
   
   function handleAttractions(value) {
@@ -396,143 +397,21 @@ async function getDetails(place_id) {
   return locationData;
 }
 
-  const RoutePlanBox = () => {
-    if (showBox) {
-      return (
-        <Box
-          p={4}
-          borderRadius="lg"
-          mt={4}
-          bgColor="white"
-          shadow="base"
-          minW="container.md"
-          zIndex="1"
-        >
-          <HStack spacing={2} justifyContent="space-between">
-            <HStack> </HStack>
-            <HStack spacing={2} justifyContent="center">
-              <Heading align="center">Tipsy Tourist</Heading>
-            </HStack>
-            <IconButton
-              icon={<FaEye />}
-              isRound
-              onClick={() => {
-                setShowBox(false);
-              }}
-            />
-          </HStack>
-          <HStack spacing={2} justifyContent="space-between">
-            <Image
-              boxSize="60px"
-              objectFit="cover"
-              src={tipsyTouristLogo3}
-              alt="logo"
-            />
-            <Autocomplete>
-              <Input type="text" placeholder="Start" ref={startRef} />
-            </Autocomplete>
-            <Autocomplete>
-              <Input type="text" placeholder="Finish" ref={finishRef} />
-            </Autocomplete>
-            <ButtonGroup>
-              <Button
-                leftIcon={<FaBeer />}
-                colorScheme="green"
-                type="submit"
-                onClick={calculateRoute}
-              >
-                Plan my Tipsy Tour!
-              </Button>{" "}
-              <IconButton
-                aria-label="center back"
-                icon={<FaTimes />}
-                onClick={clearRoute}
-              />
-            </ButtonGroup>
-          </HStack>
-          <HStack spacing={4} mt={4} justifyContent="left">
-            <Text> Number of pubs: </Text>
-            <NumberInput
-              size="md"
-              maxW={24}
-              defaultValue={3}
-              min={1}
-              max={7}
-              onChange={handlePubs}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+  
 
-            <Text> Number of attractions: </Text>
-            <NumberInput
-              size="md"
-              maxW={24}
-              defaultValue={1}
-              min={1}
-              max={3}
-              onChange={handleAttractions}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-          </HStack>
 
-          <HStack spacing={4} mt={4} justifyContent="space-between">
-            <Text>Total distance (walking): {distance} </Text>
-            <Text>Total time (walking): {time} </Text>
 
-            <HStack spacing={4} mt={4} justifyContent="right">
-              <IconButton
-                aria-label="center back"
-                icon={<FaLocationArrow />}
-                isRound
-                onClick={() => map.panTo(center)}
-              />
-            </HStack>
-          </HStack>
-          <RouteAlert />
-        </Box>
-      );
-    } else {
-      return (
-        <Box
-          p={4}
-          borderRadius="lg"
-          mt={4}
-          bgColor="white"
-          shadow="base"
-          minW="container.md"
-          zIndex="1"
-        >
-          <HStack spacing={2} justifyContent="space-between">
-            <Image
-              boxSize="60px"
-              objectFit="cover"
-              src={tipsyTouristLogo3}
-              alt="logo"
-            />
-            <Heading align="center">Tipsy Tourist</Heading>
-            <IconButton
-              icon={<FaEyeSlash />}
-              isRound
-              onClick={() => {
-                setShowBox(true);
-              }}
-            />
-          </HStack>
-        </Box>
-      );
-    }
-  };
 
-  // styling
+
+
+
+
+
+
+
+
+
+// styling
   return (
     <Flex
       // background styling
@@ -562,7 +441,83 @@ async function getDetails(place_id) {
           )}
         </GoogleMap>
       </Box>
-      <RoutePlanBox />
+      <Box
+        p={4}
+        borderRadius="lg"
+        mt={4}
+        bgColor="white"
+        shadow="base"
+        minW="container.md"
+        zIndex="1"
+      >
+        <Heading align="center">Tipsy Tourist</Heading>
+        <HStack spacing={2} justifyContent="space-between">
+          <Image
+            boxSize="60px"
+            objectFit="cover"
+            src={tipsyTouristLogo3}
+            alt="logo"
+          />
+          <Autocomplete>
+            <Input type="text" placeholder="Start" ref={startRef} />
+          </Autocomplete>
+          <Autocomplete>
+            <Input type="text" placeholder="Finish" ref={finishRef} />
+          </Autocomplete>
+          <ButtonGroup>
+            <Button
+              leftIcon={<FaBeer />}
+              colorScheme="green"
+              type="submit"
+              onClick={calculateRoute}
+            >
+              Plan my Tipsy Tour!
+            </Button>{" "}
+            <IconButton
+              aria-label="center back"
+              icon={<FaTimes />}
+              onClick={clearRoute}
+            />
+          </ButtonGroup>
+        </HStack>
+        <HStack spacing={4} mt={4} justifyContent="left">
+          <Text> Number of pubs: </Text>
+          <NumberInput defaultValue={3} min={1} max={7} onChange={handlePubs}>
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+
+          <Text> Number of attractions: </Text>
+          <NumberInput
+            defaultValue={1}
+            min={1}
+            max={3}
+            onChange={handleAttractions}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </HStack>
+
+        <HStack spacing={4} mt={4} justifyContent="space-between">
+          <Text>Total distance (walking): {distance} </Text>
+          <Text>Total time (walking): {time} </Text>
+          <IconButton
+            aria-label="center back"
+            icon={<FaLocationArrow />}
+            isRound
+            onClick={() => map.panTo(center)}
+          />
+        </HStack>
+        <RouteAlert />
+      </Box>
+      {/* <RoutePlanBox /> */}
       <ShowLocations />
       <LocationDetailsCard/>
     </Flex>
