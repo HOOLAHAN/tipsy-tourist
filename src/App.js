@@ -39,6 +39,7 @@ import {
   FaCar,
   FaWalking,
   FaBicycle,
+  FaTimesCircle,
 } from "react-icons/fa"; // icons
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import tipsyTouristLogo3 from "./images/logo3.svg";
@@ -294,21 +295,21 @@ function App() {
           minW="container.md"
           zIndex={drawerZIndex}
         >
-          <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
-            {combinedStops.map((result) => (
-              <LocationsCard key={result.place_id} {...result} />
-            ))}
+          <HStack justify="right">
             <IconButton
-              position="top"
               aria-label="center back"
               icon={<FaTimes />}
-              border="2px"
-              borderColor="green"
+              colorScheme="red"
               isRound
               onClick={() => {
                 setDrawerZIndex("-1");
               }}
             />
+          </HStack>
+          <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
+            {combinedStops.map((result) => (
+              <LocationsCard key={result.place_id} {...result} />
+            ))}
           </HStack>
         </Box>
       );
@@ -386,15 +387,18 @@ function App() {
         minW="container.sm"
         zIndex={boxZIndex}
       >
-        <VStack>
+        <HStack justifyContent="right">
           <IconButton
             aria-label="center back"
-            isRound
             icon={<FaTimes />}
+            colorScheme="red"
+            isRound
             onClick={() => {
               setBoxZIndex("-1");
             }}
           />
+        </HStack>
+        <VStack>
           <Text as="b">{locationCardData.name}</Text>
           <Box display="flex" mt="2" alignItems="center">
             {Array(5)
