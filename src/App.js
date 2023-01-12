@@ -13,7 +13,7 @@ import {
   Input,
   SkeletonText,
   Text,
-  Center,
+  // Center,
   Image,
   NumberInput,
   NumberInputField,
@@ -30,16 +30,16 @@ import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
 
 import {
   // FaEyeSlash,
-  FaEye,
+  // FaEye,
   FaLocationArrow,
   FaTimes,
   FaBeer,
   FaHome,
-  FaBus,
   FaCar,
   FaWalking,
   FaBicycle,
 } from "react-icons/fa"; // icons
+import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import { MdOutlineLocalDrink } from "react-icons/md";
 
 import tipsyTouristLogo3 from "./images/logo3.svg";
@@ -143,6 +143,9 @@ function App() {
     const AttragetAllAttractionsInfo = await Promise.all(promises);
     return AttragetAllAttractionsInfo;
   }
+  function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
 
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
@@ -160,9 +163,11 @@ function App() {
     const pubData = await getAllPubs(pubPlotPoints);
     const attractionData = await getAllAttractions(attractionPlotPoints);
     const combinationArray = pubData.concat(attractionData);
-    const filteredCombinationArray = combinationArray.filter(
+    const combinationArray2 = combinationArray.filter(
       (location) => location !== undefined
     );
+
+    const filteredCombinationArray = combinationArray2.filter(onlyUnique);
 
     console.log(combinationArray);
     console.log(filteredCombinationArray);
@@ -183,12 +188,13 @@ function App() {
     } catch (error) {
       console.log(error);
       setRouteError(true);
+      setDrawerZIndex("-1");
     }
 
     setDirectionsResponse(results);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
-    setDrawerZIndex("1");
+    setDrawerZIndex("2");
   }
 
   function calculateTime(results) {
@@ -296,19 +302,21 @@ function App() {
           minW="container.md"
           zIndex={drawerZIndex}
         >
-          <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
-            {combinedStops.map((result) => (
-              <LocationsCard key={result.place_id} {...result} />
-            ))}
+          <HStack justify="right">
             <IconButton
-              position="top"
               aria-label="center back"
               icon={<FaTimes />}
-              colorScheme="green"
+              colorScheme="red"
+              isRound
               onClick={() => {
                 setDrawerZIndex("-1");
               }}
             />
+          </HStack>
+          <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
+            {combinedStops.map((result) => (
+              <LocationsCard key={result.place_id} {...result} />
+            ))}
           </HStack>
         </Box>
       );
@@ -328,33 +336,42 @@ function App() {
         justifyContent="left"
         shadow="base"
         borderRadius="lg"
-        bgColor="#38A169"
+        bgColor="white"
         height="250px"
       >
         <VStack>
-          <HStack>
-            <Center>
-              <Text
-                isTruncated
-                as="b"
-                fontSize="xs"
-                justifyContent="center"
-                color="white"
-              >
-                {result.name}
-              </Text>
-            </Center>
-            <Button
-              leftIcon={<FaEye />}
-              colorScheme="green"
+          <HStack justifyContent="space-between">
+            {/* <Center> */}
+            <Text
+              noOfLines={[1, 2]}
+              // isTruncated
+              color="#393f49"
+              as="b"
+              fontSize="m"
+              justifyContent="center"
+            >
+              {result.name}
+            </Text>
+            {/* </Center> */}
+            <IconButton
+              leftIcon={<BsFillArrowUpRightCircleFill />}
+              isRound
+              color="green"
+              bgColor="white"
               type="submit"
               onClick={() => {
                 getDetails(result.place_id);
                 setBoxZIndex("1");
               }}
-            ></Button>
+            ></IconButton>
           </HStack>
-          <Image src={imageLink} alt="no image" boxSize="200px" maxW="200px" />
+          <Image
+            src={imageLink}
+            borderRadius="lg"
+            alt="no image"
+            boxSize="200px"
+            maxW="200px"
+          />
         </VStack>
       </Box>
     );
@@ -377,14 +394,18 @@ function App() {
         minW="container.sm"
         zIndex={boxZIndex}
       >
-        <VStack>
+        <HStack justifyContent="right">
           <IconButton
             aria-label="center back"
             icon={<FaTimes />}
+            colorScheme="red"
+            isRound
             onClick={() => {
               setBoxZIndex("-1");
             }}
           />
+        </HStack>
+        <VStack>
           <Text as="b">{locationCardData.name}</Text>
           <Box display="flex" mt="2" alignItems="center">
             {Array(5)
@@ -479,7 +500,9 @@ function App() {
         minW="container.md"
         zIndex="1"
       >
-        <Heading align="center">Tipsy Tourist</Heading>
+        <Heading color="#393f49" align="center">
+          Tipsy Tourist
+        </Heading>
         <HStack spacing={2} justifyContent="space-between">
           <Image
             boxSize="60px"
