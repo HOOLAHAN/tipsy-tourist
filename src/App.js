@@ -75,16 +75,7 @@ function App() {
   const [boxZIndex, setBoxZIndex ] = useState("-1")
   const [drawerZIndex, setDrawerZIndex ] = useState("-1")
   const [travelMethod, setTravelMethod] = useState("WALKING")
-  const [locationCardData, setLocationCardData] = useState({
-    name: "placeholder name",
-    rating: "placeholder rating",
-    website: "placeholder website",
-    formatted_phone_number: "placeholder phone number",
-    vicinity: "placeholder address",
-    photos: ["placeholder URL"]
-});
-
-
+  const [locationCardData, setLocationCardData] = useState({});
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -317,7 +308,13 @@ function App() {
   };
 
   const LocationsCard = (result) => {
-    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    let imageLink = ""
+    if (result.photos === undefined) {
+      imageLink = tipsyTouristLogo3
+    } else {
+      imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    } 
+
     return (
       <Box
         justifyContent="left"
@@ -348,7 +345,12 @@ function App() {
   };
 
   const LocationDetailsCard = () => {
-    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    let imageLink = ""
+    if (locationCardData.photos === undefined) {
+      imageLink = tipsyTouristLogo3
+    } else {
+    imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    }
     return (
       <Box
       p={4}
@@ -373,7 +375,7 @@ function App() {
             .map((_, i) => (
               <StarIcon
                 key={i}
-                color={i < locationCardData.rating ? 'yellow.500' : 'gray.300'}
+                color={i < Math.round(locationCardData.rating) ? 'yellow.500' : 'gray.300'}
               />
             ))}
             </Box>
