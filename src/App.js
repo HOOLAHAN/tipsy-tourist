@@ -1,6 +1,6 @@
 import Locations from "./Locations";
 import Attractions from "./Attractions";
-import star from "./images/star.png";
+import Details from "./Details";
 
 import {
   Box,
@@ -23,14 +23,19 @@ import {
   Heading,
   Alert,
   AlertIcon,
+  Link,
 } from "@chakra-ui/react";
 
+import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
+
 import {
-  FaEyeSlash,
+  // FaEyeSlash,
   FaEye,
   FaLocationArrow,
   FaTimes,
-  FaBeer, FaBus, FaCar, FaWalking, FaBicycle,
+  FaBeer,
+  FaHome,
+  // FaBus, FaCar, FaWalking, FaBicycle,
 } from "react-icons/fa"; // icons
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
@@ -63,8 +68,10 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
   const [routeError, setRouteError] = useState(false);
-  const [showBox, setShowBox] = useState(true);
-  const [travelMethod, setTravelMethod] = useState("WALKING")
+  const [boxZIndex, setBoxZIndex] = useState("-1");
+  const [drawerZIndex, setDrawerZIndex] = useState("-1");
+  const [travelMethod, setTravelMethod] = useState("WALKING");
+  const [locationCardData, setLocationCardData] = useState({});
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -130,7 +137,7 @@ function App() {
     const AttragetAllAttractionsInfo = await Promise.all(promises);
     return AttragetAllAttractionsInfo;
   }
-  
+
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -172,11 +179,9 @@ function App() {
     }
 
     setDirectionsResponse(results);
-    console.log("Results");
-    // console.log(results.routes[0].legs);
-    console.log(results);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
+    setDrawerZIndex("1");
   }
 
   function calculateTime(results) {
@@ -196,7 +201,6 @@ function App() {
 
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-
 
     pubData.forEach((pub) => {
       if (pub === undefined) {
@@ -262,42 +266,51 @@ function App() {
 
   function handlePubs(value) {
     setPubStops(value);
-    console.log(value)
+    console.log(value);
   }
 
   function handleAttractions(value) {
     setAttractionStops(value);
   }
 
-  
-
   const ShowLocations = () => {
     if (combinedStops.length > 0) {
-      return(
+      return (
         <Box
           height="300px"
-          // width="40px"
           position="absolute"
           top="70%"
-          // p={1}
           borderRadius="lg"
-          // m={4}
           minW="container.md"
-          zIndex="2"
+          zIndex={drawerZIndex}
         >
           <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
             {combinedStops.map((result) => (
               <LocationsCard key={result.place_id} {...result} />
             ))}
+            <IconButton
+              position="top"
+              aria-label="center back"
+              icon={<FaTimes />}
+              colorScheme="green"
+              onClick={() => {
+                setDrawerZIndex("-1");
+              }}
+            />
           </HStack>
-          {/* <Example /> */}
         </Box>
       );
     }
   };
 
   const LocationsCard = (result) => {
-    const imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    let imageLink = "";
+    if (result.photos === undefined) {
+      imageLink = tipsyTouristLogo3;
+    } else {
+      imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    }
+
     return (
       <Box
         justifyContent="left"
@@ -305,47 +318,112 @@ function App() {
         borderRadius="lg"
         bgColor="#38A169"
         height="250px"
-
-        //m={10}
       >
         <VStack>
-          <Center>
-            <Text isTruncated as="b" fontSize="xs" justifyContent="center" color="white">
-              {result.name}
-            </Text>
-          </Center>
-
           <HStack>
-            {/*<Text>
-          Rating: {result.rating} 
-    </Text>*/}
-            {/*<Image src={star} alt='' width='20px' />*/}
+            <Center>
+              <Text
+                isTruncated
+                as="b"
+                fontSize="xs"
+                justifyContent="center"
+                color="white"
+              >
+                {result.name}
+              </Text>
+            </Center>
+            <Button
+              leftIcon={<FaEye />}
+              colorScheme="green"
+              type="submit"
+              onClick={() => {
+                getDetails(result.place_id);
+                setBoxZIndex("1");
+              }}
+            ></Button>
           </HStack>
-          {/*<Text>
-          Price: {result.price_level}/5 
-    </Text>*/}
-          {/*<Text as='i'>
-          Address: {result.vicinity} 
-  </Text>*/}
           <Image src={imageLink} alt="no image" boxSize="200px" maxW="200px" />
         </VStack>
       </Box>
     );
   };
 
+  const LocationDetailsCard = () => {
+    let imageLink = "";
+    if (locationCardData.photos === undefined) {
+      imageLink = tipsyTouristLogo3;
+    } else {
+      imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    }
+    return (
+      <Box
+        p={4}
+        borderRadius="lg"
+        mt={4}
+        bgColor="white"
+        shadow="base"
+        minW="container.sm"
+        zIndex={boxZIndex}
+      >
+        <VStack>
+          <IconButton
+            aria-label="center back"
+            icon={<FaTimes />}
+            onClick={() => {
+              setBoxZIndex("-1");
+            }}
+          />
+          <Text as="b">{locationCardData.name}</Text>
+          <Box display="flex" mt="2" alignItems="center">
+            {Array(5)
+              .fill("")
+              .map((_, i) => (
+                <StarIcon
+                  key={i}
+                  color={
+                    i < Math.round(locationCardData.rating)
+                      ? "yellow.500"
+                      : "gray.300"
+                  }
+                />
+              ))}
+          </Box>
+          <Link href={locationCardData.website}>
+            <LinkIcon />
+            {locationCardData.website}
+          </Link>
+          <Text>
+            <PhoneIcon />
+            {locationCardData.formatted_phone_number}
+          </Text>
+          <Text icon={<FaHome />}>{locationCardData.vicinity}</Text>
+          <Image src={imageLink} alt="no image" maxW="300px" />
+        </VStack>
+      </Box>
+    );
+  };
+
+  async function getDetails(place_id) {
+    const place = await Details(place_id);
+    console.log(place);
+    const locationData = place.result;
+    // console.log(locationData)
+    setLocationCardData(locationData);
+    return locationData;
+  }
+
   function handleCar() {
-    setTravelMethod("DRIVING")
+    setTravelMethod("DRIVING");
   }
 
   function handleBicycling() {
-    setTravelMethod("BICYCLING")
+    setTravelMethod("BICYCLING");
   }
 
   function handleWalking() {
-    setTravelMethod("WALKING")
+    setTravelMethod("WALKING");
   }
-
-// styling
+  // styling
   return (
     <Flex
       // background styling
@@ -399,31 +477,50 @@ function App() {
             <Input type="text" placeholder="Finish" ref={finishRef} />
           </Autocomplete>
           <ButtonGroup>
-          <IconButton
-            aria-label="car"
-            icon={<FaCar color={travelMethod === "DRIVING" ? "white" : "black"} /> }
-            isRound
-            onClick={handleCar}
-            style={{ backgroundColor: travelMethod === "DRIVING" ? "#38A169" : "#EDF2F7",
-            icon: travelMethod === "DRIVING" ? "white" : "black"}}        
-          />
-          <IconButton
-            aria-label="bike"
-            icon={<FaBicycle color={travelMethod === "BICYCLING" ? "white" : "black"} />}
-            isRound
-            onClick={handleBicycling}
-            style={{ backgroundColor: travelMethod === "BICYCLING" ? "#38A169" : "#EDF2F7" }}
-          />
-          <IconButton
-            aria-label="walk"
-            icon={<FaWalking color={travelMethod === "WALKING" ? "white" : "black"} />}
-            isRound
-            onClick={handleWalking}
-            style={{ backgroundColor: travelMethod === "WALKING" ? "#38A169" : "#EDF2F7" }}
-          />
+            <IconButton
+              aria-label="car"
+              icon={
+                <FaCar color={travelMethod === "DRIVING" ? "white" : "black"} />
+              }
+              isRound
+              onClick={handleCar}
+              style={{
+                backgroundColor:
+                  travelMethod === "DRIVING" ? "#38A169" : "#EDF2F7",
+                icon: travelMethod === "DRIVING" ? "white" : "black",
+              }}
+            />
+            <IconButton
+              aria-label="bike"
+              icon={
+                <FaBicycle
+                  color={travelMethod === "BICYCLING" ? "white" : "black"}
+                />
+              }
+              isRound
+              onClick={handleBicycling}
+              style={{
+                backgroundColor:
+                  travelMethod === "BICYCLING" ? "#38A169" : "#EDF2F7",
+              }}
+            />
+            <IconButton
+              aria-label="walk"
+              icon={
+                <FaWalking
+                  color={travelMethod === "WALKING" ? "white" : "black"}
+                />
+              }
+              isRound
+              onClick={handleWalking}
+              style={{
+                backgroundColor:
+                  travelMethod === "WALKING" ? "#38A169" : "#EDF2F7",
+              }}
+            />
             <Button
               leftIcon={<FaBeer />}
-              colorScheme= {travelMethod === "DRIVING" ? "red" : "green"}
+              colorScheme={travelMethod === "DRIVING" ? "red" : "green"}
               type="submit"
               onClick={calculateRoute}
             >
@@ -438,14 +535,18 @@ function App() {
         </HStack>
         <HStack spacing={4} mt={4} justifyContent="left">
           <Text> Number of pubs: </Text>
-          <NumberInput defaultValue={travelMethod === "DRIVING" ? 1 : 3} min={1} max={travelMethod === "DRIVING" ? 1 : 7} onChange={handlePubs}>
+          <NumberInput
+            defaultValue={travelMethod === "DRIVING" ? 1 : 3}
+            min={1}
+            max={travelMethod === "DRIVING" ? 1 : 7}
+            onChange={handlePubs}
+          >
             <NumberInputField />
             <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
-
           <Text> Number of attractions: </Text>
           <NumberInput
             defaultValue={1}
@@ -460,10 +561,13 @@ function App() {
             </NumberInputStepper>
           </NumberInput>
         </HStack>
-
         <HStack spacing={4} mt={4} justifyContent="space-between">
-          <Text>Total distance ({travelMethod.toLowerCase()}): {distance} </Text>
-          <Text>Total time ({travelMethod.toLowerCase()}): {time} </Text>
+          <Text>
+            Total distance ({travelMethod.toLowerCase()}): {distance}{" "}
+          </Text>
+          <Text>
+            Total time ({travelMethod.toLowerCase()}): {time}{" "}
+          </Text>
           <IconButton
             aria-label="center back"
             icon={<FaLocationArrow />}
@@ -473,8 +577,8 @@ function App() {
         </HStack>
         <RouteAlert />
       </Box>
-      {/* <RoutePlanBox /> */}
       <ShowLocations />
+      <LocationDetailsCard />
     </Flex>
   );
 }
