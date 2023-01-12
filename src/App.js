@@ -250,14 +250,14 @@ function App() {
       return (<Alert status="error" fontSize="14">
         <AlertIcon />
         Do not drink and drive! This route assumes you have a designated driver.    
-        <Link href="https://www.zeropercentbrews.com/" color="blue" paddingLeft="7px" as="b">Explore alcohol free beverages</Link>
+        <Link href="https://www.zeropercentbrews.com/" color="blue" paddingLeft="7px">Explore alcohol free beverages</Link>
       </Alert>
       );
     } else if (journeyWarning === "2") {
       return (<Alert status="warning" fontSize="14">
       <AlertIcon />
       Do not drink and cycle!
-      <Link href="https://www.zeropercentbrews.com/" color="blue" paddingLeft="7px" as="b">Explore alcohol free beverages</Link>
+      <Link href="https://www.zeropercentbrews.com/" color="blue" paddingLeft="7px">Explore alcohol free beverages</Link>
       </Alert>);
     } else if (hasError) {
       return (
@@ -575,7 +575,7 @@ function App() {
             onChange={handlePubs}
             defaultValue={1}
             min={1}
-            max={travelMethod === "DRIVING" || "BICYCLING" ? 1 : 7}
+            max={travelMethod === "WALKING" ? 7 : 1}
           >
             <NumberInputField width="80px"/>
             <NumberInputStepper>
