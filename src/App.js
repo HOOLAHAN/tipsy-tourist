@@ -35,7 +35,7 @@ import {
   FaTimes,
   FaBeer,
   FaHome,
-  // FaBus, FaCar, FaWalking, FaBicycle,
+  FaBus, FaCar, FaWalking, FaBicycle,
 } from "react-icons/fa"; // icons
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
