@@ -35,13 +35,13 @@ import {
   FaTimes,
   FaBeer,
   FaHome,
-  // FaBus,
   FaCar,
   FaWalking,
   FaBicycle,
-  // FaTimesCircle,
 } from "react-icons/fa"; // icons
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
+import { MdOutlineLocalDrink } from "react-icons/md";
+
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
 import {
@@ -68,7 +68,7 @@ function App() {
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
   const [time, setTime] = useState("");
-  const [pubStops, setPubStops] = useState(3);
+  const [pubStops, setPubStops] = useState(1);
   const [attractionStops, setAttractionStops] = useState(1);
   const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
@@ -77,6 +77,7 @@ function App() {
   const [drawerZIndex, setDrawerZIndex] = useState("-1");
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [locationCardData, setLocationCardData] = useState({});
+  const [driverWarning, setDrivingWarning] = useState(false);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -152,6 +153,7 @@ function App() {
     }
     setHasError(false);
     setRouteError(false);
+    setDrivingWarning(false)
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
@@ -244,13 +246,11 @@ function App() {
   }
 
   function RouteAlert() {
-    if (routeError) {
-      return (
-        <Alert status="error">
-          <AlertIcon />
-          No viable routes found.
-        </Alert>
-      );
+    if (driverWarning){
+      return (<Alert status="error">
+        <AlertIcon />
+        Do not drink and drive! This route assumes you have a designated driver.
+      </Alert>);
     } else if (hasError) {
       return (
         <Alert status="warning">
@@ -259,6 +259,13 @@ function App() {
           stops along your route.
         </Alert>
       );
+    } else if (routeError) {
+        return (
+          <Alert status="error">
+            <AlertIcon />
+            No viable routes found.
+          </Alert>
+        );
     } else {
       return;
     }
@@ -438,16 +445,21 @@ function App() {
     return locationData;
   }
 
+  // console.log(Polyline.decode("iglyHnsYkAp@cAl@{@h@a@)")
+
   function handleCar() {
     setTravelMethod("DRIVING");
+    setDrivingWarning(true);
   }
 
   function handleBicycling() {
     setTravelMethod("BICYCLING");
+    setDrivingWarning(false);
   }
 
   function handleWalking() {
     setTravelMethod("WALKING");
+    setDrivingWarning(false);
   }
   // styling
   return (
@@ -499,10 +511,10 @@ function App() {
             alt="logo"
           />
           <Autocomplete>
-            <Input type="text" placeholder="Start" ref={startRef} />
+            <Input type="text" placeholder="Start" ref={startRef} width="250px" />
           </Autocomplete>
           <Autocomplete>
-            <Input type="text" placeholder="Finish" ref={finishRef} />
+            <Input type="text" placeholder="Finish" ref={finishRef} width="250px" />
           </Autocomplete>
           <ButtonGroup>
             <IconButton
@@ -514,7 +526,7 @@ function App() {
               onClick={handleCar}
               style={{
                 backgroundColor:
-                  travelMethod === "DRIVING" ? "#38A169" : "#EDF2F7",
+                  travelMethod === "DRIVING" ? "#E53E3E" : "#EDF2F7",
                 icon: travelMethod === "DRIVING" ? "white" : "black",
               }}
             />
@@ -546,62 +558,77 @@ function App() {
                   travelMethod === "WALKING" ? "#38A169" : "#EDF2F7",
               }}
             />
-            <Button
-              leftIcon={<FaBeer />}
-              colorScheme={travelMethod === "DRIVING" ? "red" : "green"}
-              type="submit"
-              onClick={calculateRoute}
-            >
-              Plan my Tipsy Tour!
-            </Button>{" "}
-            <IconButton
-              aria-label="center back"
-              icon={<FaTimes />}
-              onClick={clearRoute}
-            />
           </ButtonGroup>
         </HStack>
-        <HStack spacing={4} mt={4} justifyContent="left">
-          <Text> Number of pubs: </Text>
+        <HStack spacing={3} mt={4} justifyContent="left">
+          <Text> Pubs: </Text>
           <NumberInput
-            defaultValue={travelMethod === "DRIVING" ? 1 : 3}
+            onChange={handlePubs}
+            defaultValue={1}
             min={1}
             max={travelMethod === "DRIVING" ? 1 : 7}
-            onChange={handlePubs}
           >
-            <NumberInputField />
+            <NumberInputField width="80px"/>
             <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
-          <Text> Number of attractions: </Text>
+          <Text right="100px"> Attractions: </Text>
           <NumberInput
             defaultValue={1}
             min={1}
             max={3}
             onChange={handleAttractions}
+            
           >
-            <NumberInputField />
-            <NumberInputStepper>
+            <NumberInputField width="80px"  />
+            <NumberInputStepper >
               <NumberIncrementStepper />
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
+          <Button
+              leftIcon={
+                travelMethod === "DRIVING" ? (
+                  <MdOutlineLocalDrink />
+                ) : (
+                  <FaBeer />
+                )
+              }
+              colorScheme={travelMethod === "DRIVING" ? "red" : "green"}
+              type="submit"
+              onClick={calculateRoute}
+              width="310px"
+              left="5px"              
+            >
+              {travelMethod === "DRIVING"
+                ? "Plan my Sober Sejour"
+                : "Plan my Tipsy Tour"}
+            </Button>{" "}
+            <IconButton
+              aria-label="center back"
+              icon={<FaTimes />}
+              onClick={clearRoute}
+              placement="right"
+              isRound
+              left="52px"
+            />
+             <IconButton
+            aria-label="center back"
+            icon={<FaLocationArrow />}
+            right="48px"
+            isRound
+            onClick={() => map.panTo(center)}
+          />
         </HStack>
-        <HStack spacing={4} mt={4} justifyContent="space-between">
+        <HStack spacing={163} mt={4}>
           <Text>
             Total distance ({travelMethod.toLowerCase()}): {distance}{" "}
           </Text>
           <Text>
             Total time ({travelMethod.toLowerCase()}): {time}{" "}
           </Text>
-          <IconButton
-            aria-label="center back"
-            icon={<FaLocationArrow />}
-            isRound
-            onClick={() => map.panTo(center)}
-          />
         </HStack>
         <RouteAlert />
       </Box>
