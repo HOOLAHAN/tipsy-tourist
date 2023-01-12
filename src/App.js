@@ -13,7 +13,7 @@ import {
   Input,
   SkeletonText,
   Text,
-  Center,
+  // Center,
   Image,
   NumberInput,
   NumberInputField,
@@ -30,16 +30,16 @@ import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
 
 import {
   // FaEyeSlash,
-  FaEye,
+  // FaEye,
   FaLocationArrow,
   FaTimes,
   FaBeer,
   FaHome,
-  FaBus,
+  // FaBus,
   FaCar,
   FaWalking,
   FaBicycle,
-  FaTimesCircle,
+  // FaTimesCircle,
 } from "react-icons/fa"; // icons
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import tipsyTouristLogo3 from "./images/logo3.svg";
