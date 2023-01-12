@@ -35,8 +35,13 @@ import {
   FaTimes,
   FaBeer,
   FaHome,
-  FaBus, FaCar, FaWalking, FaBicycle,
+  FaBus,
+  FaCar,
+  FaWalking,
+  FaBicycle,
 } from "react-icons/fa"; // icons
+import { MdOutlineLocalDrink } from "react-icons/md";
+
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
 import {
@@ -63,7 +68,7 @@ function App() {
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
   const [time, setTime] = useState("");
-  const [pubStops, setPubStops] = useState(3);
+  const [pubStops, setPubStops] = useState(1);
   const [attractionStops, setAttractionStops] = useState(1);
   const [combinedStops, setCombinedStops] = useState([]);
   const [hasError, setHasError] = useState(false);
@@ -72,6 +77,7 @@ function App() {
   const [drawerZIndex, setDrawerZIndex] = useState("-1");
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [locationCardData, setLocationCardData] = useState({});
+  const [driverWarning, setDrivingWarning] = useState(false);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -144,6 +150,7 @@ function App() {
     }
     setHasError(false);
     setRouteError(false);
+    setDrivingWarning(false)
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
@@ -233,13 +240,11 @@ function App() {
   }
 
   function RouteAlert() {
-    if (routeError) {
-      return (
-        <Alert status="error">
-          <AlertIcon />
-          No viable routes found.
-        </Alert>
-      );
+    if (driverWarning){
+      return (<Alert status="error">
+        <AlertIcon />
+        Do not drink and drive! This route assumes you have a designated driver.
+      </Alert>);
     } else if (hasError) {
       return (
         <Alert status="warning">
@@ -248,6 +253,13 @@ function App() {
           stops along your route.
         </Alert>
       );
+    } else if (routeError) {
+        return (
+          <Alert status="error">
+            <AlertIcon />
+            No viable routes found.
+          </Alert>
+        );
     } else {
       return;
     }
@@ -414,14 +426,17 @@ function App() {
 
   function handleCar() {
     setTravelMethod("DRIVING");
+    setDrivingWarning(true);
   }
 
   function handleBicycling() {
     setTravelMethod("BICYCLING");
+    setDrivingWarning(false);
   }
 
   function handleWalking() {
     setTravelMethod("WALKING");
+    setDrivingWarning(false);
   }
   // styling
   return (
@@ -486,7 +501,7 @@ function App() {
               onClick={handleCar}
               style={{
                 backgroundColor:
-                  travelMethod === "DRIVING" ? "#38A169" : "#EDF2F7",
+                  travelMethod === "DRIVING" ? "#E53E3E" : "#EDF2F7",
                 icon: travelMethod === "DRIVING" ? "white" : "black",
               }}
             />
@@ -519,12 +534,21 @@ function App() {
               }}
             />
             <Button
-              leftIcon={<FaBeer />}
+              leftIcon={
+                travelMethod === "DRIVING" ? (
+                  <MdOutlineLocalDrink />
+                ) : (
+                  <FaBeer />
+                )
+              }
               colorScheme={travelMethod === "DRIVING" ? "red" : "green"}
               type="submit"
               onClick={calculateRoute}
+              width="200px"
             >
-              Plan my Tipsy Tour!
+              {travelMethod === "DRIVING"
+                ? "Plan my Sober Sejour"
+                : "Plan my Tipsy Tour"}
             </Button>{" "}
             <IconButton
               aria-label="center back"
@@ -536,10 +560,10 @@ function App() {
         <HStack spacing={4} mt={4} justifyContent="left">
           <Text> Number of pubs: </Text>
           <NumberInput
-            defaultValue={travelMethod === "DRIVING" ? 1 : 3}
+            onChange={handlePubs}
+            defaultValue={1}
             min={1}
             max={travelMethod === "DRIVING" ? 1 : 7}
-            onChange={handlePubs}
           >
             <NumberInputField />
             <NumberInputStepper>
