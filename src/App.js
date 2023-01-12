@@ -424,6 +424,8 @@ function App() {
     return locationData;
   }
 
+  // console.log(Polyline.decode("iglyHnsYkAp@cAl@{@h@a@)")
+
   function handleCar() {
     setTravelMethod("DRIVING");
     setDrivingWarning(true);
@@ -486,10 +488,10 @@ function App() {
             alt="logo"
           />
           <Autocomplete>
-            <Input type="text" placeholder="Start" ref={startRef} />
+            <Input type="text" placeholder="Start" ref={startRef} width="250px" />
           </Autocomplete>
           <Autocomplete>
-            <Input type="text" placeholder="Finish" ref={finishRef} />
+            <Input type="text" placeholder="Finish" ref={finishRef} width="250px" />
           </Autocomplete>
           <ButtonGroup>
             <IconButton
@@ -533,7 +535,37 @@ function App() {
                   travelMethod === "WALKING" ? "#38A169" : "#EDF2F7",
               }}
             />
-            <Button
+          </ButtonGroup>
+        </HStack>
+        <HStack spacing={3} mt={4} justifyContent="left">
+          <Text> Pubs: </Text>
+          <NumberInput
+            onChange={handlePubs}
+            defaultValue={1}
+            min={1}
+            max={travelMethod === "DRIVING" ? 1 : 7}
+          >
+            <NumberInputField width="80px"/>
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+          <Text right="100px"> Attractions: </Text>
+          <NumberInput
+            defaultValue={1}
+            min={1}
+            max={3}
+            onChange={handleAttractions}
+            
+          >
+            <NumberInputField width="80px"  />
+            <NumberInputStepper >
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+          <Button
               leftIcon={
                 travelMethod === "DRIVING" ? (
                   <MdOutlineLocalDrink />
@@ -544,7 +576,8 @@ function App() {
               colorScheme={travelMethod === "DRIVING" ? "red" : "green"}
               type="submit"
               onClick={calculateRoute}
-              width="200px"
+              width="310px"
+              left="5px"              
             >
               {travelMethod === "DRIVING"
                 ? "Plan my Sober Sejour"
@@ -554,50 +587,25 @@ function App() {
               aria-label="center back"
               icon={<FaTimes />}
               onClick={clearRoute}
+              placement="right"
+              isRound
+              left="52px"
             />
-          </ButtonGroup>
+             <IconButton
+            aria-label="center back"
+            icon={<FaLocationArrow />}
+            right="48px"
+            isRound
+            onClick={() => map.panTo(center)}
+          />
         </HStack>
-        <HStack spacing={4} mt={4} justifyContent="left">
-          <Text> Number of pubs: </Text>
-          <NumberInput
-            onChange={handlePubs}
-            defaultValue={1}
-            min={1}
-            max={travelMethod === "DRIVING" ? 1 : 7}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Text> Number of attractions: </Text>
-          <NumberInput
-            defaultValue={1}
-            min={1}
-            max={3}
-            onChange={handleAttractions}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </HStack>
-        <HStack spacing={4} mt={4} justifyContent="space-between">
+        <HStack spacing={163} mt={4}>
           <Text>
             Total distance ({travelMethod.toLowerCase()}): {distance}{" "}
           </Text>
           <Text>
             Total time ({travelMethod.toLowerCase()}): {time}{" "}
           </Text>
-          <IconButton
-            aria-label="center back"
-            icon={<FaLocationArrow />}
-            isRound
-            onClick={() => map.panTo(center)}
-          />
         </HStack>
         <RouteAlert />
       </Box>
