@@ -75,16 +75,7 @@ function App() {
   const [boxZIndex, setBoxZIndex ] = useState("-1")
   const [drawerZIndex, setDrawerZIndex ] = useState("-1")
   const [travelMethod, setTravelMethod] = useState("WALKING")
-  const [locationCardData, setLocationCardData] = useState({
-    name: "placeholder name",
-    rating: "placeholder rating",
-    website: "placeholder website",
-    formatted_phone_number: "placeholder phone number",
-    vicinity: "placeholder address",
-    photos: ["placeholder URL"]
-});
-
-
+  const [locationCardData, setLocationCardData] = useState({});
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
