@@ -77,7 +77,7 @@ function App() {
   const [drawerZIndex, setDrawerZIndex] = useState("-1");
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [locationCardData, setLocationCardData] = useState({});
-  const [driverWarning, setDrivingWarning] = useState(false);
+  const [journeyWarning, setJourneyWarning] = useState("1");
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -153,7 +153,7 @@ function App() {
     }
     setHasError(false);
     setRouteError(false);
-    setDrivingWarning(false)
+    setJourneyWarning("1")
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
@@ -246,10 +246,18 @@ function App() {
   }
 
   function RouteAlert() {
-    if (driverWarning){
-      return (<Alert status="error">
+    if (journeyWarning === "3"){
+      return (<Alert status="error" fontSize="14">
         <AlertIcon />
-        Do not drink and drive! This route assumes you have a designated driver.
+        Do not drink and drive! This route assumes you have a designated driver.    
+        <Link href="https://www.zeropercentbrews.com/" color="blue" paddingLeft="7px">Explore alcohol free beverages</Link>
+      </Alert>
+      );
+    } else if (journeyWarning === "2") {
+      return (<Alert status="warning" fontSize="14">
+      <AlertIcon />
+      Do not drink and cycle!
+      <Link href="https://www.zeropercentbrews.com/" color="blue" paddingLeft="7px">Explore alcohol free beverages</Link>
       </Alert>);
     } else if (hasError) {
       return (
@@ -259,6 +267,7 @@ function App() {
           stops along your route.
         </Alert>
       );
+     
     } else if (routeError) {
         return (
           <Alert status="error">
@@ -449,17 +458,17 @@ function App() {
 
   function handleCar() {
     setTravelMethod("DRIVING");
-    setDrivingWarning(true);
+    setJourneyWarning("3");
   }
 
   function handleBicycling() {
     setTravelMethod("BICYCLING");
-    setDrivingWarning(false);
+    setJourneyWarning("2");
   }
 
   function handleWalking() {
     setTravelMethod("WALKING");
-    setDrivingWarning(false);
+    setJourneyWarning("1");
   }
   // styling
   return (
@@ -541,7 +550,7 @@ function App() {
               onClick={handleBicycling}
               style={{
                 backgroundColor:
-                  travelMethod === "BICYCLING" ? "#38A169" : "#EDF2F7",
+                  travelMethod === "BICYCLING" ? "#FFBF00" : "#EDF2F7",
               }}
             />
             <IconButton
@@ -566,7 +575,7 @@ function App() {
             onChange={handlePubs}
             defaultValue={1}
             min={1}
-            max={travelMethod === "DRIVING" ? 1 : 7}
+            max={travelMethod === "WALKING" ? 7 : 1}
           >
             <NumberInputField width="80px"/>
             <NumberInputStepper>
@@ -590,13 +599,15 @@ function App() {
           </NumberInput>
           <Button
               leftIcon={
-                travelMethod === "DRIVING" ? (
+                travelMethod === "DRIVING" || "BICYCLING" ? (
                   <MdOutlineLocalDrink />
                 ) : (
                   <FaBeer />
                 )
               }
-              colorScheme={travelMethod === "DRIVING" ? "red" : "green"}
+              backgroundColor={travelMethod === "DRIVING" ? "#E53E3E" : (travelMethod === "BICYCLING" ? "#FFBF00" : "#38A169")}
+              color="white"
+              // color={travelMethod === "BICYCLING" ? "black" : "white"}
               type="submit"
               onClick={calculateRoute}
               width="310px"
@@ -604,7 +615,7 @@ function App() {
             >
               {travelMethod === "DRIVING"
                 ? "Plan my Sober Sejour"
-                : "Plan my Tipsy Tour"}
+                : (travelMethod === "WALKING" ? "Plan my Tipsy Tour" : "Plan my best bike route")}
             </Button>{" "}
             <IconButton
               aria-label="center back"
