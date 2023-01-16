@@ -306,7 +306,7 @@ function App() {
         <Box
           height="300px"
           position="absolute"
-          top="70%"
+          top="65%"
           borderRadius="lg"
           minW="container.md"
           zIndex={drawerZIndex}
