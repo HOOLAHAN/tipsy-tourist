@@ -1,6 +1,11 @@
-import Locations from "./Locations";
-import Attractions from "./Attractions";
 import Details from "./Details";
+import findPlotPoints from "./functions/findPlotPoints";
+import geocode from "./functions/geocode";
+import getAllPubs from "./functions/getAllPubs";
+import getAllAttractions from "./functions/getAllAttractions";
+import onlyUnique from "./functions/onlyUnique"
+import calculateTime from "./functions/calculateTime";
+import calculateDistance from "./functions/calculateDistance";
 
 import {
   Box,
@@ -13,7 +18,6 @@ import {
   Input,
   SkeletonText,
   Text,
-  // Center,
   Image,
   NumberInput,
   NumberInputField,
@@ -29,8 +33,6 @@ import {
 import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
 
 import {
-  // FaEyeSlash,
-  // FaEye,
   FaLocationArrow,
   FaTimes,
   FaBeer,
@@ -51,7 +53,6 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
 import { useState, useRef, React } from "react";
-import Geocode from "react-geocode";
 
 const center = { lat: 51.5033, lng: -0.1196 };
 
@@ -92,61 +93,6 @@ function App() {
   // eslint-disable-next-line no-undef
   const directionsService = new google.maps.DirectionsService();
 
-  const findPlotPoints = (start, end, stopsNum) => {
-    const latDiff = (end[0] - start[0]) / (stopsNum - 1);
-    const lngDiff = (end[1] - start[1]) / (stopsNum - 1);
-    let startLat = start[0];
-    let startLng = start[1];
-    let plotPoints = [{ lat: startLat, lng: startLng }];
-    for (let i = 0; i < stopsNum - 1; i++) {
-      startLat += latDiff;
-      startLng += lngDiff;
-      plotPoints.push({ lat: startLat, lng: startLng });
-    }
-    return plotPoints;
-  };
-
-  const geocode = async (address) => {
-    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
-    const response = await Geocode.fromAddress(address);
-
-    const { lat, lng } = response.results[0].geometry.location;
-    const array = [lat, lng];
-    return array;
-  };
-
-  async function getPub(plotPoints) {
-    const pub = await Locations(plotPoints.lat, plotPoints.lng);
-
-    const pubData = pub.results[0];
-    return pubData;
-  }
-
-  async function getAllPubs(plotPoints) {
-    const promises = plotPoints.map((point) => {
-      return getPub(point);
-    });
-    const pubsInfo = await Promise.all(promises);
-    return pubsInfo;
-  }
-
-  async function getAttraction(plotPoints) {
-    const attraction = await Attractions(plotPoints.lat, plotPoints.lng);
-    const attractionData = attraction.results[0];
-    return attractionData;
-  }
-
-  async function getAllAttractions(plotPoints) {
-    const promises = plotPoints.map((point) => {
-      return getAttraction(point);
-    });
-    const AttragetAllAttractionsInfo = await Promise.all(promises);
-    return AttragetAllAttractionsInfo;
-  }
-  function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
   async function calculateRoute() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
@@ -169,8 +115,6 @@ function App() {
 
     const filteredCombinationArray = combinationArray2.filter(onlyUnique);
 
-    console.log(combinationArray);
-    console.log(filteredCombinationArray);
     setCombinedStops(filteredCombinationArray);
 
     const waypoints = calculateWaypoints(pubData, attractionData);
@@ -197,20 +141,6 @@ function App() {
     setDrawerZIndex("2");
   }
 
-  function calculateTime(results) {
-    let distance = 0;
-    results.routes[0].legs.forEach((leg) => {
-      distance += leg.duration.value;
-    });
-    return `${Math.floor(distance / 60)} mins`;
-  }
-  function calculateDistance(results) {
-    let distance = 0;
-    results.routes[0].legs.forEach((leg) => {
-      distance += leg.distance.value;
-    });
-    return `${distance / 1000} km`;
-  }
 
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
@@ -224,7 +154,7 @@ function App() {
           location: pub.geometry.location,
           stopover: true,
         };
-        console.log(obj);
+        // console.log(obj);
         waypointsArray.push(obj);
       }
     });
@@ -237,7 +167,7 @@ function App() {
           location: attraction.geometry.location,
           stopover: true,
         };
-        console.log(obj);
+        // console.log(obj);
         waypointsArray.push(obj);
       }
     });
@@ -286,14 +216,14 @@ function App() {
 
     startRef.current.value = "";
     finishRef.current.value = "";
-    console.log(directionsResponse);
+    // console.log(directionsResponse);
     setHasError(false);
     setRouteError(false);
   }
 
   function handlePubs(value) {
     setPubStops(value);
-    console.log(value);
+    // console.log(value);
   }
 
   function handleAttractions(value) {
@@ -439,6 +369,7 @@ function App() {
             {locationCardData.formatted_phone_number}
           </Text>
           <Text icon={<FaHome />}>{locationCardData.vicinity}</Text>
+          {/* <Image src={imageLink} alt="no image" maxW="300px" /> */}
           <Image src={imageLink} alt="no image" maxW="300px" />
         </VStack>
       </Box>
@@ -447,14 +378,12 @@ function App() {
 
   async function getDetails(place_id) {
     const place = await Details(place_id);
-    console.log(place);
+    // console.log(place);
     const locationData = place.result;
     // console.log(locationData)
     setLocationCardData(locationData);
     return locationData;
   }
-
-  // console.log(Polyline.decode("iglyHnsYkAp@cAl@{@h@a@)")
 
   function handleCar() {
     setTravelMethod("DRIVING");
