@@ -27,9 +27,6 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Heading,
-  Alert,
-  AlertIcon,
-  Link,
 } from "@chakra-ui/react";
 
 import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
@@ -78,8 +75,6 @@ function App() {
   const [drawerZIndex, setDrawerZIndex] = useState("-1");
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [locationCardData, setLocationCardData] = useState({});
-  // const [hasError, setHasError] = useState(false);
-  // const [routeError, setRouteError] = useState(false);
   const [journeyWarning, setJourneyWarning] = useState("walking");
 
   /** @type React.MutableRefObject<HTMLInputElement> */
@@ -99,8 +94,6 @@ function App() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
-    // setHasError(false);
-    // setRouteError(false);
     setJourneyWarning("walking");
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
@@ -132,7 +125,6 @@ function App() {
       });
     } catch (error) {
       console.log(error);
-      // setRouteError(true);
       setJourneyWarning("non-viable");
       setDrawerZIndex("-1");
     }
@@ -148,7 +140,6 @@ function App() {
 
     pubData.forEach((pub) => {
       if (pub === undefined) {
-        // setHasError(true);
         setJourneyWarning("shortened");
         return;
       } else {
@@ -156,13 +147,11 @@ function App() {
           location: pub.geometry.location,
           stopover: true,
         };
-        // console.log(obj);
         waypointsArray.push(obj);
       }
     });
     attractionData.forEach((attraction) => {
       if (attraction === undefined) {
-        // setHasError(true);
         setJourneyWarning("shortened");
         return;
       } else {
@@ -170,7 +159,6 @@ function App() {
           location: attraction.geometry.location,
           stopover: true,
         };
-        // console.log(obj);
         waypointsArray.push(obj);
       }
     });
@@ -178,23 +166,17 @@ function App() {
     return waypointsArray;
   }
 
-  // THIS CAN BE PULLED OUT BY PASSING AN ARGUMENT AND CALLING WITH DEPENDENCY INJECTION IN USE EFFECT
-
   function clearRoute() {
     setDirectionsResponse(null);
     setDistance("");
 
     startRef.current.value = "";
     finishRef.current.value = "";
-    // console.log(directionsResponse);
-    // setHasError(false);
-    // setRouteError(false);
     setJourneyWarning("walking");
   }
 
   function handlePubs(value) {
     setPubStops(value);
-    // console.log(value);
   }
 
   function handleAttractions(value) {
@@ -355,9 +337,7 @@ function App() {
 
   async function getDetails(place_id) {
     const place = await Details(place_id);
-    // console.log(place);
     const locationData = place.result;
-    // console.log(locationData)
     setLocationCardData(locationData);
     return locationData;
   }
@@ -426,17 +406,17 @@ function App() {
             src={tipsyTouristLogo3}
             alt="logo"
           />
-          {/* <Autocomplete> */}
+          <Autocomplete>
           <Input type="text" placeholder="Start" ref={startRef} width="250px" />
-          {/* </Autocomplete> */}
-          {/* <Autocomplete> */}
+          </Autocomplete>
+          <Autocomplete>
           <Input
             type="text"
             placeholder="Finish"
             ref={finishRef}
             width="250px"
           />
-          {/* </Autocomplete> */}
+          </Autocomplete>
           <ButtonGroup>
             <IconButton
               aria-label="car"
@@ -524,7 +504,6 @@ function App() {
                 : "#38A169"
             }
             color="white"
-            // color={travelMethod === "BICYCLING" ? "black" : "white"}
             type="submit"
             onClick={calculateRoute}
             width="310px"
