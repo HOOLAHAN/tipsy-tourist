@@ -52,7 +52,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
-import { useState, useRef, React } from "react";
+import { useState, useRef, React, useEffect } from "react";
 
 const center = { lat: 51.5033, lng: -0.1196 };
 
@@ -72,13 +72,13 @@ function App() {
   const [pubStops, setPubStops] = useState(1);
   const [attractionStops, setAttractionStops] = useState(1);
   const [combinedStops, setCombinedStops] = useState([]);
-  const [hasError, setHasError] = useState(false);
-  const [routeError, setRouteError] = useState(false);
   const [boxZIndex, setBoxZIndex] = useState("-1");
   const [drawerZIndex, setDrawerZIndex] = useState("-1");
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [locationCardData, setLocationCardData] = useState({});
-  const [journeyWarning, setJourneyWarning] = useState("1");
+  // const [hasError, setHasError] = useState(false);
+  // const [routeError, setRouteError] = useState(false);
+  const [journeyWarning, setJourneyWarning] = useState("walking");
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -97,9 +97,9 @@ function App() {
     if (startRef.current.value === "" || finishRef.current.value === "") {
       return;
     }
-    setHasError(false);
-    setRouteError(false);
-    setJourneyWarning("1");
+    // setHasError(false);
+    // setRouteError(false);
+    setJourneyWarning("walking");
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
@@ -118,7 +118,6 @@ function App() {
     setCombinedStops(filteredCombinationArray);
 
     const waypoints = calculateWaypoints(pubData, attractionData);
-    // DIRECTIONS SERVICE DEFINED NOW AT LINE 70
     let results = null;
     try {
       results = await directionsService.route({
@@ -131,7 +130,8 @@ function App() {
       });
     } catch (error) {
       console.log(error);
-      setRouteError(true);
+      // setRouteError(true);
+      setJourneyWarning("non-viable");
       setDrawerZIndex("-1");
     }
 
@@ -146,7 +146,8 @@ function App() {
 
     pubData.forEach((pub) => {
       if (pub === undefined) {
-        setHasError(true);
+        // setHasError(true);
+        setJourneyWarning("shortened");
         return;
       } else {
         const obj = {
@@ -159,7 +160,8 @@ function App() {
     });
     attractionData.forEach((attraction) => {
       if (attraction === undefined) {
-        setHasError(true);
+        // setHasError(true);
+        setJourneyWarning("shortened");
         return;
       } else {
         const obj = {
@@ -176,8 +178,10 @@ function App() {
 
   // THIS CAN BE PULLED OUT BY PASSING AN ARGUMENT AND CALLING WITH DEPENDENCY INJECTION IN USE EFFECT
 
-  function RouteAlert() {
-    if (journeyWarning === "3") {
+  function RouteAlert({ error }) {
+    console.log("alert function called");
+    if (error === "driving") {
+      console.log("driving alert");
       return (
         <Alert status="error" fontSize="14">
           <AlertIcon />
@@ -192,7 +196,8 @@ function App() {
           </Link>
         </Alert>
       );
-    } else if (journeyWarning === "2") {
+    } else if (error === "bicycling") {
+      console.log("cycling alert");
       return (
         <Alert status="warning" fontSize="14">
           <AlertIcon />
@@ -206,7 +211,8 @@ function App() {
           </Link>
         </Alert>
       );
-    } else if (hasError) {
+    } else if (error === "shortened") {
+      console.log("shortened alert");
       return (
         <Alert status="warning">
           <AlertIcon />
@@ -214,7 +220,8 @@ function App() {
           stops along your route.
         </Alert>
       );
-    } else if (routeError) {
+    } else if (error === "non-viable") {
+      console.log("non-viable alert");
       return (
         <Alert status="error">
           <AlertIcon />
@@ -222,6 +229,7 @@ function App() {
         </Alert>
       );
     } else {
+      console.log("got to else");
       return;
     }
   }
@@ -233,8 +241,9 @@ function App() {
     startRef.current.value = "";
     finishRef.current.value = "";
     // console.log(directionsResponse);
-    setHasError(false);
-    setRouteError(false);
+    // setHasError(false);
+    // setRouteError(false);
+    setJourneyWarning("walking");
   }
 
   function handlePubs(value) {
@@ -409,17 +418,18 @@ function App() {
 
   function handleCar() {
     setTravelMethod("DRIVING");
-    setJourneyWarning("3");
+    setJourneyWarning("driving");
+    console.log("selected car");
   }
 
   function handleBicycling() {
     setTravelMethod("BICYCLING");
-    setJourneyWarning("2");
+    setJourneyWarning("bicycling");
   }
 
   function handleWalking() {
     setTravelMethod("WALKING");
-    setJourneyWarning("1");
+    setJourneyWarning("walking");
   }
   // styling
   return (
@@ -604,7 +614,7 @@ function App() {
             Total time ({travelMethod.toLowerCase()}): {time}{" "}
           </Text>
         </HStack>
-        <RouteAlert />
+        <RouteAlert error={journeyWarning} />
       </Box>
       <ShowLocations />
       <LocationDetailsCard />
