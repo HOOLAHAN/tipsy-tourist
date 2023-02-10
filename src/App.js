@@ -8,6 +8,7 @@ import calculateTime from "./functions/calculateTime";
 import calculateDistance from "./functions/calculateDistance";
 
 import RouteAlert from "./components/RouteAlert";
+import ShowLocations from "./components/ShowLocations";
 
 import {
   Box,
@@ -20,6 +21,7 @@ import {
   Input,
   SkeletonText,
   Text,
+  Link,
   Image,
   NumberInput,
   NumberInputField,
@@ -51,7 +53,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
-import { useState, useRef, React, useEffect } from "react";
+import { useState, useRef, React } from "react";
 
 const center = { lat: 51.5033, lng: -0.1196 };
 
@@ -183,96 +185,6 @@ function App() {
     setAttractionStops(value);
   }
 
-  // NEXT TWO COMPONENTS CAN ALSO BE TAKEN OUT WITH DEPENDENCY INJECTION IF Z INDEX METHOD OF HIDING BOX IS REWORKED
-
-  const ShowLocations = () => {
-    if (combinedStops.length > 0) {
-      return (
-        <Box
-          height="300px"
-          position="absolute"
-          top="65%"
-          borderRadius="lg"
-          minW="container.md"
-          zIndex={drawerZIndex}
-        >
-          <HStack justify="right">
-            <IconButton
-              aria-label="center back"
-              icon={<FaTimes />}
-              colorScheme="red"
-              isRound
-              onClick={() => {
-                setDrawerZIndex("-1");
-              }}
-            />
-          </HStack>
-          <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
-            {combinedStops.map((result) => (
-              <LocationsCard key={result.place_id} {...result} />
-            ))}
-          </HStack>
-        </Box>
-      );
-    }
-  };
-
-  // HERE THE GETDETAILS FUNCTION WILL NEED TO LIVE IN THE LOCATIONS CARD FILE FOR THE STATE
-
-  const LocationsCard = (result) => {
-    let imageLink = "";
-    if (result.photos === undefined) {
-      imageLink = tipsyTouristLogo3;
-    } else {
-      imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${result.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
-    }
-
-    return (
-      <Box
-        justifyContent="left"
-        shadow="base"
-        borderRadius="lg"
-        bgColor="white"
-        height="250px"
-      >
-        <VStack>
-          <HStack justifyContent="space-between">
-            {/* <Center> */}
-            <Text
-              noOfLines={[1, 2]}
-              // isTruncated
-              color="#393f49"
-              as="b"
-              fontSize="m"
-              justifyContent="center"
-            >
-              {result.name}
-            </Text>
-            {/* </Center> */}
-            <IconButton
-              leftIcon={<BsFillArrowUpRightCircleFill />}
-              isRound
-              color="green"
-              bgColor="white"
-              type="submit"
-              onClick={() => {
-                getDetails(result.place_id);
-                setBoxZIndex("1");
-              }}
-            ></IconButton>
-          </HStack>
-          <Image
-            src={imageLink}
-            borderRadius="lg"
-            alt="no image"
-            boxSize="200px"
-            maxW="200px"
-          />
-        </VStack>
-      </Box>
-    );
-  };
-
   //  CAN BE REMOVED WITH Z AXIS REWORK AND DEPENDENCY INJECTION
 
   const LocationDetailsCard = () => {
@@ -334,13 +246,6 @@ function App() {
       </Box>
     );
   };
-
-  async function getDetails(place_id) {
-    const place = await Details(place_id);
-    const locationData = place.result;
-    setLocationCardData(locationData);
-    return locationData;
-  }
 
   function handleCar() {
     setTravelMethod("DRIVING");
@@ -541,7 +446,7 @@ function App() {
         </HStack>
         <RouteAlert error={journeyWarning} />
       </Box>
-      <ShowLocations />
+      <ShowLocations combinedStops={combinedStops}/>
       <LocationDetailsCard />
     </Flex>
   );
