@@ -3,7 +3,7 @@ import findPlotPoints from "./functions/findPlotPoints";
 import geocode from "./functions/geocode";
 import getAllPubs from "./functions/getAllPubs";
 import getAllAttractions from "./functions/getAllAttractions";
-import onlyUnique from "./functions/onlyUnique"
+import onlyUnique from "./functions/onlyUnique";
 import calculateTime from "./functions/calculateTime";
 import calculateDistance from "./functions/calculateDistance";
 
@@ -99,7 +99,7 @@ function App() {
     }
     setHasError(false);
     setRouteError(false);
-    setJourneyWarning("1")
+    setJourneyWarning("1");
     const start = await geocode(startRef.current.value);
     const end = await geocode(finishRef.current.value);
 
@@ -141,7 +141,6 @@ function App() {
     setDrawerZIndex("2");
   }
 
-
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
 
@@ -175,20 +174,38 @@ function App() {
     return waypointsArray;
   }
 
+  // THIS CAN BE PULLED OUT BY PASSING AN ARGUMENT AND CALLING WITH DEPENDENCY INJECTION IN USE EFFECT
+
   function RouteAlert() {
-    if (journeyWarning === "3"){
-      return (<Alert status="error" fontSize="14">
-        <AlertIcon />
-        Do not drink and drive! This route assumes you have a designated driver.    
-        <Link href="https://www.zeropercentbrews.com/" color="blue" paddingLeft="7px">Explore alcohol free beverages</Link>
-      </Alert>
+    if (journeyWarning === "3") {
+      return (
+        <Alert status="error" fontSize="14">
+          <AlertIcon />
+          Do not drink and drive! This route assumes you have a designated
+          driver.
+          <Link
+            href="https://www.zeropercentbrews.com/"
+            color="blue"
+            paddingLeft="7px"
+          >
+            Explore alcohol free beverages
+          </Link>
+        </Alert>
       );
     } else if (journeyWarning === "2") {
-      return (<Alert status="warning" fontSize="14">
-      <AlertIcon />
-      Do not drink and cycle!
-      <Link href="https://www.zeropercentbrews.com/" color="blue" paddingLeft="7px">Explore alcohol free beverages</Link>
-      </Alert>);
+      return (
+        <Alert status="warning" fontSize="14">
+          <AlertIcon />
+          Do not drink and cycle!
+          <Link
+            href="https://www.zeropercentbrews.com/"
+            color="blue"
+            paddingLeft="7px"
+          >
+            Explore alcohol free beverages
+          </Link>
+        </Alert>
+      );
     } else if (hasError) {
       return (
         <Alert status="warning">
@@ -197,14 +214,13 @@ function App() {
           stops along your route.
         </Alert>
       );
-     
     } else if (routeError) {
-        return (
-          <Alert status="error">
-            <AlertIcon />
-            No viable routes found.
-          </Alert>
-        );
+      return (
+        <Alert status="error">
+          <AlertIcon />
+          No viable routes found.
+        </Alert>
+      );
     } else {
       return;
     }
@@ -229,6 +245,8 @@ function App() {
   function handleAttractions(value) {
     setAttractionStops(value);
   }
+
+  // NEXT TWO COMPONENTS CAN ALSO BE TAKEN OUT WITH DEPENDENCY INJECTION IF Z INDEX METHOD OF HIDING BOX IS REWORKED
 
   const ShowLocations = () => {
     if (combinedStops.length > 0) {
@@ -261,6 +279,8 @@ function App() {
       );
     }
   };
+
+  // HERE THE GETDETAILS FUNCTION WILL NEED TO LIVE IN THE LOCATIONS CARD FILE FOR THE STATE
 
   const LocationsCard = (result) => {
     let imageLink = "";
@@ -315,6 +335,8 @@ function App() {
       </Box>
     );
   };
+
+  //  CAN BE REMOVED WITH Z AXIS REWORK AND DEPENDENCY INJECTION
 
   const LocationDetailsCard = () => {
     let imageLink = "";
@@ -448,12 +470,17 @@ function App() {
             src={tipsyTouristLogo3}
             alt="logo"
           />
-          <Autocomplete>
-            <Input type="text" placeholder="Start" ref={startRef} width="250px" />
-          </Autocomplete>
-          <Autocomplete>
-            <Input type="text" placeholder="Finish" ref={finishRef} width="250px" />
-          </Autocomplete>
+          {/* <Autocomplete> */}
+          <Input type="text" placeholder="Start" ref={startRef} width="250px" />
+          {/* </Autocomplete> */}
+          {/* <Autocomplete> */}
+          <Input
+            type="text"
+            placeholder="Finish"
+            ref={finishRef}
+            width="250px"
+          />
+          {/* </Autocomplete> */}
           <ButtonGroup>
             <IconButton
               aria-label="car"
@@ -506,7 +533,7 @@ function App() {
             min={1}
             max={travelMethod === "WALKING" ? 7 : 1}
           >
-            <NumberInputField width="80px"/>
+            <NumberInputField width="80px" />
             <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />
@@ -518,43 +545,50 @@ function App() {
             min={1}
             max={3}
             onChange={handleAttractions}
-            
           >
-            <NumberInputField width="80px"  />
-            <NumberInputStepper >
+            <NumberInputField width="80px" />
+            <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
           <Button
-              leftIcon={
-                travelMethod === "DRIVING" || "BICYCLING" ? (
-                  <MdOutlineLocalDrink />
-                ) : (
-                  <FaBeer />
-                )
-              }
-              backgroundColor={travelMethod === "DRIVING" ? "#E53E3E" : (travelMethod === "BICYCLING" ? "#FFBF00" : "#38A169")}
-              color="white"
-              // color={travelMethod === "BICYCLING" ? "black" : "white"}
-              type="submit"
-              onClick={calculateRoute}
-              width="310px"
-              left="5px"              
-            >
-              {travelMethod === "DRIVING"
-                ? "Plan my Sober Sejour"
-                : (travelMethod === "WALKING" ? "Plan my Tipsy Tour" : "Plan my best bike route")}
-            </Button>{" "}
-            <IconButton
-              aria-label="center back"
-              icon={<FaTimes />}
-              onClick={clearRoute}
-              placement="right"
-              isRound
-              left="52px"
-            />
-             <IconButton
+            leftIcon={
+              travelMethod === "DRIVING" || "BICYCLING" ? (
+                <MdOutlineLocalDrink />
+              ) : (
+                <FaBeer />
+              )
+            }
+            backgroundColor={
+              travelMethod === "DRIVING"
+                ? "#E53E3E"
+                : travelMethod === "BICYCLING"
+                ? "#FFBF00"
+                : "#38A169"
+            }
+            color="white"
+            // color={travelMethod === "BICYCLING" ? "black" : "white"}
+            type="submit"
+            onClick={calculateRoute}
+            width="310px"
+            left="5px"
+          >
+            {travelMethod === "DRIVING"
+              ? "Plan my Sober Sejour"
+              : travelMethod === "WALKING"
+              ? "Plan my Tipsy Tour"
+              : "Plan my best bike route"}
+          </Button>{" "}
+          <IconButton
+            aria-label="center back"
+            icon={<FaTimes />}
+            onClick={clearRoute}
+            placement="right"
+            isRound
+            left="52px"
+          />
+          <IconButton
             aria-label="center back"
             icon={<FaLocationArrow />}
             right="48px"
