@@ -1,4 +1,4 @@
-import Details from "./Details";
+// import Details from "./Details";
 import findPlotPoints from "./functions/findPlotPoints";
 import geocode from "./functions/geocode";
 import getAllPubs from "./functions/getAllPubs";
@@ -39,10 +39,11 @@ import {
   FaBeer,
   FaHome,
   FaCar,
+  FaEye,
   FaWalking,
   FaBicycle,
 } from "react-icons/fa"; // icons
-import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
+// import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import { MdOutlineLocalDrink } from "react-icons/md";
 
 import tipsyTouristLogo3 from "./images/logo3.svg";
@@ -78,6 +79,7 @@ function App() {
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [locationCardData, setLocationCardData] = useState({});
   const [journeyWarning, setJourneyWarning] = useState("walking");
+  const [showHideItinerary, setShowHideItinerary] = useState(true)
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -443,10 +445,21 @@ function App() {
           <Text>
             Total time ({travelMethod.toLowerCase()}): {time}{" "}
           </Text>
+          <HStack>
+          <Text>
+            Show Stops
+          </Text>
+          <IconButton
+            aria-label="center back"
+            icon={<FaEye />}    
+            isRound
+            onClick={() => setShowHideItinerary(!showHideItinerary)}
+          />
+          </HStack>
         </HStack>
         <RouteAlert error={journeyWarning} />
       </Box>
-      <ShowLocations combinedStops={combinedStops}/>
+      <ShowLocations combinedStops={combinedStops} showHideItinerary={showHideItinerary}/>
       <LocationDetailsCard />
     </Flex>
   );

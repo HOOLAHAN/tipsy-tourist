@@ -1,23 +1,16 @@
 import {
   Box,
   HStack,
-  IconButton,
+
 } from "@chakra-ui/react";
 
-import {
-  FaTimes,
-} from "react-icons/fa"; // icons
-
-import { useState, React } from "react";
+import { React } from "react";
 
 import LocationsCard from "./LocationsCard"
 
 
-const ShowLocations = ({combinedStops}) => {
-  // const [stops, setStops] = useState([]);
-  // setStops(combinedStops)
-  // console.log("set stops")
-  if (combinedStops.length > 0) {
+const ShowLocations = ({combinedStops, showHideItinerary}) => {
+  if (combinedStops.length > 0 && showHideItinerary) {
     return (
       <Box
         height="300px"
@@ -27,16 +20,6 @@ const ShowLocations = ({combinedStops}) => {
         minW="container.md"
       >
         <HStack justify="right">
-          <IconButton
-            aria-label="center back"
-            icon={<FaTimes />}
-            colorScheme="red"
-            isRound
-            // onClick={() => {
-            //   setStops([])
-            //   // setShowComponent(false);
-            // }}
-          />
         </HStack>
         <HStack spacing={4} mt={10} justifyContent="left" z-index="1">
           {combinedStops.map((result) => (
