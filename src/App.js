@@ -1,4 +1,3 @@
-// import Details from "./Details";
 import findPlotPoints from "./functions/findPlotPoints";
 import geocode from "./functions/geocode";
 import getAllPubs from "./functions/getAllPubs";
@@ -6,7 +5,6 @@ import getAllAttractions from "./functions/getAllAttractions";
 import onlyUnique from "./functions/onlyUnique";
 import calculateTime from "./functions/calculateTime";
 import calculateDistance from "./functions/calculateDistance";
-
 import RouteAlert from "./components/RouteAlert";
 import ShowLocations from "./components/ShowLocations";
 
@@ -16,12 +14,10 @@ import {
   ButtonGroup,
   Flex,
   HStack,
-  VStack,
   IconButton,
   Input,
   SkeletonText,
   Text,
-  Link,
   Image,
   NumberInput,
   NumberInputField,
@@ -31,19 +27,16 @@ import {
   Heading,
 } from "@chakra-ui/react";
 
-import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
-
 import {
   FaLocationArrow,
   FaTimes,
   FaBeer,
-  FaHome,
   FaCar,
   FaEye,
   FaWalking,
   FaBicycle,
 } from "react-icons/fa"; // icons
-// import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
+
 import { MdOutlineLocalDrink } from "react-icons/md";
 
 import tipsyTouristLogo3 from "./images/logo3.svg";
@@ -74,12 +67,9 @@ function App() {
   const [pubStops, setPubStops] = useState(1);
   const [attractionStops, setAttractionStops] = useState(1);
   const [combinedStops, setCombinedStops] = useState([]);
-  const [boxZIndex, setBoxZIndex] = useState("-1");
-  const [drawerZIndex, setDrawerZIndex] = useState("-1");
   const [travelMethod, setTravelMethod] = useState("WALKING");
-  const [locationCardData, setLocationCardData] = useState({});
   const [journeyWarning, setJourneyWarning] = useState("walking");
-  const [showHideItinerary, setShowHideItinerary] = useState(true)
+  const [showHideItinerary, setShowHideItinerary] = useState(true);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -130,13 +120,11 @@ function App() {
     } catch (error) {
       console.log(error);
       setJourneyWarning("non-viable");
-      setDrawerZIndex("-1");
     }
 
     setDirectionsResponse(results);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
-    setDrawerZIndex("2");
   }
 
   function calculateWaypoints(pubData, attractionData) {
@@ -186,68 +174,6 @@ function App() {
   function handleAttractions(value) {
     setAttractionStops(value);
   }
-
-  //  CAN BE REMOVED WITH Z AXIS REWORK AND DEPENDENCY INJECTION
-
-  const LocationDetailsCard = () => {
-    let imageLink = "";
-    if (locationCardData.photos === undefined) {
-      imageLink = tipsyTouristLogo3;
-    } else {
-      imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
-    }
-    return (
-      <Box
-        p={4}
-        borderRadius="lg"
-        mt={4}
-        bgColor="white"
-        shadow="base"
-        minW="container.sm"
-        zIndex={boxZIndex}
-      >
-        <HStack justifyContent="right">
-          <IconButton
-            aria-label="center back"
-            icon={<FaTimes />}
-            colorScheme="red"
-            isRound
-            onClick={() => {
-              setBoxZIndex("-1");
-            }}
-          />
-        </HStack>
-        <VStack>
-          <Text as="b">{locationCardData.name}</Text>
-          <Box display="flex" mt="2" alignItems="center">
-            {Array(5)
-              .fill("")
-              .map((_, i) => (
-                <StarIcon
-                  key={i}
-                  color={
-                    i < Math.round(locationCardData.rating)
-                      ? "yellow.500"
-                      : "gray.300"
-                  }
-                />
-              ))}
-          </Box>
-          <Link href={locationCardData.website}>
-            <LinkIcon />
-            {locationCardData.website}
-          </Link>
-          <Text>
-            <PhoneIcon />
-            {locationCardData.formatted_phone_number}
-          </Text>
-          <Text icon={<FaHome />}>{locationCardData.vicinity}</Text>
-          {/* <Image src={imageLink} alt="no image" maxW="300px" /> */}
-          <Image src={imageLink} alt="no image" maxW="300px" />
-        </VStack>
-      </Box>
-    );
-  };
 
   function handleCar() {
     setTravelMethod("DRIVING");
@@ -460,7 +386,6 @@ function App() {
         <RouteAlert error={journeyWarning} />
       </Box>
       <ShowLocations combinedStops={combinedStops} showHideItinerary={showHideItinerary}/>
-      <LocationDetailsCard />
     </Flex>
   );
 }

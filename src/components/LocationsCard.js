@@ -8,27 +8,22 @@ import {
 } from "@chakra-ui/react";
 
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
-
 import tipsyTouristLogo3 from "../images/logo3.svg";
-
 import { useState, React } from "react";
-
-// import Details from "../Details";
+import LocationDetailsCard from "./LocationDetailsCard";
+import Details from "../functions/Details"
 
 
 const LocationsCard = (result) => {
+  const [showHideLocationCard, setShowHideLocationCard] = useState(false);
+  const [locationCardData, setLocationCardData] = useState({})
   
-  // const [locationCardData, setLocationCardData] = useState({});
-  // const [boxZIndex, setBoxZIndex] = useState("1");
-  
-  // async function getDetails(place_id) {
-  //   const place = await Details(place_id);
-  //   // console.log(place);
-  //   const locationData = place.result;
-  //   // console.log(locationData)
-  //   setLocationCardData(locationData);
-  //   return locationData;
-  // }
+  async function getDetails(place_id) {
+    const place = await Details(place_id);
+    const locationData = place.result;
+    setLocationCardData(locationData);
+    return locationData;
+  }
 
   let imageLink = "";
   if (result.photos === undefined) {
@@ -38,13 +33,19 @@ const LocationsCard = (result) => {
   }
 
   return (
+
     <Box
-      justifyContent="left"
-      shadow="base"
-      borderRadius="lg"
-      bgColor="white"
-      height="250px"
+    justifyContent="left"
+    shadow="base"
+    borderRadius="lg"
+    bgColor="white"
+    height="250px"
     >
+      <VStack>
+      <Box>
+        <LocationDetailsCard locationCardData={locationCardData} showHideLocationCard={showHideLocationCard}/>
+      </Box>
+      </VStack>
       <VStack>
         <HStack justifyContent="space-between">
           <Text
@@ -53,7 +54,7 @@ const LocationsCard = (result) => {
             as="b"
             fontSize="m"
             justifyContent="center"
-          >
+            >
             {result.name}
           </Text>
           <IconButton
@@ -62,10 +63,10 @@ const LocationsCard = (result) => {
             color="green"
             bgColor="white"
             type="submit"
-            // onClick={() => {
-            //   getDetails(result.place_id);
-            //   setBoxZIndex("1");
-            // }}
+            onClick={() => {
+                getDetails(result.place_id);
+                setShowHideLocationCard(!showHideLocationCard);
+            }}
           ></IconButton>
         </HStack>
         <Image
