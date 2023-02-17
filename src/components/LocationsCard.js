@@ -42,7 +42,11 @@ const LocationsCard = (result) => {
     height="250px"
     >
       <VStack>
-      <Box>
+      <Box
+      position="absolute"
+      bottom="300px"
+      zIndex={1}
+      >
         <LocationDetailsCard locationCardData={locationCardData} showHideLocationCard={showHideLocationCard}/>
       </Box>
       </VStack>
@@ -64,8 +68,8 @@ const LocationsCard = (result) => {
             bgColor="white"
             type="submit"
             onClick={() => {
-                getDetails(result.place_id);
-                setShowHideLocationCard(!showHideLocationCard);
+              getDetails(result.place_id);
+              setShowHideLocationCard(!showHideLocationCard);
             }}
           ></IconButton>
         </HStack>

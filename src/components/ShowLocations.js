@@ -15,7 +15,7 @@ const ShowLocations = ({combinedStops, showHideItinerary}) => {
       <Box
         height="300px"
         position="absolute"
-        top="65%"
+        bottom="0px"
         borderRadius="lg"
         minW="container.md"
       >
