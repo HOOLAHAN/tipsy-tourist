@@ -1,9 +1,7 @@
 import { Alert, AlertIcon, Link } from "@chakra-ui/react";
 
 function RouteAlert({ error }) {
-  console.log("alert function called");
   if (error === "driving") {
-    console.log("driving alert");
     return (
       <Alert status="error" fontSize="14">
         <AlertIcon />
@@ -18,7 +16,6 @@ function RouteAlert({ error }) {
       </Alert>
     );
   } else if (error === "bicycling") {
-    console.log("cycling alert");
     return (
       <Alert status="warning" fontSize="14">
         <AlertIcon />
@@ -33,7 +30,6 @@ function RouteAlert({ error }) {
       </Alert>
     );
   } else if (error === "shortened") {
-    console.log("shortened alert");
     return (
       <Alert status="warning">
         <AlertIcon />
@@ -42,7 +38,6 @@ function RouteAlert({ error }) {
       </Alert>
     );
   } else if (error === "non-viable") {
-    console.log("non-viable alert");
     return (
       <Alert status="error">
         <AlertIcon />
@@ -50,7 +45,6 @@ function RouteAlert({ error }) {
       </Alert>
     );
   } else {
-    console.log("got to else");
     return;
   }
 }
