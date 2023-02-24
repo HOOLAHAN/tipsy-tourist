@@ -1,30 +1,30 @@
 import {
   Box,
-  HStack,
-  VStack,
-  // IconButton,
   Text,
   Image,
   Link,
+  Center,
+  PopoverBody,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverHeader,
+  HStack,
 } from "@chakra-ui/react";
 
 import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
 
 import {
-  // FaTimes,
   FaHome,
 } from "react-icons/fa"; // icons
 
 
 import tipsyTouristLogo3 from "../images/logo3.svg";
 
-import { useState, React } from "react";
+import { React } from "react";
 
 
-const LocationDetailsCard = ({locationCardData, showHideLocationCard}) => {
-
-  // const [locationCardData, setLocationCardData] = useState({});
-  // const [boxZIndex, setBoxZIndex] = useState("-1");
+const LocationDetailsCard = ({locationCardData}) => {
 
   let imageLink = "";
   if (locationCardData.photos === undefined) {
@@ -34,59 +34,52 @@ const LocationDetailsCard = ({locationCardData, showHideLocationCard}) => {
     console.log(imageLink)
   }
 
-  if ( showHideLocationCard ) {
-
   return (
-    <Box
-      p={4}
-      borderRadius="lg"
-      mt={4}
-      bgColor="white"
-      shadow="base"
-      minW="container.sm"
-      // zIndex={boxZIndex}
-    >
-      <HStack justifyContent="right">
-        {/* <IconButton
-          aria-label="center back"
-          icon={<FaTimes />}
-          colorScheme="red"
-          isRound
-          onClick={() => {
-            setBoxZIndex("-1");
-          }}
-        /> */}
-      </HStack>
-      <VStack>
+    <PopoverContent>
+    <PopoverArrow />
+    <PopoverCloseButton />
+      <PopoverHeader>
         <Text as="b">{locationCardData.name}</Text>
-        <Box display="flex" mt="2" alignItems="center">
-          {Array(5)
-            .fill("")
-            .map((_, i) => (
-              <StarIcon
-                key={i}
-                color={
-                  i < Math.round(locationCardData.rating)
-                    ? "yellow.500"
-                    : "gray.300"
-                }
-              />
-            ))}
-        </Box>
-        <Link href={locationCardData.website}>
+      </PopoverHeader>
+      <PopoverBody>
+        <Center>
+          <Box display="flex" mt="2" alignItems="center">
+            {Array(5)
+              .fill("")
+              .map((_, i) => (
+                <StarIcon
+                  key={i}
+                  color={
+                    i < Math.round(locationCardData.rating)
+                      ? "yellow.500"
+                      : "gray.300"
+                  }
+                />
+              ))}
+          </Box>
+        </Center>
+        <HStack>
           <LinkIcon />
-          {locationCardData.website}
-        </Link>
-        <Text>
+          <Link href={locationCardData.website}>
+            {locationCardData.name} - website
+          </Link>
+        </HStack>
+        <HStack>
           <PhoneIcon />
-          {locationCardData.formatted_phone_number}
-        </Text>
-        <Text icon={<FaHome />}>{locationCardData.vicinity}</Text>
+          <Text>
+            {locationCardData.formatted_phone_number}
+          </Text>
+        </HStack>
+        <HStack>
+          <FaHome />
+          <Text>
+            {locationCardData.vicinity}
+          </Text>
+        </HStack>
         <Image src={imageLink} alt="no image" maxW="300px" />
-      </VStack>
-    </Box>
+      </PopoverBody>
+    </PopoverContent>
   );
-  }
 };
 
 export default LocationDetailsCard;

@@ -5,6 +5,8 @@ import {
   IconButton,
   Text,
   Image,
+  Popover,
+  PopoverTrigger,
 } from "@chakra-ui/react";
 
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
@@ -15,7 +17,6 @@ import Details from "../functions/Details"
 
 
 const LocationsCard = (result) => {
-  const [showHideLocationCard, setShowHideLocationCard] = useState(false);
   const [locationCardData, setLocationCardData] = useState({})
   
   async function getDetails(place_id) {
@@ -42,15 +43,6 @@ const LocationsCard = (result) => {
     height="250px"
     >
       <VStack>
-      <Box
-      position="absolute"
-      bottom="300px"
-      zIndex={1}
-      >
-        <LocationDetailsCard locationCardData={locationCardData} showHideLocationCard={showHideLocationCard}/>
-      </Box>
-      </VStack>
-      <VStack>
         <HStack justifyContent="space-between">
           <Text
             noOfLines={[1, 2]}
@@ -61,17 +53,21 @@ const LocationsCard = (result) => {
             >
             {result.name}
           </Text>
-          <IconButton
-            leftIcon={<BsFillArrowUpRightCircleFill />}
-            isRound
-            color="green"
-            bgColor="white"
-            type="submit"
-            onClick={() => {
-              getDetails(result.place_id);
-              setShowHideLocationCard(!showHideLocationCard);
-            }}
-          ></IconButton>
+          <Popover>
+            <PopoverTrigger>
+              <IconButton
+                leftIcon={<BsFillArrowUpRightCircleFill />}
+                isRound
+                color="green"
+                bgColor="white"
+                type="submit"
+                onClick={() => {
+                  getDetails(result.place_id);
+                }}
+              ></IconButton>
+            </PopoverTrigger>
+            <LocationDetailsCard locationCardData={locationCardData} />
+          </Popover>
         </HStack>
         <Image
           src={imageLink}
