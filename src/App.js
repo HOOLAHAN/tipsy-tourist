@@ -7,6 +7,7 @@ import calculateTime from "./functions/calculateTime";
 import calculateDistance from "./functions/calculateDistance";
 import RouteAlert from "./components/RouteAlert";
 import ShowLocations from "./components/ShowLocations";
+import ShowHideStops from "./components/ShowHideStops";
 
 import {
   Box,
@@ -372,9 +373,7 @@ function App() {
             Total time ({travelMethod.toLowerCase()}): {time}{" "}
           </Text>
           <HStack>
-          <Text>
-            Show Stops
-          </Text>
+            <ShowHideStops showHideItinerary={showHideItinerary}/>
           <IconButton
             aria-label="center back"
             icon={<FaEye />}    
