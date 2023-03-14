@@ -13,17 +13,19 @@ import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import tipsyTouristLogo3 from "../images/logo3.svg";
 import { useState, React } from "react";
 import LocationDetailsCard from "./LocationDetailsCard";
-import Details from "../functions/Details"
-
+import Details from "../functions/Details";
 
 const LocationsCard = (result) => {
-  const [locationCardData, setLocationCardData] = useState({})
-  
+  const [locationCardData, setLocationCardData] = useState({});
+
   async function getDetails(place_id) {
-    const place = await Details(place_id);
-    const locationData = place.result;
-    setLocationCardData(locationData);
-    return locationData;
+    if (!locationCardData.place_id) {
+      console.log("API CALLED!");
+      const place = await Details(place_id);
+      const locationData = place.result;
+      setLocationCardData(locationData);
+      return locationData;
+    }
   }
 
   let imageLink = "";
@@ -34,13 +36,12 @@ const LocationsCard = (result) => {
   }
 
   return (
-
     <Box
-    justifyContent="left"
-    shadow="base"
-    borderRadius="lg"
-    bgColor="white"
-    height="250px"
+      justifyContent="left"
+      shadow="base"
+      borderRadius="lg"
+      bgColor="white"
+      height="250px"
     >
       <VStack>
         <HStack justifyContent="space-between">
@@ -50,7 +51,7 @@ const LocationsCard = (result) => {
             as="b"
             fontSize="m"
             justifyContent="center"
-            >
+          >
             {result.name}
           </Text>
           <Popover>
