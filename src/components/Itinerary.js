@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
   IconButton,
   Text,
+  Image,
 } from "@chakra-ui/react";
 
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
@@ -30,8 +31,15 @@ const NewAccordionItem = (data) => {
     }
   }
 
+  let imageLink = "";
+  if (data.photos === undefined) {
+    imageLink = tipsyTouristLogo3;
+  } else {
+    imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${data.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+  }
+
   return (
-    <AccordionItem>
+    <AccordionItem w="100%">
       <h2>
         <AccordionButton>
           <Box as="span" flex="1" textAlign="left">
@@ -41,6 +49,10 @@ const NewAccordionItem = (data) => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
+        {data.vicinity}
+        <Box>
+          <Image w="200px" src={imageLink}></Image>
+        </Box>
         <Popover>
           <PopoverTrigger>
             <IconButton
@@ -56,7 +68,6 @@ const NewAccordionItem = (data) => {
           </PopoverTrigger>
           <LocationDetailsCard locationCardData={locationCardData} />
         </Popover>
-        {data.vicinity}
       </AccordionPanel>
     </AccordionItem>
   );
