@@ -8,6 +8,7 @@ import calculateDistance from "./functions/calculateDistance";
 import RouteAlert from "./components/RouteAlert";
 import ShowLocations from "./components/ShowLocations";
 import ShowHideStops from "./components/ShowHideStops";
+import Itinerary from "./components/Itinerary";
 
 import {
   Box,
@@ -201,9 +202,23 @@ function App() {
       h="100vh"
       w="100vw"
     >
+      <Box         
+        p={4}
+        borderRadius="lg"
+        mt={4}
+        bgColor="white"
+        shadow="base"
+        minW="container.s"
+        zIndex="1" 
+        position="absolute"
+        left={"2%"} top={0}
+        w="10%"
+        >
+
+        <Itinerary combinedStops={combinedStops}/>
+      </Box>
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
-
         <GoogleMap
           center={center}
           zoom={15}
@@ -385,6 +400,7 @@ function App() {
         <RouteAlert error={journeyWarning} />
       </Box>
       <ShowLocations combinedStops={combinedStops} showHideItinerary={showHideItinerary}/>
+      {/* <Itinerary/> */}
     </Flex>
   );
 }
