@@ -7,9 +7,9 @@ import { React } from "react";
 const ShowHideStops = ({showHideItinerary}) => {
 
   if ( showHideItinerary === true ) {
-    return (<Text>Show Stops</Text>) 
+    return (<Text>Hide Itinerary</Text>) 
   } else { 
-    return (<Text>Hide Stops</Text>) 
+    return (<Text>Show Itinerary</Text>) 
   }
   
 }

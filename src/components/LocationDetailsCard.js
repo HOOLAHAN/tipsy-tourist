@@ -1,18 +1,25 @@
+import Details from "../functions/Details";
+
 import {
   Box,
-  Text,
-  Image,
-  Link,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
   Center,
-  PopoverBody,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverHeader,
   HStack,
-} from "@chakra-ui/react";
+  Link,
+  Text,
+  Image
+} from '@chakra-ui/react'
 
 import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
+
+import { useState, React } from "react";
 
 import {
   FaHome,
@@ -21,10 +28,24 @@ import {
 
 import tipsyTouristLogo3 from "../images/logo3.svg";
 
-import { React } from "react";
+const LocationDetailsCard = ({place_id}) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [locationCardData, setLocationCardData] = useState({});
 
+  async function getDetails(place_id) {
+    if (!locationCardData.place_id) {
+      console.log("API CALLED!");
+      const place = await Details(place_id);
+      const locationData = place.result;
+      setLocationCardData(locationData);
+      return locationData;
+    }
+  }
 
-const LocationDetailsCard = ({locationCardData}) => {
+  async function handleClick() {
+    onOpen()
+    getDetails(place_id)
+  }
 
   let imageLink = "";
   if (locationCardData.photos === undefined) {
@@ -35,14 +56,16 @@ const LocationDetailsCard = ({locationCardData}) => {
   }
 
   return (
-    <PopoverContent>
-    <PopoverArrow />
-    <PopoverCloseButton />
-      <PopoverHeader>
-        <Text as="b">{locationCardData.name}</Text>
-      </PopoverHeader>
-      <PopoverBody>
-        <Center>
+      <Box>
+      <Button onClick={handleClick} bgColor="#38A169" color="white">More Info</Button>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader as="b"> {locationCardData.name} </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+          <Center>
           <Box display="flex" mt="2" alignItems="center">
             {Array(5)
               .fill("")
@@ -60,9 +83,11 @@ const LocationDetailsCard = ({locationCardData}) => {
         </Center>
         <HStack>
           <LinkIcon />
+        <Center>
           <Link href={locationCardData.website}>
             {locationCardData.name} - website
           </Link>
+          </Center>
         </HStack>
         <HStack>
           <PhoneIcon />
@@ -76,9 +101,13 @@ const LocationDetailsCard = ({locationCardData}) => {
             {locationCardData.vicinity}
           </Text>
         </HStack>
-        <Image src={imageLink} alt="no image" maxW="300px" />
-      </PopoverBody>
-    </PopoverContent>
+        <Center>
+          <Image src={imageLink} alt="no image" maxW="300px" />
+        </Center>
+        </ModalBody>
+        </ModalContent>
+      </Modal>
+      </Box>
   );
 };
 

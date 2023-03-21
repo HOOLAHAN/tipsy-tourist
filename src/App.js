@@ -6,7 +6,6 @@ import onlyUnique from "./functions/onlyUnique";
 import calculateTime from "./functions/calculateTime";
 import calculateDistance from "./functions/calculateDistance";
 import RouteAlert from "./components/RouteAlert";
-import ShowLocations from "./components/ShowLocations";
 import ShowHideStops from "./components/ShowHideStops";
 import Itinerary from "./components/Itinerary";
 
@@ -214,7 +213,7 @@ function App() {
         left={"2%"}
         top={0}
       >
-        <Itinerary combinedStops={combinedStops} />
+        <Itinerary combinedStops={combinedStops} showHideItinerary={showHideItinerary} />
       </Box>
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
@@ -403,8 +402,6 @@ function App() {
         </HStack>
         <RouteAlert error={journeyWarning} />
       </Box>
-      {/* <ShowLocations combinedStops={combinedStops} showHideItinerary={showHideItinerary}/> */}
-      {/* <Itinerary/> */}
     </Flex>
   );
 }
