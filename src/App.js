@@ -399,7 +399,7 @@ function App() {
         </HStack>
         <RouteAlert error={journeyWarning} />
       </Box>
-      <ShowLocations combinedStops={combinedStops} showHideItinerary={showHideItinerary}/>
+      {/* <ShowLocations combinedStops={combinedStops} showHideItinerary={showHideItinerary}/> */}
       {/* <Itinerary/> */}
     </Flex>
   );
