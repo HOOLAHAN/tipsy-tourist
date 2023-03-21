@@ -6,8 +6,8 @@ import onlyUnique from "./functions/onlyUnique";
 import calculateTime from "./functions/calculateTime";
 import calculateDistance from "./functions/calculateDistance";
 import RouteAlert from "./components/RouteAlert";
-import ShowLocations from "./components/ShowLocations";
 import ShowHideStops from "./components/ShowHideStops";
+import Itinerary from "./components/Itinerary";
 
 import {
   Box,
@@ -201,9 +201,22 @@ function App() {
       h="100vh"
       w="100vw"
     >
+      <Box
+        p={4}
+        borderRadius="lg"
+        mt={4}
+        bgColor="white"
+        shadow="base"
+        maxW="s"
+        zIndex="1"
+        position="absolute"
+        left={"2%"}
+        top={0}
+      >
+        <Itinerary combinedStops={combinedStops} showHideItinerary={showHideItinerary} />
+      </Box>
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
-
         <GoogleMap
           center={center}
           zoom={15}
@@ -241,15 +254,20 @@ function App() {
             alt="logo"
           />
           <Autocomplete>
-          <Input type="text" placeholder="Start" ref={startRef} width="250px" />
+            <Input
+              type="text"
+              placeholder="Start"
+              ref={startRef}
+              width="250px"
+            />
           </Autocomplete>
           <Autocomplete>
-          <Input
-            type="text"
-            placeholder="Finish"
-            ref={finishRef}
-            width="250px"
-          />
+            <Input
+              type="text"
+              placeholder="Finish"
+              ref={finishRef}
+              width="250px"
+            />
           </Autocomplete>
           <ButtonGroup>
             <IconButton
@@ -373,18 +391,17 @@ function App() {
             Total time ({travelMethod.toLowerCase()}): {time}{" "}
           </Text>
           <HStack>
-            <ShowHideStops showHideItinerary={showHideItinerary}/>
-          <IconButton
-            aria-label="center back"
-            icon={<FaEye />}    
-            isRound
-            onClick={() => setShowHideItinerary(!showHideItinerary)}
-          />
+            <ShowHideStops showHideItinerary={showHideItinerary} />
+            <IconButton
+              aria-label="center back"
+              icon={<FaEye />}
+              isRound
+              onClick={() => setShowHideItinerary(!showHideItinerary)}
+            />
           </HStack>
         </HStack>
         <RouteAlert error={journeyWarning} />
       </Box>
-      <ShowLocations combinedStops={combinedStops} showHideItinerary={showHideItinerary}/>
     </Flex>
   );
 }
