@@ -14,10 +14,11 @@ import {
   HStack,
   Link,
   Text,
-  Image
+  Image,
+  Tooltip
 } from '@chakra-ui/react'
 
-import { StarIcon, LinkIcon, PhoneIcon } from "@chakra-ui/icons";
+import { StarIcon, LinkIcon, PhoneIcon, CalendarIcon } from "@chakra-ui/icons";
 
 import { useState, React } from "react";
 
@@ -38,6 +39,9 @@ const LocationDetailsCard = ({place_id}) => {
       const place = await Details(place_id);
       const locationData = place.result;
       setLocationCardData(locationData);
+      console.log(locationData.opening_hours.open_now)
+      console.log(locationData)
+
       return locationData;
     }
   }
@@ -55,6 +59,15 @@ const LocationDetailsCard = ({place_id}) => {
     console.log(imageLink)
   }
 
+  function openNow() {
+    if(locationCardData.opening_hours.open_now) {
+      console.log("location is currently open")
+      return "Open"
+    } else {
+      return "Closed"
+    }
+  }
+ 
   return (
       <Box>
       <Button onClick={handleClick} bgColor="#38A169" color="white">More Info</Button>
@@ -101,6 +114,15 @@ const LocationDetailsCard = ({place_id}) => {
             {locationCardData.vicinity}
           </Text>
         </HStack>
+        <HStack>
+          <CalendarIcon />
+        <Tooltip label="Hey, I'm here!" aria-label='A tooltip'>
+          Test
+          { openNow()}
+
+        </Tooltip>
+        </HStack>
+
         <Center>
           <Image src={imageLink} alt="no image" maxW="300px" />
         </Center>
