@@ -26,25 +26,46 @@ import { FaHome } from "react-icons/fa"; // icons
 
 import tipsyTouristLogo3 from "../images/logo3.svg";
 
+function convertDay(day) {
+  if (day === 0) {
+    return 6
+  } else {
+    return day -1
+  }
+}
+
 const OpenNow = ({ data }) => {
-  // if (data.opening_hours.open_now) {
-  //   console.log("location is currently open");
   console.log("data from open now");
   console.log(data);
+  let today = new Date();
+  let dayIndex = convertDay(today.getDay())
+  
   if (data.opening_hours === undefined) return <Box></Box>;
-  else {
+  else if (data.opening_hours.open_now === true) {
+    let dayArray = data.opening_hours.weekday_text[dayIndex].split("–")
+    let closingAt = dayArray[1]
     return (
       <Tooltip
-        label={data.opening_hours.weekday_text[0]}
+        label={data.opening_hours.weekday_text[dayIndex]}
         aria-label="A tooltip"
       >
-        testing
+        <Text>
+          Open - Closes at {closingAt}
+        </Text>
       </Tooltip>
     );
   }
-  //   } else {
-  //   return <Text>Closed</Text>;
-};
+  else {
+    return (
+      <Tooltip
+        label={data.opening_hours.weekday_text[dayIndex]}
+        aria-label="A tooltip"
+      >
+        Closed
+      </Tooltip>
+    ); 
+  };
+}
 
 const LocationDetailsCard = ({ place_id }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
