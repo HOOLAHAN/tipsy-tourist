@@ -1,5 +1,5 @@
 async function Attractions(lat, lng) {
-  const resp = await fetch("http://localhost:4000/attractions", {
+  const resp = await fetch("https://t5jalxqqsb.execute-api.eu-west-2.amazonaws.com/attractions", {
     method: "post",
     headers: {
       Accept: "application/json",
@@ -15,7 +15,7 @@ async function Attractions(lat, lng) {
 
   const data = await resp.json();
   console.log(data);
-  return data;
+  return data.data;
 }
 
 export default Attractions;
