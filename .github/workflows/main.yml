@@ -29,6 +29,7 @@ jobs:
           role-to-assume: arn:aws:iam::974928048532:role/tipsytourist
           role-session-name: upload-session
           aws-region: eu-west-2
+          audience: arn:aws:sts::974928048532:assumed-role/tipsytourist/upload-session
       - name: upload build to s3 bucket
         run: |
           aws s3 sync ./build s3://tipsytourist/
