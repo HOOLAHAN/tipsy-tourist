@@ -27,20 +27,8 @@ An app to plot a pub crawl whilst taking in the sights along the way!
 
 ## Backend
 
-[Clone this repo](https://github.com/williamlines/tipsy-tourist-server.git)
-
-In terminal (Mac), run:
-
-```
-cd tipsy_tourist_server
-npm install
-```
-You will need to request a Google API key [here](https://cloud.google.com/) and then create a new file apiKey.js in the src directory with the following code:
-
-```
-const apiKey = "<YOUR-API-KEY>"
-module.exports = apiKey
-```
+The backend has been deployed using AWS Lambda: 
+[Link to Repo](https://github.com/HOOLAHAN/tipsy-tourst-lambda)
 
 ## Frontend
 
