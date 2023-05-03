@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 19
+          node-version: 19.0.1
       - name: Install Dependencies
         run: npm install
       - name: Build Project
@@ -28,8 +28,9 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::974928048532:role/tipsytourist
           role-session-name: upload-session
-          aws-region: eu-west-2
+          aws-region: ${{ env.AWS_REGION }}
+          sts-endpoint: "https://sts.eu-west-2.amazonaws.com"
           audience: arn:aws:sts::974928048532:assumed-role/tipsytourist/upload-session
       - name: upload build to s3 bucket
         run: |
-          aws s3 sync ./build s3://tipsytourist/
+          aws s3 sync ./build s3://${{ env.BUCKET_NAME }}/
