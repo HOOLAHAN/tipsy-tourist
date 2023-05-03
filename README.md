@@ -70,7 +70,7 @@ Tipsy Toursit has a single page with 4 main components (map, search bar, itinera
 
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/landing_screen.png)
 
-Once the user has provided a start-point, end-point, number of pubs/attractions and clicked the search button the route will be displayed on the map with an itinerary at the bottom.
+Once the user has provided a start-point, end-point, number of pubs/attractions and clicked the search button the route will be displayed on the map with an itinerary at the side.
 
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/searching_route.png)
 
