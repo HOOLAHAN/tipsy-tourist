@@ -26,7 +26,7 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          aws s3 sync build/ s3://tipsytourist --region eu-west-2
+          aws s3 sync ./build/ s3://tipsytourist --region eu-west-2
         env:
           REACT_APP_GOOGLE_MAPS_API_KEY: ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
