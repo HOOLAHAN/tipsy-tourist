@@ -1,7 +1,8 @@
 import Geocode from "react-geocode";
 
 const geocode = async (address) => {
-  Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
+  Geocode.setApiKey(apiKey);
   const response = await Geocode.fromAddress(address);
 
   const { lat, lng } = response.results[0].geometry.location;

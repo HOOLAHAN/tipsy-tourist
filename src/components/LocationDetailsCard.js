@@ -90,10 +90,11 @@ const LocationDetailsCard = ({ place_id }) => {
   }
 
   let imageLink = "";
+  const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
   if (locationCardData.photos === undefined) {
     imageLink = tipsyTouristLogo3;
   } else {
-    imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${googleMapsApiKey}`;
     console.log(imageLink);
   }
   return (
