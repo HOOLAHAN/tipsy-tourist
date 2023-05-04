@@ -22,7 +22,8 @@ jobs:
         run: npm install
 
       - name: Install AWS CLI
-        run: npm install awscli
+        run: |
+          brew install awscli
 
       - name: Build React app
         run: npm run build
