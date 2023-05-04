@@ -18,12 +18,14 @@ jobs:
         with:
           node-version: 14
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Install AWS CLI
         run: |
-          brew install awscli
+          curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Build React app
         run: npm run build
