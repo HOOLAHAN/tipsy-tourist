@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install AWS CLI
+        run: npm install awscli
+
       - name: Build React app
         run: npm run build
 
