@@ -14,7 +14,7 @@ async function Locations(lat, lng) {
   });
 
   const data = await resp.json();
-  console.log(data);
+  // console.log(data);
   return data.data;
 }
 

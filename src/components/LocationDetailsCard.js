@@ -35,11 +35,8 @@ function convertDay(day) {
 }
 
 const OpenNow = ({ data }) => {
-  console.log("data from open now");
-  console.log(data);
   let today = new Date();
   let dayIndex = convertDay(today.getDay())
-  
   if (data.opening_hours === undefined) return <Box></Box>;
   else if (data.opening_hours.open_now === true) {
     let dayArray = data.opening_hours.weekday_text[dayIndex].split("–")
@@ -73,13 +70,9 @@ const LocationDetailsCard = ({ place_id }) => {
 
   async function getDetails(place_id) {
     if (!locationCardData.place_id) {
-      console.log("API CALLED!");
       const place = await Details(place_id);
       const locationData = place.result;
       setLocationCardData(locationData);
-      console.log(locationData.opening_hours.open_now);
-      console.log(locationData);
-
       return locationData;
     }
   }
@@ -95,7 +88,6 @@ const LocationDetailsCard = ({ place_id }) => {
     imageLink = tipsyTouristLogo3;
   } else {
     imageLink = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${googleMapsApiKey}`;
-    console.log(imageLink);
   }
   return (
     <Box>

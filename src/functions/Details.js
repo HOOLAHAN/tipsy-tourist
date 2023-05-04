@@ -10,7 +10,6 @@ async function Details(place_id) {
   });
 
   const data = await resp.json();
-  console.log("lambda is working");
   return data.data;
 }
 

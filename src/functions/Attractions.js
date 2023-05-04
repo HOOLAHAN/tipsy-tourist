@@ -14,7 +14,6 @@ async function Attractions(lat, lng) {
   });
 
   const data = await resp.json();
-  console.log(data);
   return data.data;
 }
 
