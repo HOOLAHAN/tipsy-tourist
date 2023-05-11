@@ -6,7 +6,6 @@ import onlyUnique from "./functions/onlyUnique";
 import calculateTime from "./functions/calculateTime";
 import calculateDistance from "./functions/calculateDistance";
 import RouteAlert from "./components/RouteAlert";
-import ShowHideStops from "./components/ShowHideStops";
 import Itinerary from "./components/Itinerary";
 
 import {
@@ -34,7 +33,6 @@ import {
   FaTimes,
   FaBeer,
   FaCar,
-  FaEye,
   FaWalking,
   FaBicycle,
 } from "react-icons/fa"; // icons
@@ -47,7 +45,7 @@ import {
   Drawer,
   DrawerBody,
   DrawerFooter,
-  // DrawerHeader,
+  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton
@@ -82,12 +80,13 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [journeyWarning, setJourneyWarning] = useState("walking");
-  const [showHideItinerary, setShowHideItinerary] = useState(true);
-
   const [isOpen, setIsOpen] = useState(false)
+  const [isOpenItinerary, setIsOpenItinerary] = useState(false)
 
   const onClose = () => setIsOpen(false)
   const onOpen = () => setIsOpen(true)
+  const onCloseItinerary = () => setIsOpenItinerary(false)
+  const onOpenItinerary = () => setIsOpenItinerary(true)
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -176,16 +175,8 @@ function App() {
     return waypointsArray;
   }
 
-  // function clearRoute() {
-  //   setDirectionsResponse(null);
-  //   setDistance("");
-
-  //   startRef.current.value = "";
-  //   finishRef.current.value = "";
-  //   setJourneyWarning("walking");
-  // }
-
   function clearRoute() {
+    setCombinedStops([])
     setDirectionsResponse(null);
     setDistance("");
     setJourneyWarning("walking");
@@ -232,20 +223,6 @@ function App() {
       h="100vh"
       w="100vw"
     >
-      <Box
-        p={4}
-        borderRadius="lg"
-        mt={4}
-        bgColor="white"
-        shadow="base"
-        maxW="s"
-        zIndex="1"
-        position="absolute"
-        left={"2%"}
-        top={0}
-      >
-        <Itinerary combinedStops={combinedStops} showHideItinerary={showHideItinerary} />
-      </Box>
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
         <GoogleMap
@@ -265,37 +242,73 @@ function App() {
           )}
         </GoogleMap>
       </Box>
-      <>
-      <Button onClick={onOpen}>
-        <Heading color="#393f49" align="center" bgColor="white">
-          Tipsy Tourist
-        </Heading>
-      </Button>
+      <Box bgColor="white" zIndex={1}>
+        <HStack>
+      <Image
+        boxSize="40px"
+        objectFit="cover"
+        src={tipsyTouristLogo3}
+        alt="logo"
+        zIndex={1}
+        />
+      <Heading color="#393f49" align="center" bgColor="white" zIndex={1}>
+        Tipsy Tourist
+      </Heading>
+      <IconButton
+        zIndex={1}
+        bgColor="white"
+        aria-label="center back"
+        icon={<FaLocationArrow />}
+        isRound
+        onClick={() => map.panTo(center)}
+        />
+        </HStack>
+      <Button bgColor="white" onClick={onOpen} placement="left">Plan my Tipsy Tour!</Button>
+      <Button bgColor="white" onClick={onOpenItinerary} placement="right">See Itinerary</Button>
+      </Box>
+      <div style={{ position: "absolute", top: "0", left: "0" }}>
+      <VStack>
+      <HStack>
       <IconButton
         bgColor="white"
         aria-label="center back"
         icon={<FaTimes />}
         onClick={clearRoute}
-        placement="right"
+        placement="left"
         isRound
-        // left="52px"
-      />
-      <IconButton
-        bgColor="white"
-        aria-label="center back"
-        icon={<FaLocationArrow />}
-        // right="48px"
-        isRound
-        onClick={() => map.panTo(center)}
-      />
+        left="10px"
+        top="10px"
+        />
+      </HStack>
+      </VStack>
+      </div>
+
+
+      <>
+      <Drawer placement="left" onClose={onCloseItinerary} isOpen={isOpenItinerary} >
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerCloseButton />
+        <DrawerBody>
+          <DrawerHeader>
+          Itinerary:
+          </DrawerHeader>
+          <Itinerary combinedStops={combinedStops} />
+        </DrawerBody>
+        <DrawerFooter>
+          <Button colorScheme="green" onClick={onCloseItinerary}>Done</Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+
       <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerBody>
-              <Heading color="#393f49" align="center">
-                Tipsy Tourist
-              </Heading>
+            <Heading color="#393f49" align="center" top="20px">
+              Tipsy Tourist
+            </Heading>
               <VStack spacing={2} justifyContent="space-between">
                 <Image
                   boxSize="60px"
@@ -365,7 +378,6 @@ function App() {
               </VStack>
               <VStack spacing={3} mt={4} justifyContent="left">
                 <HStack>
-
                 <Text> Pubs: </Text>
                 <NumberInput
                   onChange={handlePubs}
@@ -429,19 +441,12 @@ function App() {
                   Total time ({travelMethod.toLowerCase()}): {time}{" "}
                 </Text>
                 <VStack>
-                  <ShowHideStops showHideItinerary={showHideItinerary} />
-                  <IconButton
-                    aria-label="center back"
-                    icon={<FaEye />}
-                    isRound
-                    onClick={() => setShowHideItinerary(!showHideItinerary)}
-                  />
                 </VStack>
               </VStack>
               <RouteAlert error={journeyWarning} />
           </DrawerBody>
           <DrawerFooter>
-            <Button colorScheme="blue" onClick={onClose}>Done</Button>
+            <Button colorScheme="green" onClick={onClose}>Done</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

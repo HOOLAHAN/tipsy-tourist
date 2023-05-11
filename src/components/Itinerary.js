@@ -41,8 +41,8 @@ const NewAccordionItem = (data) => {
   );
 };
 
-const Itinerary = ({ combinedStops, showHideItinerary }) => {
-  if (combinedStops.length > 0 && showHideItinerary) {
+const Itinerary = ({ combinedStops }) => {
+  if (combinedStops.length > 0 ) {
     return (
       <Accordion allowToggle defaultIndex={[0]} bgColor="white">
         {combinedStops.map((result) => (
