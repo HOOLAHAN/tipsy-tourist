@@ -54,6 +54,8 @@ import {
 import {
   useJsApiLoader,
   GoogleMap,
+  Marker,
+  InfoWindow,
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
@@ -81,7 +83,8 @@ function App() {
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [journeyWarning, setJourneyWarning] = useState("walking");
   const [isOpen, setIsOpen] = useState(false)
-  const [isOpenItinerary, setIsOpenItinerary] = useState(false)
+  const [isOpenItinerary, setIsOpenItinerary] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const onClose = () => setIsOpen(false)
   const onOpen = () => setIsOpen(true)
@@ -122,7 +125,7 @@ function App() {
     const filteredCombinationArray = combinationArray2.filter(onlyUnique);
 
     setCombinedStops(filteredCombinationArray);
-
+    
     const waypoints = calculateWaypoints(pubData, attractionData);
     let results = null;
     try {
@@ -138,15 +141,15 @@ function App() {
       console.log(error);
       setJourneyWarning("non-viable");
     }
-
+    
     setDirectionsResponse(results);
     setDistance(calculateDistance(results));
     setTime(calculateTime(results));
   }
-
+  
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-
+    
     pubData.forEach((pub) => {
       if (pub === undefined) {
         setJourneyWarning("shortened");
@@ -171,9 +174,10 @@ function App() {
         waypointsArray.push(obj);
       }
     });
-
+    
     return waypointsArray;
   }
+  console.log(combinedStops)
 
   function clearRoute() {
     setCombinedStops([])
@@ -226,21 +230,56 @@ function App() {
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
         <GoogleMap
-          center={center}
-          zoom={15}
-          mapContainerStyle={{ width: "100%", height: "100%" }}
-          options={{
-            zoomControl: false,
-            streetViewControl: false,
-            mapTypeControl: false,
-            fullScreenControl: false,
-          }}
-          onLoad={(map) => setMap(map)}
-        >
-          {directionsResponse && (
-            <DirectionsRenderer directions={directionsResponse} />
-          )}
-        </GoogleMap>
+        center={center}
+        zoom={15}
+        mapContainerStyle={{ width: "100%", height: "100%" }}
+        options={{
+          zoomControl: false,
+          streetViewControl: false,
+          mapTypeControl: false,
+          fullScreenControl: false,
+        }}
+        onLoad={(map) => setMap(map)}
+      >
+        {directionsResponse && (
+          <DirectionsRenderer directions={directionsResponse} />
+        )}
+        
+        { combinedStops.length > 0 && combinedStops.map((location) => {
+          if (!location.geometry || !location.geometry.location) {
+            return null;
+          }
+          return (
+            <Marker
+              key={location.id}
+              position={{
+                lat: location.geometry.location.lat,
+                lng: location.geometry.location.lng,
+              }}
+              onClick={() => {
+                setSelectedLocation(location);
+              }}
+            />
+          );
+        })}
+        {selectedLocation && (
+          <InfoWindow
+            position={{
+              lat: selectedLocation.geometry.location.lat,
+              lng: selectedLocation.geometry.location.lng,
+            }}
+            onCloseClick={() => {
+              setSelectedLocation(null);
+            }}
+          >
+            <div>
+              <h3>{selectedLocation.name}</h3>
+              <p>{selectedLocation.vicinity}</p>
+              <p>Status: {selectedLocation.opening_hours.open_now ? 'Open' : 'Closed'}</p>
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
       </Box>
       <Box 
       bgColor="white" 
