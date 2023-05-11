@@ -242,7 +242,9 @@ function App() {
           )}
         </GoogleMap>
       </Box>
-      <Box bgColor="white" zIndex={1} marginTop={5}>
+      <Box 
+      bgColor="white" 
+      zIndex={1} marginTop={5}>
         <HStack>
       <Image
         boxSize="40px"
@@ -251,7 +253,8 @@ function App() {
         alt="logo"
         zIndex={1}
         />
-      <Heading color="#393f49" align="center" bgColor="white" zIndex={1}>
+      <Heading color="#393f49" align="center" 
+      zIndex={1}>
         Tipsy Tourist
       </Heading>
       <IconButton
@@ -263,9 +266,11 @@ function App() {
         onClick={() => map.panTo(center)}
         />
         </HStack>
+      </Box>
+      <HStack marginTop={2}>
       <Button bgColor="white" onClick={onOpen} placement="left">Plan my Tipsy Tour!</Button>
       <Button bgColor="white" onClick={onOpenItinerary} placement="right">See Itinerary</Button>
-      </Box>
+      </HStack>
       <div style={{ position: "absolute", top: "0", left: "0" }}>
       <VStack>
       <HStack>
@@ -282,7 +287,6 @@ function App() {
       </HStack>
       </VStack>
       </div>
-
       <>
       <Drawer placement="right" onClose={onCloseItinerary} isOpen={isOpenItinerary} >
       <DrawerOverlay />
