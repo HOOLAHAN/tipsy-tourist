@@ -15,6 +15,7 @@ import {
   ButtonGroup,
   Flex,
   HStack,
+  VStack,
   IconButton,
   Input,
   SkeletonText,
@@ -41,6 +42,16 @@ import {
 import { MdOutlineLocalDrink } from "react-icons/md";
 
 import tipsyTouristLogo3 from "./images/logo3.svg";
+
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  // DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton
+} from '@chakra-ui/react'
 
 import {
   useJsApiLoader,
@@ -72,6 +83,11 @@ function App() {
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [journeyWarning, setJourneyWarning] = useState("walking");
   const [showHideItinerary, setShowHideItinerary] = useState(true);
+
+  const [isOpen, setIsOpen] = useState(false)
+
+  const onClose = () => setIsOpen(false)
+  const onOpen = () => setIsOpen(true)
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -160,13 +176,27 @@ function App() {
     return waypointsArray;
   }
 
+  // function clearRoute() {
+  //   setDirectionsResponse(null);
+  //   setDistance("");
+
+  //   startRef.current.value = "";
+  //   finishRef.current.value = "";
+  //   setJourneyWarning("walking");
+  // }
+
   function clearRoute() {
     setDirectionsResponse(null);
     setDistance("");
-
-    startRef.current.value = "";
-    finishRef.current.value = "";
     setJourneyWarning("walking");
+  
+    if (startRef.current) {
+      startRef.current.value = "";
+    }
+  
+    if (finishRef.current) {
+      finishRef.current.value = "";
+    }
   }
 
   function handlePubs(value) {
@@ -235,174 +265,187 @@ function App() {
           )}
         </GoogleMap>
       </Box>
-      <Box
-        p={4}
-        borderRadius="lg"
-        mt={4}
-        bgColor="white"
-        shadow="base"
-        minW="container.md"
-        zIndex="1"
-      >
-        <Heading color="#393f49" align="center">
+      <>
+      <Button onClick={onOpen}>
+        <Heading color="#393f49" align="center" bgColor="white">
           Tipsy Tourist
         </Heading>
-        <HStack spacing={2} justifyContent="space-between">
-          <Image
-            boxSize="60px"
-            objectFit="cover"
-            src={tipsyTouristLogo3}
-            alt="logo"
-          />
-          <Autocomplete>
-            <Input
-              type="text"
-              placeholder="Start"
-              ref={startRef}
-              width="250px"
-            />
-          </Autocomplete>
-          <Autocomplete>
-            <Input
-              type="text"
-              placeholder="Finish"
-              ref={finishRef}
-              width="250px"
-            />
-          </Autocomplete>
-          <ButtonGroup>
-            <IconButton
-              aria-label="car"
-              icon={
-                <FaCar color={travelMethod === "DRIVING" ? "white" : "black"} />
-              }
-              isRound
-              onClick={handleCar}
-              style={{
-                backgroundColor:
-                  travelMethod === "DRIVING" ? "#E53E3E" : "#EDF2F7",
-                icon: travelMethod === "DRIVING" ? "white" : "black",
-              }}
-            />
-            <IconButton
-              aria-label="bike"
-              icon={
-                <FaBicycle
-                  color={travelMethod === "BICYCLING" ? "white" : "black"}
+      </Button>
+      <IconButton
+        bgColor="white"
+        aria-label="center back"
+        icon={<FaTimes />}
+        onClick={clearRoute}
+        placement="right"
+        isRound
+        // left="52px"
+      />
+      <IconButton
+        bgColor="white"
+        aria-label="center back"
+        icon={<FaLocationArrow />}
+        // right="48px"
+        isRound
+        onClick={() => map.panTo(center)}
+      />
+      <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerBody>
+              <Heading color="#393f49" align="center">
+                Tipsy Tourist
+              </Heading>
+              <VStack spacing={2} justifyContent="space-between">
+                <Image
+                  boxSize="60px"
+                  objectFit="cover"
+                  src={tipsyTouristLogo3}
+                  alt="logo"
                 />
-              }
-              isRound
-              onClick={handleBicycling}
-              style={{
-                backgroundColor:
-                  travelMethod === "BICYCLING" ? "#FFBF00" : "#EDF2F7",
-              }}
-            />
-            <IconButton
-              aria-label="walk"
-              icon={
-                <FaWalking
-                  color={travelMethod === "WALKING" ? "white" : "black"}
-                />
-              }
-              isRound
-              onClick={handleWalking}
-              style={{
-                backgroundColor:
-                  travelMethod === "WALKING" ? "#38A169" : "#EDF2F7",
-              }}
-            />
-          </ButtonGroup>
-        </HStack>
-        <HStack spacing={3} mt={4} justifyContent="left">
-          <Text> Pubs: </Text>
-          <NumberInput
-            onChange={handlePubs}
-            defaultValue={1}
-            min={1}
-            max={travelMethod === "WALKING" ? 7 : 1}
-          >
-            <NumberInputField width="80px" />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Text right="100px"> Attractions: </Text>
-          <NumberInput
-            defaultValue={1}
-            min={1}
-            max={3}
-            onChange={handleAttractions}
-          >
-            <NumberInputField width="80px" />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Button
-            leftIcon={
-              travelMethod === "DRIVING" || "BICYCLING" ? (
-                <MdOutlineLocalDrink />
-              ) : (
-                <FaBeer />
-              )
-            }
-            backgroundColor={
-              travelMethod === "DRIVING"
-                ? "#E53E3E"
-                : travelMethod === "BICYCLING"
-                ? "#FFBF00"
-                : "#38A169"
-            }
-            color="white"
-            type="submit"
-            onClick={calculateRoute}
-            width="310px"
-            left="5px"
-          >
-            {travelMethod === "DRIVING"
-              ? "Plan my Sober Sejour"
-              : travelMethod === "WALKING"
-              ? "Plan my Tipsy Tour"
-              : "Plan my best bike route"}
-          </Button>{" "}
-          <IconButton
-            aria-label="center back"
-            icon={<FaTimes />}
-            onClick={clearRoute}
-            placement="right"
-            isRound
-            left="52px"
-          />
-          <IconButton
-            aria-label="center back"
-            icon={<FaLocationArrow />}
-            right="48px"
-            isRound
-            onClick={() => map.panTo(center)}
-          />
-        </HStack>
-        <HStack spacing={163} mt={4}>
-          <Text>
-            Total distance ({travelMethod.toLowerCase()}): {distance}{" "}
-          </Text>
-          <Text>
-            Total time ({travelMethod.toLowerCase()}): {time}{" "}
-          </Text>
-          <HStack>
-            <ShowHideStops showHideItinerary={showHideItinerary} />
-            <IconButton
-              aria-label="center back"
-              icon={<FaEye />}
-              isRound
-              onClick={() => setShowHideItinerary(!showHideItinerary)}
-            />
-          </HStack>
-        </HStack>
-        <RouteAlert error={journeyWarning} />
-      </Box>
+                <Autocomplete>
+                  <Input
+                    type="text"
+                    placeholder="Start"
+                    ref={startRef}
+                    width="250px"
+                  />
+                </Autocomplete>
+                <Autocomplete>
+                  <Input
+                    type="text"
+                    placeholder="Finish"
+                    ref={finishRef}
+                    width="250px"
+                  />
+                </Autocomplete>
+                <ButtonGroup>
+                  <IconButton
+                    aria-label="car"
+                    icon={
+                      <FaCar color={travelMethod === "DRIVING" ? "white" : "black"} />
+                    }
+                    isRound
+                    onClick={handleCar}
+                    style={{
+                      backgroundColor:
+                        travelMethod === "DRIVING" ? "#E53E3E" : "#EDF2F7",
+                      icon: travelMethod === "DRIVING" ? "white" : "black",
+                    }}
+                  />
+                  <IconButton
+                    aria-label="bike"
+                    icon={
+                      <FaBicycle
+                        color={travelMethod === "BICYCLING" ? "white" : "black"}
+                      />
+                    }
+                    isRound
+                    onClick={handleBicycling}
+                    style={{
+                      backgroundColor:
+                        travelMethod === "BICYCLING" ? "#FFBF00" : "#EDF2F7",
+                    }}
+                  />
+                  <IconButton
+                    aria-label="walk"
+                    icon={
+                      <FaWalking
+                        color={travelMethod === "WALKING" ? "white" : "black"}
+                      />
+                    }
+                    isRound
+                    onClick={handleWalking}
+                    style={{
+                      backgroundColor:
+                        travelMethod === "WALKING" ? "#38A169" : "#EDF2F7",
+                    }}
+                  />
+                </ButtonGroup>
+              </VStack>
+              <VStack spacing={3} mt={4} justifyContent="left">
+                <HStack>
+
+                <Text> Pubs: </Text>
+                <NumberInput
+                  onChange={handlePubs}
+                  defaultValue={1}
+                  min={1}
+                  max={travelMethod === "WALKING" ? 7 : 1}
+                >
+                  <NumberInputField width="80px" />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                <Text right="100px"> Attractions: </Text>
+                <NumberInput
+                  defaultValue={1}
+                  min={1}
+                  max={3}
+                  onChange={handleAttractions}
+                  >
+                  <NumberInputField width="80px" />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                </HStack>
+                <Button
+                  leftIcon={
+                    travelMethod === "DRIVING" || "BICYCLING" ? (
+                      <MdOutlineLocalDrink />
+                    ) : (
+                      <FaBeer />
+                    )
+                  }
+                  backgroundColor={
+                    travelMethod === "DRIVING"
+                      ? "#E53E3E"
+                      : travelMethod === "BICYCLING"
+                      ? "#FFBF00"
+                      : "#38A169"
+                  }
+                  color="white"
+                  type="submit"
+                  onClick={calculateRoute}
+                  width="310px"
+                  left="5px"
+                >
+                  {travelMethod === "DRIVING"
+                    ? "Plan my Sober Sejour"
+                    : travelMethod === "WALKING"
+                    ? "Plan my Tipsy Tour"
+                    : "Plan my best bike route"}
+                </Button>{" "}
+              </VStack>
+              <VStack mt={4}>
+                <Text>
+                  Total distance ({travelMethod.toLowerCase()}): {distance}{" "}
+                </Text>
+                <Text>
+                  Total time ({travelMethod.toLowerCase()}): {time}{" "}
+                </Text>
+                <VStack>
+                  <ShowHideStops showHideItinerary={showHideItinerary} />
+                  <IconButton
+                    aria-label="center back"
+                    icon={<FaEye />}
+                    isRound
+                    onClick={() => setShowHideItinerary(!showHideItinerary)}
+                  />
+                </VStack>
+              </VStack>
+              <RouteAlert error={journeyWarning} />
+          </DrawerBody>
+          <DrawerFooter>
+            <Button colorScheme="blue" onClick={onClose}>Done</Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </>
     </Flex>
   );
 }
