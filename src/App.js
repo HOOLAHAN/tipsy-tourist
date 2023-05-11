@@ -149,7 +149,9 @@ function App() {
   
   function calculateWaypoints(pubData, attractionData) {
     const waypointsArray = [];
-    
+    if (!pubData) {
+      return waypointsArray;
+    }
     pubData.forEach((pub) => {
       if (pub === undefined) {
         setJourneyWarning("shortened");
@@ -162,6 +164,9 @@ function App() {
         waypointsArray.push(obj);
       }
     });
+    if (!attractionData) {
+      return waypointsArray;
+    }
     attractionData.forEach((attraction) => {
       if (attraction === undefined) {
         setJourneyWarning("shortened");
@@ -177,7 +182,6 @@ function App() {
     
     return waypointsArray;
   }
-  console.log(combinedStops)
 
   function clearRoute() {
     setCombinedStops([])
@@ -242,7 +246,11 @@ function App() {
         onLoad={(map) => setMap(map)}
       >
         {directionsResponse && (
-          <DirectionsRenderer directions={directionsResponse} />
+          <DirectionsRenderer 
+          directions={directionsResponse} 
+          markerOptions={{ visible: false }}
+          suppressMarkers={true}
+          />
         )}
         
         { combinedStops.length > 0 && combinedStops.map((location) => {
@@ -273,7 +281,7 @@ function App() {
             }}
           >
             <div>
-              <h3>{selectedLocation.name}</h3>
+              <strong><h3>{selectedLocation.name}</h3></strong>
               <p>{selectedLocation.vicinity}</p>
               <p>Status: {selectedLocation.opening_hours.open_now ? 'Open' : 'Closed'}</p>
             </div>
@@ -283,7 +291,11 @@ function App() {
       </Box>
       <Box 
       bgColor="white" 
-      zIndex={1} marginTop={5}>
+      zIndex={1} 
+      marginTop={5}
+      borderRadius={5}
+      padding={3}
+      >
         <HStack>
       <Image
         boxSize="40px"
@@ -332,9 +344,7 @@ function App() {
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerBody>
-          <DrawerHeader>
-          Itinerary:
-          </DrawerHeader>
+          <DrawerHeader>Itinerary:</DrawerHeader>
           <Itinerary combinedStops={combinedStops} />
         </DrawerBody>
         <DrawerFooter>
