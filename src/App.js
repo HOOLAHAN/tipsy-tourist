@@ -242,7 +242,7 @@ function App() {
           )}
         </GoogleMap>
       </Box>
-      <Box bgColor="white" zIndex={1}>
+      <Box bgColor="white" zIndex={1} marginTop={5}>
         <HStack>
       <Image
         boxSize="40px"
@@ -283,9 +283,8 @@ function App() {
       </VStack>
       </div>
 
-
       <>
-      <Drawer placement="left" onClose={onCloseItinerary} isOpen={isOpenItinerary} >
+      <Drawer placement="right" onClose={onCloseItinerary} isOpen={isOpenItinerary} >
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -301,7 +300,7 @@ function App() {
       </DrawerContent>
     </Drawer>
 
-      <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -445,7 +444,14 @@ function App() {
               </VStack>
               <RouteAlert error={journeyWarning} />
           </DrawerBody>
-          <DrawerFooter>
+          <DrawerFooter justifyContent={"space-between"}>
+              <Button 
+                colorScheme="green"
+                type="submit"
+                onClick={clearRoute}
+              >
+                Clear Route
+                </Button>
             <Button colorScheme="green" onClick={onClose}>Done</Button>
           </DrawerFooter>
         </DrawerContent>
