@@ -67,10 +67,12 @@ Tipsy Toursit has a single page with 4 main components (map, search form, itiner
 
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/searching_route.png)
 
+The user can minimise the search form and view the route full screen.
+  
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/route.png)
 
 The user can click a button which opens up a side drawer containing the route itinerary.
-
+  
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/itinerary.png)
 
 The user can click on any of the locations in the itinerary to find out more details.
@@ -80,6 +82,9 @@ The user can click on any of the locations in the itinerary to find out more det
 The UX has been designed so that it will work well both on mobile devices as well as computer screens:
 
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_search.png)
+  
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_route.png)
+  
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_itinerary.png)
+  
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_location_details.png)
