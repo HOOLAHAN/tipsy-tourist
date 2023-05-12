@@ -23,6 +23,10 @@ Makers final engineering project created by Iain Hoolahan, Kay Watts, Tim Buller
 
 An app to plot a pub crawl whilst taking in the sights along the way!
 
+# Website
+
+The website has been fully deployed and can can be viewed via [this link](http://tipsytourist.s3-website.eu-west-2.amazonaws.com/)
+
 # Installation
 
 ## Backend
@@ -47,13 +51,6 @@ REACT_APP_GOOGLE_MAPS_API_KEY= "<YOUR-API-KEY>
 
 # Running locally
 
-## Backend
-
-```
-cd tipsy_tourist_server
-npm start
-```
-
 ## Frontend
 
 ```
@@ -66,14 +63,23 @@ Open [http://localhost:3000](http://localhost:3000) to view the app in your brow
 
 ## Demo
 
-Tipsy Toursit has a single page with 4 main components (map, search bar, itinerary, location details). When you first land on the website you will see the map component which fills the screen and a search bar which provides many options for the user to tailor their requirements before searching.
-
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/landing_screen.png)
-
-Once the user has provided a start-point, end-point, number of pubs/attractions and clicked the search button the route will be displayed on the map with an itinerary at the side.
+Tipsy Toursit has a single page with 4 main components (map, search form, itinerary, location details). When you first land on the website you will see the map component which fills the screen and a button to open up the search form which provides many options for the user to tailor their requirements. Once the user has provided a start-point, end-point, number of pubs/attractions and clicked the search button the route will be displayed.
 
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/searching_route.png)
+
+![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/route.png)
+
+The user can click a button which opens up a side drawer containing the route itinerary.
+
+![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/itinerary.png)
 
 The user can click on any of the locations in the itinerary to find out more details.
 
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/viewing_location.png)
+
+The UX has been designed so that it will work well both on mobile devices as well as computer screens:
+
+![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_search.png)
+![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_route.png)
+![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_itinerary.png)
+![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_location_details.png)
