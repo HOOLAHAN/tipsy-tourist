@@ -6,7 +6,7 @@ import onlyUnique from "./functions/onlyUnique";
 import calculateTime from "./functions/calculateTime";
 import calculateDistance from "./functions/calculateDistance";
 import RouteAlert from "./components/RouteAlert";
-import Itinerary from "./components/Itinerary";
+import ItineraryDrawer from './components/ItineraryDrawer';
 
 import {
   Box,
@@ -45,7 +45,6 @@ import {
   Drawer,
   DrawerBody,
   DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton
@@ -338,21 +337,8 @@ function App() {
       </HStack>
       </VStack>
       </div>
+      <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
       <>
-      <Drawer placement="right" onClose={onCloseItinerary} isOpen={isOpenItinerary} >
-      <DrawerOverlay />
-      <DrawerContent>
-        <DrawerCloseButton />
-        <DrawerBody>
-          <DrawerHeader>Itinerary:</DrawerHeader>
-          <Itinerary combinedStops={combinedStops} />
-        </DrawerBody>
-        <DrawerFooter>
-          <Button colorScheme="green" onClick={onCloseItinerary}>Done</Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
