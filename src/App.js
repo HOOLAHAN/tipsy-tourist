@@ -26,6 +26,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Heading,
+  Center
 } from "@chakra-ui/react";
 
 import {
@@ -223,6 +224,43 @@ function App() {
       h="100vh"
       w="100vw"
     >
+    <Box 
+    bg="white" 
+    py={1} width="100%" zIndex={1}>
+      <Center>
+        <HStack spacing={2} alignItems="center">
+          <Image boxSize="40px" objectFit="cover" src={tipsyTouristLogo3} alt="logo" zIndex={1} />
+          <Heading color="#393f49">Tipsy Tourist</Heading>
+          <IconButton
+            bgColor="white"
+            aria-label="center back"
+            icon={<FaLocationArrow />}
+            isRound
+            onClick={() => map.panTo(center)}
+          />
+        </HStack>
+      </Center>
+      <Center mt={1} mb={1}>
+        <Button
+          backgroundColor="#38A169"
+          color="white"
+          onClick={onOpen}
+          placement="left"
+          mr={2}
+          size="sm"
+          boxShadow="md"
+        >
+          Plan my Tipsy Tour!
+        </Button>
+        <Button 
+        onClick={onOpenItinerary} placement="right" size="sm" boxShadow="md"
+        backgroundColor="#38A169"
+        color="white"
+        >
+          See Itinerary
+        </Button>
+      </Center>
+    </Box>
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
         <GoogleMap
@@ -242,35 +280,6 @@ function App() {
           )}
         </GoogleMap>
       </Box>
-      <Box 
-      bgColor="white" 
-      zIndex={1} marginTop={5}>
-        <HStack>
-      <Image
-        boxSize="40px"
-        objectFit="cover"
-        src={tipsyTouristLogo3}
-        alt="logo"
-        zIndex={1}
-        />
-      <Heading color="#393f49" align="center" 
-      zIndex={1}>
-        Tipsy Tourist
-      </Heading>
-      <IconButton
-        zIndex={1}
-        bgColor="white"
-        aria-label="center back"
-        icon={<FaLocationArrow />}
-        isRound
-        onClick={() => map.panTo(center)}
-        />
-        </HStack>
-      </Box>
-      <HStack marginTop={2}>
-      <Button bgColor="white" onClick={onOpen} placement="left">Plan my Tipsy Tour!</Button>
-      <Button bgColor="white" onClick={onOpenItinerary} placement="right">See Itinerary</Button>
-      </HStack>
       <div style={{ position: "absolute", top: "0", left: "0" }}>
       <VStack>
       <HStack>
@@ -283,6 +292,7 @@ function App() {
         isRound
         left="10px"
         top="10px"
+        zIndex={2}
         />
       </HStack>
       </VStack>
