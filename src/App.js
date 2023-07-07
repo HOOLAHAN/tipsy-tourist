@@ -363,7 +363,7 @@ function App() {
                 <Autocomplete>
                   <Input
                     type="text"
-                    placeholder="Start"
+                    placeholder="Start (e.g. Camden, UK)"
                     ref={startRef}
                     width="250px"
                   />
@@ -371,7 +371,7 @@ function App() {
                 <Autocomplete>
                   <Input
                     type="text"
-                    placeholder="Finish"
+                    placeholder="Finish (e.g. Wesminster, UK)"
                     ref={finishRef}
                     width="250px"
                   />
