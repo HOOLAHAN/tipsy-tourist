@@ -1,12 +1,14 @@
 import RouteAlert from "./components/RouteAlert";
 import ItineraryDrawer from './components/ItineraryDrawer';
+import Header from './components/Header';
+import PlanTripButtons from './components/PlanTripButtons';
+import TravelModeButtons from './components/TravelModeButtons';
 import { calculateRoute } from "./functions/calculateRoute";
 import { handlePubs, handleAttractions, handleCar, handleBicycling, handleWalking } from './functions/stateHandlers';
 
 import {
   Box,
   Button,
-  ButtonGroup,
   Flex,
   HStack,
   VStack,
@@ -25,12 +27,8 @@ import {
 } from "@chakra-ui/react";
 
 import {
-  FaLocationArrow,
   FaTimes,
   FaBeer,
-  FaCar,
-  FaWalking,
-  FaBicycle,
 } from "react-icons/fa"; // icons
 
 import { MdOutlineLocalDrink } from "react-icons/md";
@@ -114,6 +112,10 @@ function App() {
     }
   }
 
+  const onCenterMap = () => {
+    map.panTo(center);
+  };
+
   return (
     <Flex
       position="relative"
@@ -122,41 +124,12 @@ function App() {
       h="100vh"
       w="100vw"
     >
+    <Header onCenter={onCenterMap} />
     <Box 
     bg="white" 
     py={1} width="100%" zIndex={1}>
-      <Center>
-        <HStack spacing={2} alignItems="center">
-          <Image boxSize="40px" objectFit="cover" src={tipsyTouristLogo3} alt="logo" zIndex={1} />
-          <Heading color="#393f49">Tipsy Tourist</Heading>
-          <IconButton
-            bgColor="white"
-            aria-label="center back"
-            icon={<FaLocationArrow />}
-            isRound
-            onClick={() => map.panTo(center)}
-          />
-        </HStack>
-      </Center>
       <Center mt={1} mb={1}>
-        <Button
-          backgroundColor="#38A169"
-          color="white"
-          onClick={onOpen}
-          placement="left"
-          mr={2}
-          size="sm"
-          boxShadow="md"
-        >
-          Plan my Tipsy Tour!
-        </Button>
-        <Button 
-        onClick={onOpenItinerary} placement="right" size="sm" boxShadow="md"
-        backgroundColor="#38A169"
-        color="white"
-        >
-          See Itinerary
-        </Button>
+      <PlanTripButtons onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} />
       </Center>
     </Box>
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
@@ -267,49 +240,12 @@ function App() {
                     width="250px"
                   />
                 </Autocomplete>
-                <ButtonGroup>
-                  <IconButton
-                    aria-label="car"
-                    icon={
-                      <FaCar color={travelMethod === "DRIVING" ? "white" : "black"} />
-                    }
-                    isRound
-                    onClick={() => handleCar(setTravelMethod, setJourneyWarning)}
-                    style={{
-                      backgroundColor:
-                        travelMethod === "DRIVING" ? "#E53E3E" : "#EDF2F7",
-                      icon: travelMethod === "DRIVING" ? "white" : "black",
-                    }}
-                  />
-                  <IconButton
-                    aria-label="bike"
-                    icon={
-                      <FaBicycle
-                        color={travelMethod === "BICYCLING" ? "white" : "black"}
-                      />
-                    }
-                    isRound
-                    onClick={() => handleBicycling(setTravelMethod, setJourneyWarning)}
-                    style={{
-                      backgroundColor:
-                        travelMethod === "BICYCLING" ? "#FFBF00" : "#EDF2F7",
-                    }}
-                  />
-                  <IconButton
-                    aria-label="walk"
-                    icon={
-                      <FaWalking
-                        color={travelMethod === "WALKING" ? "white" : "black"}
-                      />
-                    }
-                    isRound
-                    onClick={() => handleWalking(setTravelMethod, setJourneyWarning)}
-                    style={{
-                      backgroundColor:
-                        travelMethod === "WALKING" ? "#38A169" : "#EDF2F7",
-                    }}
-                  />
-                </ButtonGroup>
+                <TravelModeButtons
+                  onCarClick={() => handleCar(setTravelMethod, setJourneyWarning)}
+                  onBikeClick={() => handleBicycling(setTravelMethod, setJourneyWarning)}
+                  onWalkClick={() => handleWalking(setTravelMethod, setJourneyWarning)}
+                  travelMethod={travelMethod}
+                />
               </VStack>
               <VStack spacing={3} mt={4} justifyContent="left">
                 <HStack>
