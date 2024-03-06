@@ -1,12 +1,7 @@
-import findPlotPoints from "./functions/findPlotPoints";
-import geocode from "./functions/geocode";
-import getAllPubs from "./functions/getAllPubs";
-import getAllAttractions from "./functions/getAllAttractions";
-import onlyUnique from "./functions/onlyUnique";
-import calculateTime from "./functions/calculateTime";
-import calculateDistance from "./functions/calculateDistance";
 import RouteAlert from "./components/RouteAlert";
 import ItineraryDrawer from './components/ItineraryDrawer';
+import { calculateRoute } from "./functions/calculateRoute";
+import { handlePubs, handleAttractions } from './functions/stateHandlers';
 
 import {
   Box,
@@ -104,85 +99,6 @@ function App() {
   // eslint-disable-next-line no-undef
   const directionsService = new google.maps.DirectionsService();
 
-  async function calculateRoute() {
-    if (startRef.current.value === "" || finishRef.current.value === "") {
-      return;
-    }
-    setJourneyWarning("walking");
-    const start = await geocode(startRef.current.value);
-    const end = await geocode(finishRef.current.value);
-
-    const pubPlotPoints = findPlotPoints(start, end, pubStops);
-    const attractionPlotPoints = findPlotPoints(start, end, attractionStops);
-
-    const pubData = await getAllPubs(pubPlotPoints);
-    const attractionData = await getAllAttractions(attractionPlotPoints);
-    const combinationArray = pubData.concat(attractionData);
-    const combinationArray2 = combinationArray.filter(
-      (location) => location !== undefined
-    );
-
-    const filteredCombinationArray = combinationArray2.filter(onlyUnique);
-
-    setCombinedStops(filteredCombinationArray);
-    
-    const waypoints = calculateWaypoints(pubData, attractionData);
-    let results = null;
-    try {
-      results = await directionsService.route({
-        origin: startRef.current.value,
-        destination: finishRef.current.value,
-        waypoints: waypoints,
-        optimizeWaypoints: true,
-        // eslint-disable-next-line no-undef
-        travelMode: google.maps.TravelMode[travelMethod],
-      });
-    } catch (error) {
-      console.log(error);
-      setJourneyWarning("non-viable");
-    }
-    
-    setDirectionsResponse(results);
-    setDistance(calculateDistance(results));
-    setTime(calculateTime(results));
-  }
-  
-  function calculateWaypoints(pubData, attractionData) {
-    const waypointsArray = [];
-    if (!pubData) {
-      return waypointsArray;
-    }
-    pubData.forEach((pub) => {
-      if (pub === undefined) {
-        setJourneyWarning("shortened");
-        return;
-      } else {
-        const obj = {
-          location: pub.geometry.location,
-          stopover: true,
-        };
-        waypointsArray.push(obj);
-      }
-    });
-    if (!attractionData) {
-      return waypointsArray;
-    }
-    attractionData.forEach((attraction) => {
-      if (attraction === undefined) {
-        setJourneyWarning("shortened");
-        return;
-      } else {
-        const obj = {
-          location: attraction.geometry.location,
-          stopover: true,
-        };
-        waypointsArray.push(obj);
-      }
-    });
-    
-    return waypointsArray;
-  }
-
   function clearRoute() {
     setCombinedStops([])
     setDirectionsResponse(null);
@@ -196,14 +112,6 @@ function App() {
     if (finishRef.current) {
       finishRef.current.value = "";
     }
-  }
-
-  function handlePubs(value) {
-    setPubStops(value);
-  }
-
-  function handleAttractions(value) {
-    setAttractionStops(value);
   }
 
   function handleCar() {
@@ -424,7 +332,7 @@ function App() {
                 <HStack>
                 <Text> Pubs: </Text>
                 <NumberInput
-                  onChange={handlePubs}
+                  onChange={(value) => handlePubs(setPubStops, value)}
                   defaultValue={1}
                   min={1}
                   max={travelMethod === "WALKING" ? 7 : 1}
@@ -440,7 +348,7 @@ function App() {
                   defaultValue={1}
                   min={1}
                   max={3}
-                  onChange={handleAttractions}
+                  onChange={(value) => handleAttractions(setAttractionStops, value)}
                   >
                   <NumberInputField width="80px" />
                   <NumberInputStepper>
@@ -466,7 +374,7 @@ function App() {
                   }
                   color="white"
                   type="submit"
-                  onClick={calculateRoute}
+                  onClick={(value) => calculateRoute(startRef, finishRef, pubStops, attractionStops, travelMethod, directionsService, setDirectionsResponse, setDistance, setTime, setCombinedStops, setJourneyWarning)}
                   width="310px"
                   left="5px"
                 >
