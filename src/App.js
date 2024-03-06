@@ -74,21 +74,6 @@ function App() {
   // eslint-disable-next-line no-undef
   const directionsService = new google.maps.DirectionsService();
 
-  // function clearRoute() {
-  //   setCombinedStops([])
-  //   setDirectionsResponse(null);
-  //   setDistance("");
-  //   setJourneyWarning("walking");
-  
-  //   if (startRef.current) {
-  //     startRef.current.value = "";
-  //   }
-  
-  //   if (finishRef.current) {
-  //     finishRef.current.value = "";
-  //   }
-  // }
-
   const onCenterMap = () => {
     map.panTo(center);
   };
