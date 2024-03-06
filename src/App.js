@@ -3,8 +3,10 @@ import ItineraryDrawer from './components/ItineraryDrawer';
 import Header from './components/Header';
 import PlanTripButtons from './components/PlanTripButtons';
 import TravelModeButtons from './components/TravelModeButtons';
+import PubAttractionSelectors from "./components/PubAttractionSelectors";
 import { calculateRoute } from "./functions/calculateRoute";
-import { handlePubs, handleAttractions, handleCar, handleBicycling, handleWalking } from './functions/stateHandlers';
+import { handleCar, handleBicycling, handleWalking } from './functions/stateHandlers';
+import StartFinishInput from './components/StartFinishInput';
 
 import {
   Box,
@@ -13,15 +15,9 @@ import {
   HStack,
   VStack,
   IconButton,
-  Input,
   SkeletonText,
   Text,
   Image,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   Heading,
   Center
 } from "@chakra-ui/react";
@@ -49,7 +45,6 @@ import {
   GoogleMap,
   Marker,
   InfoWindow,
-  Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
 import { useState, useRef, React } from "react";
@@ -224,22 +219,7 @@ function App() {
                   src={tipsyTouristLogo3}
                   alt="logo"
                 />
-                <Autocomplete>
-                  <Input
-                    type="text"
-                    placeholder="Start (e.g. Camden, UK)"
-                    ref={startRef}
-                    width="250px"
-                  />
-                </Autocomplete>
-                <Autocomplete>
-                  <Input
-                    type="text"
-                    placeholder="Finish (e.g. Westminster, UK)"
-                    ref={finishRef}
-                    width="250px"
-                  />
-                </Autocomplete>
+                <StartFinishInput startRef={startRef} finishRef={finishRef} />
                 <TravelModeButtons
                   onCarClick={() => handleCar(setTravelMethod, setJourneyWarning)}
                   onBikeClick={() => handleBicycling(setTravelMethod, setJourneyWarning)}
@@ -248,34 +228,13 @@ function App() {
                 />
               </VStack>
               <VStack spacing={3} mt={4} justifyContent="left">
-                <HStack>
-                <Text> Pubs: </Text>
-                <NumberInput
-                  onChange={(value) => handlePubs(setPubStops, value)}
-                  defaultValue={1}
-                  min={1}
-                  max={travelMethod === "WALKING" ? 7 : 1}
-                >
-                  <NumberInputField width="80px" />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-                <Text right="100px"> Attractions: </Text>
-                <NumberInput
-                  defaultValue={1}
-                  min={1}
-                  max={3}
-                  onChange={(value) => handleAttractions(setAttractionStops, value)}
-                  >
-                  <NumberInputField width="80px" />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-                </HStack>
+                <PubAttractionSelectors
+                  pubStops={pubStops}
+                  setPubStops={setPubStops}
+                  attractionStops={attractionStops}
+                  setAttractionStops={setAttractionStops}
+                  travelMethod={travelMethod}
+                />
                 <Button
                   leftIcon={
                     travelMethod === "DRIVING" || "BICYCLING" ? (
