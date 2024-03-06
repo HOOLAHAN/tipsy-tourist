@@ -2,6 +2,8 @@ import ItineraryDrawer from './components/ItineraryDrawer';
 import Header from './components/Header';
 import PlanTripButtons from './components/PlanTripButtons';
 import PlanDrawer from './components/PlanDrawer';
+import GoogleMapDisplay from './components/GoogleMapDisplay';
+import ActionButtonGroup from './components/ActionButtonGroup';
 import { calculateRoute } from "./functions/calculateRoute";
 import { handleCar, handleBicycling, handleWalking } from './functions/stateHandlers';
 import { clearRoute } from './functions/clearRoute';
@@ -9,26 +11,17 @@ import { clearRoute } from './functions/clearRoute';
 import {
   Box,
   Flex,
-  HStack,
   VStack,
-  IconButton,
   SkeletonText,
   Center
 } from "@chakra-ui/react";
-
-import {
-  FaTimes,
-} from "react-icons/fa"; // icons
 
 import tipsyTouristLogo3 from "./images/logo3.svg";
 
 import {
   useJsApiLoader,
-  GoogleMap,
-  Marker,
-  InfoWindow,
-  DirectionsRenderer,
 } from "@react-google-maps/api"; // provides 'is loaded'
+
 import { useState, useRef, React } from "react";
 
 const center = { lat: 51.5033, lng: -0.1196 };
@@ -95,78 +88,19 @@ function App() {
       </Center>
     </Box>
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
-        {/* Google Map Box */}
-        <GoogleMap
-        center={center}
-        zoom={15}
-        mapContainerStyle={{ width: "100%", height: "100%" }}
-        options={{
-          zoomControl: false,
-          streetViewControl: false,
-          mapTypeControl: false,
-          fullScreenControl: false,
-        }}
-        onLoad={(map) => setMap(map)}
-      >
-        {directionsResponse && (
-          <DirectionsRenderer 
-          directions={directionsResponse} 
-          markerOptions={{ visible: false }}
-          suppressMarkers={true}
-          />
-        )}
-        
-        { combinedStops.length > 0 && combinedStops.map((location) => {
-          if (!location.geometry || !location.geometry.location) {
-            return null;
-          }
-          return (
-            <Marker
-              key={location.id}
-              position={{
-                lat: location.geometry.location.lat,
-                lng: location.geometry.location.lng,
-              }}
-              onClick={() => {
-                setSelectedLocation(location);
-              }}
-            />
-          );
-        })}
-        {selectedLocation && (
-          <InfoWindow
-            position={{
-              lat: selectedLocation.geometry.location.lat,
-              lng: selectedLocation.geometry.location.lng,
-            }}
-            onCloseClick={() => {
-              setSelectedLocation(null);
-            }}
-          >
-            <div>
-              <strong><h3>{selectedLocation.name}</h3></strong>
-              <p>{selectedLocation.vicinity}</p>
-              <p>Status: {selectedLocation.opening_hours.open_now ? 'Open' : 'Closed'}</p>
-            </div>
-          </InfoWindow>
-        )}
-      </GoogleMap>
+        <GoogleMapDisplay
+          center={center}
+          map={map}
+          setMap={setMap}
+          directionsResponse={directionsResponse}
+          combinedStops={combinedStops}
+          setSelectedLocation={setSelectedLocation}
+          selectedLocation={selectedLocation}
+        />
       </Box>
       <div style={{ position: "absolute", top: "0", left: "0" }}>
       <VStack>
-      <HStack>
-      <IconButton
-        bgColor="white"
-        aria-label="center back"
-        icon={<FaTimes />}
-        onClick={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
-        placement="left"
-        isRound
-        left="10px"
-        top="10px"
-        zIndex={2}
-        />
-      </HStack>
+      <ActionButtonGroup clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)} />
       </VStack>
       </div>
       <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
