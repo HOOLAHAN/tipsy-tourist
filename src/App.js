@@ -1,7 +1,7 @@
 import RouteAlert from "./components/RouteAlert";
 import ItineraryDrawer from './components/ItineraryDrawer';
 import { calculateRoute } from "./functions/calculateRoute";
-import { handlePubs, handleAttractions } from './functions/stateHandlers';
+import { handlePubs, handleAttractions, handleCar, handleBicycling, handleWalking } from './functions/stateHandlers';
 
 import {
   Box,
@@ -114,25 +114,8 @@ function App() {
     }
   }
 
-  function handleCar() {
-    setTravelMethod("DRIVING");
-    setJourneyWarning("driving");
-    console.log("selected car");
-  }
-
-  function handleBicycling() {
-    setTravelMethod("BICYCLING");
-    setJourneyWarning("bicycling");
-  }
-
-  function handleWalking() {
-    setTravelMethod("WALKING");
-    setJourneyWarning("walking");
-  }
-  // styling
   return (
     <Flex
-      // background styling
       position="relative"
       flexDirection="column"
       alignItems="center"
@@ -291,7 +274,7 @@ function App() {
                       <FaCar color={travelMethod === "DRIVING" ? "white" : "black"} />
                     }
                     isRound
-                    onClick={handleCar}
+                    onClick={() => handleCar(setTravelMethod, setJourneyWarning)}
                     style={{
                       backgroundColor:
                         travelMethod === "DRIVING" ? "#E53E3E" : "#EDF2F7",
@@ -306,7 +289,7 @@ function App() {
                       />
                     }
                     isRound
-                    onClick={handleBicycling}
+                    onClick={() => handleBicycling(setTravelMethod, setJourneyWarning)}
                     style={{
                       backgroundColor:
                         travelMethod === "BICYCLING" ? "#FFBF00" : "#EDF2F7",
@@ -320,7 +303,7 @@ function App() {
                       />
                     }
                     isRound
-                    onClick={handleWalking}
+                    onClick={() => handleWalking(setTravelMethod, setJourneyWarning)}
                     style={{
                       backgroundColor:
                         travelMethod === "WALKING" ? "#38A169" : "#EDF2F7",

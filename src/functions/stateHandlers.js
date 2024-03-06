@@ -6,4 +6,18 @@ export function handleAttractions(setAttractionStops, value) {
   setAttractionStops(value);
 }
 
-// Add other state handling functions (e.g., handleCar, handleBicycling, handleWalking)...
+export const handleCar = (setTravelMethod, setJourneyWarning) => {
+  setTravelMethod("DRIVING");
+  setJourneyWarning("driving");
+  console.log("Selected car");
+};
+
+export const handleBicycling = (setTravelMethod, setJourneyWarning) => {
+  setTravelMethod("BICYCLING");
+  setJourneyWarning("bicycling");
+};
+
+export const handleWalking = (setTravelMethod, setJourneyWarning) => {
+  setTravelMethod("WALKING");
+  setJourneyWarning("walking");
+};
