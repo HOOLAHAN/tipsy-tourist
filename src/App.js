@@ -72,17 +72,9 @@ function App() {
   };
 
   return (
-    <Flex
-      position="relative"
-      flexDirection="column"
-      alignItems="center"
-      h="100vh"
-      w="100vw"
-    >
+    <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw" >
     <Header onCenter={onCenterMap} />
-    <Box 
-    bg="white" 
-    py={1} width="100%" zIndex={1}>
+    <Box bg="white" py={1} width="100%" zIndex={1}>
       <Center mt={1} mb={1}>
       <PlanTripButtons onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} />
       </Center>
