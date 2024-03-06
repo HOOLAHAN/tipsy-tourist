@@ -1,44 +1,26 @@
-import RouteAlert from "./components/RouteAlert";
 import ItineraryDrawer from './components/ItineraryDrawer';
 import Header from './components/Header';
 import PlanTripButtons from './components/PlanTripButtons';
-import TravelModeButtons from './components/TravelModeButtons';
-import PubAttractionSelectors from "./components/PubAttractionSelectors";
+import PlanDrawer from './components/PlanDrawer';
 import { calculateRoute } from "./functions/calculateRoute";
 import { handleCar, handleBicycling, handleWalking } from './functions/stateHandlers';
-import StartFinishInput from './components/StartFinishInput';
+import { clearRoute } from './functions/clearRoute';
 
 import {
   Box,
-  Button,
   Flex,
   HStack,
   VStack,
   IconButton,
   SkeletonText,
-  Text,
-  Image,
-  Heading,
   Center
 } from "@chakra-ui/react";
 
 import {
   FaTimes,
-  FaBeer,
 } from "react-icons/fa"; // icons
 
-import { MdOutlineLocalDrink } from "react-icons/md";
-
 import tipsyTouristLogo3 from "./images/logo3.svg";
-
-import {
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton
-} from '@chakra-ui/react'
 
 import {
   useJsApiLoader,
@@ -92,20 +74,20 @@ function App() {
   // eslint-disable-next-line no-undef
   const directionsService = new google.maps.DirectionsService();
 
-  function clearRoute() {
-    setCombinedStops([])
-    setDirectionsResponse(null);
-    setDistance("");
-    setJourneyWarning("walking");
+  // function clearRoute() {
+  //   setCombinedStops([])
+  //   setDirectionsResponse(null);
+  //   setDistance("");
+  //   setJourneyWarning("walking");
   
-    if (startRef.current) {
-      startRef.current.value = "";
-    }
+  //   if (startRef.current) {
+  //     startRef.current.value = "";
+  //   }
   
-    if (finishRef.current) {
-      finishRef.current.value = "";
-    }
-  }
+  //   if (finishRef.current) {
+  //     finishRef.current.value = "";
+  //   }
+  // }
 
   const onCenterMap = () => {
     map.panTo(center);
@@ -192,7 +174,7 @@ function App() {
         bgColor="white"
         aria-label="center back"
         icon={<FaTimes />}
-        onClick={clearRoute}
+        onClick={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
         placement="left"
         isRound
         left="10px"
@@ -203,91 +185,33 @@ function App() {
       </VStack>
       </div>
       <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
-      <>
-      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerBody>
-            <Heading color="#393f49" align="center" top="20px">
-              Tipsy Tourist
-            </Heading>
-              <VStack spacing={2} justifyContent="space-between">
-                <Image
-                  boxSize="60px"
-                  objectFit="cover"
-                  src={tipsyTouristLogo3}
-                  alt="logo"
-                />
-                <StartFinishInput startRef={startRef} finishRef={finishRef} />
-                <TravelModeButtons
-                  onCarClick={() => handleCar(setTravelMethod, setJourneyWarning)}
-                  onBikeClick={() => handleBicycling(setTravelMethod, setJourneyWarning)}
-                  onWalkClick={() => handleWalking(setTravelMethod, setJourneyWarning)}
-                  travelMethod={travelMethod}
-                />
-              </VStack>
-              <VStack spacing={3} mt={4} justifyContent="left">
-                <PubAttractionSelectors
-                  pubStops={pubStops}
-                  setPubStops={setPubStops}
-                  attractionStops={attractionStops}
-                  setAttractionStops={setAttractionStops}
-                  travelMethod={travelMethod}
-                />
-                <Button
-                  leftIcon={
-                    travelMethod === "DRIVING" || "BICYCLING" ? (
-                      <MdOutlineLocalDrink />
-                    ) : (
-                      <FaBeer />
-                    )
-                  }
-                  backgroundColor={
-                    travelMethod === "DRIVING"
-                      ? "#E53E3E"
-                      : travelMethod === "BICYCLING"
-                      ? "#FFBF00"
-                      : "#38A169"
-                  }
-                  color="white"
-                  type="submit"
-                  onClick={(value) => calculateRoute(startRef, finishRef, pubStops, attractionStops, travelMethod, directionsService, setDirectionsResponse, setDistance, setTime, setCombinedStops, setJourneyWarning)}
-                  width="310px"
-                  left="5px"
-                >
-                  {travelMethod === "DRIVING"
-                    ? "Plan my Sober Sejour"
-                    : travelMethod === "WALKING"
-                    ? "Plan my Tipsy Tour"
-                    : "Plan my best bike route"}
-                </Button>{" "}
-              </VStack>
-              <VStack mt={4}>
-                <Text>
-                  Total distance ({travelMethod.toLowerCase()}): {distance}{" "}
-                </Text>
-                <Text>
-                  Total time ({travelMethod.toLowerCase()}): {time}{" "}
-                </Text>
-                <VStack>
-                </VStack>
-              </VStack>
-              <RouteAlert error={journeyWarning} />
-          </DrawerBody>
-          <DrawerFooter justifyContent={"space-between"}>
-              <Button 
-                colorScheme="green"
-                type="submit"
-                onClick={clearRoute}
-              >
-                Clear Route
-                </Button>
-            <Button colorScheme="green" onClick={onClose}>Done</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </>
+      <PlanDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        startRef={startRef}
+        finishRef={finishRef}
+        handleCar={handleCar}
+        handleBicycling={handleBicycling}
+        handleWalking={handleWalking}
+        travelMethod={travelMethod}
+        setTravelMethod={setTravelMethod}
+        setJourneyWarning={setJourneyWarning}
+        pubStops={pubStops}
+        setPubStops={setPubStops}
+        attractionStops={attractionStops}
+        setAttractionStops={setAttractionStops}
+        calculateRoute={calculateRoute}
+        directionsService={directionsService}
+        setDirectionsResponse={setDirectionsResponse}
+        setDistance={setDistance}
+        setTime={setTime}
+        setCombinedStops={setCombinedStops}
+        journeyWarning={journeyWarning}
+        distance={distance}
+        time={time}
+        clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
+        tipsyTouristLogo3={tipsyTouristLogo3}
+      />
     </Flex>
   );
 }
