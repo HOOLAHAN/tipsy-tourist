@@ -1,4 +1,4 @@
-import { details } from "../functions/details";
+import details from "../functions/details";
 
 import {
   Box,
