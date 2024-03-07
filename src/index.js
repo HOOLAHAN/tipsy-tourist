@@ -8,6 +8,14 @@ import App from "./App";
 
 // Define your theme configuration
 const theme = extendTheme({
+  styles: {
+    global: {
+      // Targeting the Google Maps Autocomplete dropdown
+      '.pac-container': {
+        zIndex: '9999', // Ensure it's above most other components
+      },
+    },
+  },
   fonts: {
     heading: `'Raleway', sans-serif`,
     body: `'Raleway', sans-serif`,
