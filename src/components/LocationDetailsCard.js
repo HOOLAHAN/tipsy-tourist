@@ -1,4 +1,4 @@
-import Details from "../functions/Details";
+import details from "../functions/details";
 
 import {
   Box,
@@ -70,7 +70,7 @@ const LocationDetailsCard = ({ place_id }) => {
 
   async function getDetails(place_id) {
     if (!locationCardData.place_id) {
-      const place = await Details(place_id);
+      const place = await details(place_id);
       const locationData = place.result;
       setLocationCardData(locationData);
       return locationData;

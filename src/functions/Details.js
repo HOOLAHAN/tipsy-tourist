@@ -1,4 +1,4 @@
-async function Details(place_id) {
+async function details(place_id) {
   const resp = await fetch(`https://t5jalxqqsb.execute-api.eu-west-2.amazonaws.com/get-details`, {
     method: "post",
     headers: {
@@ -13,4 +13,4 @@ async function Details(place_id) {
   return data.data;
 }
 
-export default Details;
+export default details;
