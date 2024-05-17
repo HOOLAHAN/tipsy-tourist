@@ -1,28 +1,32 @@
 // components/PlanTripButtons.js
-import { Button, Center } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 
-const PlanTripButtons = ({ onPlanTrip, onSeeItinerary }) => (
-  <Center mt={1} mb={1}>
-    <Button
-      backgroundColor="#38A169"
-      color="white"
-      onClick={onPlanTrip}
-      mr={2}
-      size="sm"
-      boxShadow="md"
-    >
-      Plan my Tipsy Tour!
-    </Button>
-    <Button
-      onClick={onSeeItinerary}
-      size="sm"
-      boxShadow="md"
-      backgroundColor="#38A169"
-      color="white"
-    >
-      See Itinerary
-    </Button>
-  </Center>
+const PlanTripButtons = ({ onPlanTrip, onSeeItinerary, position }) => (
+  <>
+    {position === "left" ? (
+      <Button
+        backgroundColor="#38A169"
+        color="white"
+        onClick={onPlanTrip}
+        size="sm"
+        boxShadow="md"
+        mr={2}
+      >
+        Plan my Tipsy Tour!
+      </Button>
+    ) : (
+      <Button
+        onClick={onSeeItinerary}
+        size="sm"
+        boxShadow="md"
+        backgroundColor="#38A169"
+        color="white"
+        ml={2}
+      >
+        See Itinerary
+      </Button>
+    )}
+  </>
 );
 
 export default PlanTripButtons;

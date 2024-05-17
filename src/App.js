@@ -1,9 +1,9 @@
+// App.js
 import ItineraryDrawer from './components/ItineraryDrawer';
 import Header from './components/Header';
-import PlanTripButtons from './components/PlanTripButtons';
-import PlanDrawer from './components/PlanDrawer';
 import GoogleMapDisplay from './components/GoogleMapDisplay';
 import ActionButtonGroup from './components/ActionButtonGroup';
+import PlanDrawer from './components/PlanDrawer';
 import { calculateRoute } from "./functions/calculateRoute";
 import { handleCar, handleBicycling, handleWalking } from './functions/stateHandlers';
 import { clearRoute } from './functions/clearRoute';
@@ -13,7 +13,6 @@ import {
   Flex,
   VStack,
   SkeletonText,
-  Center
 } from "@chakra-ui/react";
 
 import tipsyTouristLogo3 from "./images/logo3.svg";
@@ -73,12 +72,7 @@ function App() {
 
   return (
     <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw" >
-    <Header onCenter={onCenterMap} />
-    <Box bg="white" py={1} width="100%" zIndex={1}>
-      <Center mt={1} mb={1}>
-      <PlanTripButtons onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} />
-      </Center>
-    </Box>
+      <Header onCenter={onCenterMap} onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} />
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         <GoogleMapDisplay
           center={center}
