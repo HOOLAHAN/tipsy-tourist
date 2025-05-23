@@ -1,12 +1,12 @@
 // App.js
-import ItineraryDrawer from './components/ItineraryDrawer';
+import ItineraryDrawer from './components/itinerary/ItineraryDrawer';
 import Header from './components/Header';
-import GoogleMapDisplay from './components/GoogleMapDisplay';
-import ActionButtonGroup from './components/ActionButtonGroup';
-import PlanDrawer from './components/PlanDrawer';
-import { calculateRoute } from "./functions/calculateRoute";
-import { handleCar, handleBicycling, handleWalking } from './functions/stateHandlers';
-import { clearRoute } from './functions/clearRoute';
+import GoogleMapDisplay from './components/map/GoogleMapDisplay';
+import ActionButtonGroup from './components/common/ActionButtonGroup';
+import PlanDrawer from './components/plan/PlanDrawer';
+import { calculateRoute } from "./features/routing/calculateRoute";
+import { handleCar, handleBicycling, handleWalking } from './features/routing/stateHandlers';
+import { clearRoute } from './features/routing/clearRoute';
 
 import {
   Box,
