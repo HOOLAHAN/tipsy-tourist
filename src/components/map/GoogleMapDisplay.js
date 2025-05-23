@@ -6,7 +6,7 @@ import {
   InfoWindow,
   DirectionsRenderer,
 } from "@react-google-maps/api";
-import { customMapStyle } from './styles/customMapStyle';
+import { mapThemes } from './styles/customMapStyle';
 
 const GoogleMapDisplay = ({
   center,
@@ -15,14 +15,15 @@ const GoogleMapDisplay = ({
   directionsResponse,
   combinedStops,
   setSelectedLocation,
-  selectedLocation
+  selectedLocation,
+  mapTheme = "neon" // default fallback
 }) => (
   <GoogleMap
     center={center}
     zoom={15}
     mapContainerStyle={{ width: "100%", height: "100%" }}
     options={{
-      styles: customMapStyle,
+      styles: mapThemes[mapTheme],
       zoomControl: false,
       streetViewControl: false,
       mapTypeControl: false,

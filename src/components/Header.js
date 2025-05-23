@@ -9,12 +9,13 @@ import {
   useBreakpointValue,
   HStack,
   Tooltip,
+  Select
 } from "@chakra-ui/react";
 import { FaLocationArrow } from "react-icons/fa";
 import tipsyTouristLogo3 from "../assets/images/logo3.svg";
 import PlanTripButtons from "./plan/PlanTripButtons";
 
-const Header = ({ onCenter, onPlanTrip, onSeeItinerary }) => {
+const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
@@ -57,7 +58,21 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary }) => {
               boxShadow="sm"
             />
           </Tooltip>
+          <Select
+            size="sm"
+            bg="white"
+            value={mapTheme}
+            onChange={(e) => setMapTheme(e.target.value)}
+            w="auto"
+            shadow="sm"
+          >
+            <option value="classic">Classic</option>
+            <option value="dark">Dark</option>
+            <option value="plain">Plain</option>
+            <option value="neon">Neon</option>
+          </Select>
         </HStack>
+
       </Flex>
     </Box>
   );

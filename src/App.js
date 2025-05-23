@@ -47,6 +47,7 @@ function App() {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenItinerary, setIsOpenItinerary] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [mapTheme, setMapTheme] = useState("neon");
 
   const onClose = () => setIsOpen(false)
   const onOpen = () => setIsOpen(true)
@@ -72,7 +73,7 @@ function App() {
 
   return (
     <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw" >
-      <Header onCenter={onCenterMap} onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} />
+      <Header onCenter={onCenterMap} onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} setMapTheme={setMapTheme}/>
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         <GoogleMapDisplay
           center={center}
@@ -82,6 +83,7 @@ function App() {
           combinedStops={combinedStops}
           setSelectedLocation={setSelectedLocation}
           selectedLocation={selectedLocation}
+          mapTheme={mapTheme}
         />
       </Box>
       <div style={{ position: "absolute", top: "0", left: "0" }}>
