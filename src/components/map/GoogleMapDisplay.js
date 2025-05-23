@@ -1,11 +1,12 @@
-// components/map/GoogleMapDisplay.js
-import React from 'react';
+// src/components/map/GoogleMapDisplay.js
+
 import {
   GoogleMap,
   Marker,
   InfoWindow,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+import { customMapStyle } from './styles/customMapStyle';
 
 const GoogleMapDisplay = ({
   center,
@@ -21,29 +22,29 @@ const GoogleMapDisplay = ({
     zoom={15}
     mapContainerStyle={{ width: "100%", height: "100%" }}
     options={{
+      styles: customMapStyle,
       zoomControl: false,
       streetViewControl: false,
       mapTypeControl: false,
-      fullScreenControl: false,
+      fullscreenControl: false,
     }}
     onLoad={(map) => setMap(map)}
   >
     {directionsResponse && (
       <DirectionsRenderer 
-      directions={directionsResponse} 
-      markerOptions={{ visible: false }}
-      suppressMarkers={true}
+        directions={directionsResponse} 
+        markerOptions={{ visible: false }}
+        suppressMarkers={true}
       />
     )}
     {combinedStops.length > 0 && combinedStops.map((location, index) => {
       if (!location.geometry || !location.geometry.location) {
         return null;
       }
-      // Use a template string to ensure the key is a string and unique
       const key = `marker-${location.id}-${index}`;
       return (
         <Marker
-          key={key} // Updated to use the `key` variable
+          key={key}
           position={{
             lat: location.geometry.location.lat,
             lng: location.geometry.location.lng,
