@@ -22,11 +22,11 @@ import {
 
 import { StarIcon, LinkIcon, PhoneIcon, CalendarIcon } from "@chakra-ui/icons";
 
-import { useState, React } from "react";
+import { useState } from "react";
 
 import { FaHome } from "react-icons/fa"; // icons
 
-import tipsyTouristLogo3 from "../../images/logo3.svg";
+import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
 
 function convertDay(day) {
   if (day === 0) {

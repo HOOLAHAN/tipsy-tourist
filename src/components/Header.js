@@ -1,7 +1,7 @@
 // components/Header.js
 import { Box, Center, HStack, VStack, IconButton, Image, Heading, useBreakpointValue } from "@chakra-ui/react";
 import { FaLocationArrow } from "react-icons/fa";
-import tipsyTouristLogo3 from "../images/logo3.svg";
+import tipsyTouristLogo3 from "../assets/images/logo3.svg";
 import PlanTripButtons from './plan/PlanTripButtons';
 
 const Header = ({ onCenter, onPlanTrip, onSeeItinerary }) => {

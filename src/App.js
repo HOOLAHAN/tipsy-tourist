@@ -15,7 +15,7 @@ import {
   SkeletonText,
 } from "@chakra-ui/react";
 
-import tipsyTouristLogo3 from "./images/logo3.svg";
+import tipsyTouristLogo3 from "./assets/images/logo3.svg";
 
 import {
   useJsApiLoader,

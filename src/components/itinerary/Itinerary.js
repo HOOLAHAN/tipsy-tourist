@@ -11,7 +11,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 
-import tipsyTouristLogo3 from "../../images/logo3.svg";
+import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
 import LocationDetailsCard from "./LocationDetailsCard";
 
 const NewAccordionItem = (data) => {
