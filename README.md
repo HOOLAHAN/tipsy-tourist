@@ -46,7 +46,7 @@ npm install
 ```
 Create a .env.local file in the root of the directory and add in this code:
 ```
-REACT_APP_GOOGLE_MAPS_API_KEY= "<YOUR-API-KEY>
+REACT_APP_GOOGLE_MAPS_API_KEY="<YOUR-API-KEY>"
 ```
 
 # Running locally
@@ -61,18 +61,76 @@ serve -s build
 
 Open [http://localhost:3000](http://localhost:3000) to view the app in your browser.
 
-## Demo
+# Folder Structure
 
-Tipsy Toursit has a single page with 4 main components (map, search form, itinerary, location details). When you first land on the website you will see the map component which fills the screen and a button to open up the search form which provides many options for the user to tailor their requirements. Once the user has provided a start-point, end-point, number of pubs/attractions and clicked the search button the route will be displayed.
+```
+src/
+├── assets/
+│   └── images/
+│       ├── logo.png
+│       └── logo3.svg
+│
+├── components/
+│   ├── common/
+│   │   ├── ActionButtonGroup.js
+│   │   ├── RouteAlert.js
+│   │   ├── ShowHideStops.js
+│   │   └── TravelModeButtons.js
+│   ├── itinerary/
+│   │   ├── Itinerary.js
+│   │   ├── ItineraryDrawer.js
+│   │   └── LocationDetailsCard.js
+│   ├── map/
+│   │   ├── GoogleMapDisplay.js
+│   │   └── StartFinishInput.js
+│   ├── plan/
+│   │   ├── PlanDrawer.js
+│   │   ├── PlanTripButtons.js
+│   │   └── PubAttractionSelectors.js
+│   └── Header.js
+│
+├── features/
+│   └── routing/
+│       ├── calculateRoute.js
+│       ├── clearRoute.js
+│       ├── stateHandlers.js
+│       └── calculateWaypoints.js
+│
+├── lib/
+│   ├── geocode.js
+│   ├── details.js
+│   ├── Locations.js
+│   ├── Attractions.js
+│   ├── getPub.js
+│   ├── getAttraction.js
+│   ├── getAllPubs.js
+│   └── getAllAttractions.js
+│
+├── utils/
+│   ├── calculateDistance.js
+│   ├── calculateTime.js
+│   ├── findPlotPoints.js
+│   ├── onlyUnique.js
+│
+├── theme/
+│   └── index.js
+│
+├── App.js
+└── index.js
+```
+
+# Demo
+
+Tipsy Tourist has a single page with 4 main components (map, search form, itinerary, location details). When you first land on the website you will see the map component which fills the screen and a button to open up the search form which provides many options for the user to tailor their requirements. Once the user has provided a start-point, end-point, number of pubs/attractions and clicked the search button the route will be displayed.
 
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/searching_route.png)
 
 The user can minimise the search form and view the route full screen.
-  
+
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/route.png)
 
 The user can click a button which opens up a side drawer containing the route itinerary.
-  
+
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/itinerary.png)
 
 The user can click on any of the locations in the itinerary to find out more details.
@@ -82,9 +140,9 @@ The user can click on any of the locations in the itinerary to find out more det
 The UX has been designed so that it will work well both on mobile devices as well as computer screens:
 
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_search.png)
-  
+
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_route.png)
-  
+
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_itinerary.png)
-  
+
 ![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_location_details.png)
