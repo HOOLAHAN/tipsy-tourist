@@ -1,4 +1,4 @@
-// components/plan/PlanTripButtons.js
+// components/header/PlanTripButtons.js
 
 import { Button } from "@chakra-ui/react";
 import { useUITheme } from "../../context/ThemeContext";

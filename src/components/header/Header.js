@@ -1,4 +1,4 @@
-// src/components/Header.js
+// src/components/header/Header.js
 
 import {
   Box,
