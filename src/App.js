@@ -104,7 +104,10 @@ function App() {
         </Box>
         <div style={{ position: "absolute", top: "0", left: "0" }}>
         <VStack>
-        <ActionButtonGroup clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)} />
+        <ActionButtonGroup
+          clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
+          onCenter={onCenterMap}
+        />
         </VStack>
         </div>
         <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
