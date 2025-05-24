@@ -34,6 +34,7 @@ const ItineraryDrawer = ({ isOpen, onClose, combinedStops }) => {
             _hover={{ bg: theme.accent }}
             onClick={onClose}
             boxShadow="md"
+            size={"sm"}
           >
             Done
           </Button>
