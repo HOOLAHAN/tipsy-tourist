@@ -133,26 +133,30 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
         <Collapse in={isOpen} animateOpacity>
           <VStack mt={4} spacing={3} align="stretch">
             <Box {...buttonStyle} as="button" onClick={onPlanTrip}>
-              Plan my Tipsy Tour!
+              Plan Tipsy Tour!
             </Box>
             <Box {...buttonStyle} as="button" onClick={onSeeItinerary}>
-              See Itinerary
+              Itinerary
             </Box>
             <Select
-              value={mapTheme}
-              onChange={(e) => setMapTheme(e.target.value)}
+              variant="filled"
               bg={theme.primary}
               color="white"
               borderRadius="md"
               border={`1px solid ${theme.accent}`}
               px={3}
-              py={1.5}
+              h="32px"
+              minH="32px"
               shadow="md"
+              cursor="pointer"
+              value={mapTheme}
+              onChange={(e) => setMapTheme(e.target.value)}
               _hover={{ bg: theme.accent }}
               _focus={{
                 outline: "none",
                 bg: theme.accent,
                 borderColor: theme.accent,
+                boxShadow: "0 0 0 2px rgba(255,255,255,0.3)",
               }}
             >
               <option value="classic">Classic</option>
