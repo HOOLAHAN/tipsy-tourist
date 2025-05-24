@@ -1,6 +1,6 @@
 // App.js
 import ItineraryDrawer from './components/itinerary/ItineraryDrawer';
-import Header from './components/Header';
+import Header from './components/header/Header';
 import GoogleMapDisplay from './components/map/GoogleMapDisplay';
 import ActionButtonGroup from './components/common/ActionButtonGroup';
 import PlanDrawer from './components/plan/PlanDrawer';

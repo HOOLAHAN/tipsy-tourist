@@ -133,6 +133,8 @@ function PlanDrawer({
               }
               width="100%"
               shadow="md"
+              size="sm"
+              m={2}
             >
               {planButtonText}
             </Button>
@@ -156,6 +158,7 @@ function PlanDrawer({
             color="white"
             _hover={{ bg: theme.accent }}
             onClick={clearRoute}
+            size={"sm"}
           >
             Clear Route
           </Button>
@@ -164,6 +167,7 @@ function PlanDrawer({
             color="white"
             _hover={{ bg: theme.accent }}
             onClick={onClose}
+            size={"sm"}
           >
             Done
           </Button>

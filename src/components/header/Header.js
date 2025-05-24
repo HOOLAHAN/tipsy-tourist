@@ -12,14 +12,14 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { FaLocationArrow } from "react-icons/fa";
-import PlanTripButtons from "./plan/PlanTripButtons";
-import { useUITheme } from "../context/ThemeContext";
+import PlanTripButtons from "./PlanTripButtons";
+import { useUITheme } from "../../context/ThemeContext";
 
 // Static imports of theme-specific logos
-import logoClassic from "../assets/images/logo_classic.svg";
-import logoDark from "../assets/images/logo_dark.svg";
-import logoPlain from "../assets/images/logo_plain.svg";
-import logoNeon from "../assets/images/logo_neon.svg";
+import logoClassic from "../../assets/images/logo_classic.svg";
+import logoDark from "../../assets/images/logo_dark.svg";
+import logoPlain from "../../assets/images/logo_plain.svg";
+import logoNeon from "../../assets/images/logo_neon.svg";
 
 const logoMap = {
   classic: logoClassic,
