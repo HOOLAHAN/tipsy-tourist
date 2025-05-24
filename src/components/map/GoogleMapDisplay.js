@@ -17,7 +17,7 @@ const GoogleMapDisplay = ({
   combinedStops,
   setSelectedLocation,
   selectedLocation,
-  mapTheme = "neon"
+  mapTheme = "classic"
 }) => {
   const theme = useUITheme();
 

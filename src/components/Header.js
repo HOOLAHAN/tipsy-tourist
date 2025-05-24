@@ -12,13 +12,26 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { FaLocationArrow } from "react-icons/fa";
-import tipsyTouristLogo3 from "../assets/images/logo3.svg";
 import PlanTripButtons from "./plan/PlanTripButtons";
 import { useUITheme } from "../context/ThemeContext";
+
+// Static imports of theme-specific logos
+import logoClassic from "../assets/images/logo_classic.svg";
+import logoDark from "../assets/images/logo_dark.svg";
+import logoPlain from "../assets/images/logo_plain.svg";
+import logoNeon from "../assets/images/logo_neon.svg";
+
+const logoMap = {
+  classic: logoClassic,
+  dark: logoDark,
+  plain: logoPlain,
+  neon: logoNeon,
+};
 
 const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const theme = useUITheme();
+  const logoSrc = logoMap[mapTheme] || logoNeon;
 
   return (
     <Box
@@ -40,7 +53,7 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
         gap={3}
       >
         <HStack spacing={3} align="center">
-          <Image src={tipsyTouristLogo3} alt="logo" boxSize="50px" />
+          <Image src={logoSrc} alt="logo" boxSize="50px" />
           <Heading size={isMobile ? "md" : "lg"} color={theme.text}>
             Tipsy Tourist
           </Heading>

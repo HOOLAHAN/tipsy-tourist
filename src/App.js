@@ -23,7 +23,7 @@ import {
   useJsApiLoader,
 } from "@react-google-maps/api"; // provides 'is loaded'
 
-import { useState, useRef, React } from "react";
+import { useState, useRef, React, useEffect } from "react";
 
 const center = { lat: 51.5033, lng: -0.1196 };
 
@@ -49,12 +49,17 @@ function App() {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenItinerary, setIsOpenItinerary] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [mapTheme, setMapTheme] = useState("neon");
+  const getInitialTheme = () => localStorage.getItem("mapTheme") || "classic";
+  const [mapTheme, setMapTheme] = useState(getInitialTheme);
 
   const onClose = () => setIsOpen(false)
   const onOpen = () => setIsOpen(true)
   const onCloseItinerary = () => setIsOpenItinerary(false)
   const onOpenItinerary = () => setIsOpenItinerary(true)
+
+  useEffect(() => {
+    localStorage.setItem("mapTheme", mapTheme);
+  }, [mapTheme]);
 
   /** @type React.MutableRefObject<HTMLInputElement> */
   const startRef = useRef();
@@ -73,10 +78,18 @@ function App() {
     map.panTo(center);
   };
 
+  
+
   return (
     <ThemeContext.Provider value={uiThemes[mapTheme]}>
-      <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw" >
-        <Header onCenter={onCenterMap} onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} setMapTheme={setMapTheme}/>
+      <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw">
+        <Header
+          onCenter={onCenterMap}
+          onPlanTrip={onOpen}
+          onSeeItinerary={onOpenItinerary}
+          setMapTheme={setMapTheme}
+          mapTheme={mapTheme} // make sure this is passed down
+        />
         <Box position="absolute" left={0} top={0} h="100%" w="100%">
           <GoogleMapDisplay
             center={center}
