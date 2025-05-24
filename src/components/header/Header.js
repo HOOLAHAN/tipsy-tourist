@@ -8,13 +8,12 @@ import {
   useBreakpointValue,
   HStack,
   VStack,
-  Tooltip,
-  Select,
   Collapse,
 } from "@chakra-ui/react";
-import { FaLocationArrow, FaBars } from "react-icons/fa";
+import {  FaBars } from "react-icons/fa";
 import PlanTripButtons from "./PlanTripButtons";
 import { useUITheme } from "../../context/ThemeContext";
+import ThemeMenu from "./ThemeMenu";
 
 import logoClassic from "../../assets/images/logo_classic.svg";
 import logoDark from "../../assets/images/logo_dark.svg";
@@ -96,34 +95,7 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
           <HStack spacing={3} align="center">
             <PlanTripButtons onPlanTrip={onPlanTrip} onSeeItinerary={onSeeItinerary} position="left" />
             <PlanTripButtons onPlanTrip={onPlanTrip} onSeeItinerary={onSeeItinerary} position="right" />
-            <Select
-              size="sm"
-              variant="filled"
-              bg={theme.primary}
-              color="white"
-              borderRadius="md"
-              cursor="pointer"
-              border={`1px solid ${theme.accent}`}
-              px={3}
-              py={1.5}
-              minW="110px"
-              maxW="140px"
-              value={mapTheme}
-              onChange={(e) => setMapTheme(e.target.value)}
-              shadow="md"
-              _hover={{ bg: theme.accent }}
-              _focus={{
-                outline: "none",
-                bg: theme.accent,
-                borderColor: theme.accent,
-                boxShadow: "0 0 0 2px rgba(255,255,255,0.3)",
-              }}
-            >
-              <option value="classic">Classic</option>
-              <option value="dark">Dark</option>
-              <option value="plain">Plain</option>
-              <option value="neon">Neon</option>
-            </Select>
+            <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
           </HStack>
         )}
       </Flex>
@@ -133,37 +105,12 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
         <Collapse in={isOpen} animateOpacity>
           <VStack mt={4} spacing={3} align="stretch">
             <Box {...buttonStyle} as="button" onClick={onPlanTrip}>
-              Plan Tipsy Tour!
+              Plan my Tipsy Tour!
             </Box>
             <Box {...buttonStyle} as="button" onClick={onSeeItinerary}>
               Itinerary
             </Box>
-            <Select
-              variant="filled"
-              bg={theme.primary}
-              color="white"
-              borderRadius="md"
-              border={`1px solid ${theme.accent}`}
-              px={3}
-              h="32px"
-              minH="32px"
-              shadow="md"
-              cursor="pointer"
-              value={mapTheme}
-              onChange={(e) => setMapTheme(e.target.value)}
-              _hover={{ bg: theme.accent }}
-              _focus={{
-                outline: "none",
-                bg: theme.accent,
-                borderColor: theme.accent,
-                boxShadow: "0 0 0 2px rgba(255,255,255,0.3)",
-              }}
-            >
-              <option value="classic">Classic</option>
-              <option value="dark">Dark</option>
-              <option value="plain">Plain</option>
-              <option value="neon">Neon</option>
-            </Select>
+            <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} fullWidth />
           </VStack>
         </Collapse>
       )}
