@@ -7,6 +7,8 @@ import PlanDrawer from './components/plan/PlanDrawer';
 import { calculateRoute } from "./features/routing/calculateRoute";
 import { handleCar, handleBicycling, handleWalking } from './features/routing/stateHandlers';
 import { clearRoute } from './features/routing/clearRoute';
+import { ThemeContext } from "./context/ThemeContext";
+import { uiThemes } from "./theme/uiThemes";
 
 import {
   Box,
@@ -72,54 +74,56 @@ function App() {
   };
 
   return (
-    <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw" >
-      <Header onCenter={onCenterMap} onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} setMapTheme={setMapTheme}/>
-      <Box position="absolute" left={0} top={0} h="100%" w="100%">
-        <GoogleMapDisplay
-          center={center}
-          map={map}
-          setMap={setMap}
-          directionsResponse={directionsResponse}
-          combinedStops={combinedStops}
-          setSelectedLocation={setSelectedLocation}
-          selectedLocation={selectedLocation}
-          mapTheme={mapTheme}
+    <ThemeContext.Provider value={uiThemes[mapTheme]}>
+      <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw" >
+        <Header onCenter={onCenterMap} onPlanTrip={onOpen} onSeeItinerary={onOpenItinerary} setMapTheme={setMapTheme}/>
+        <Box position="absolute" left={0} top={0} h="100%" w="100%">
+          <GoogleMapDisplay
+            center={center}
+            map={map}
+            setMap={setMap}
+            directionsResponse={directionsResponse}
+            combinedStops={combinedStops}
+            setSelectedLocation={setSelectedLocation}
+            selectedLocation={selectedLocation}
+            mapTheme={mapTheme}
+          />
+        </Box>
+        <div style={{ position: "absolute", top: "0", left: "0" }}>
+        <VStack>
+        <ActionButtonGroup clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)} />
+        </VStack>
+        </div>
+        <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
+        <PlanDrawer
+          isOpen={isOpen}
+          onClose={onClose}
+          startRef={startRef}
+          finishRef={finishRef}
+          handleCar={handleCar}
+          handleBicycling={handleBicycling}
+          handleWalking={handleWalking}
+          travelMethod={travelMethod}
+          setTravelMethod={setTravelMethod}
+          setJourneyWarning={setJourneyWarning}
+          pubStops={pubStops}
+          setPubStops={setPubStops}
+          attractionStops={attractionStops}
+          setAttractionStops={setAttractionStops}
+          calculateRoute={calculateRoute}
+          directionsService={directionsService}
+          setDirectionsResponse={setDirectionsResponse}
+          setDistance={setDistance}
+          setTime={setTime}
+          setCombinedStops={setCombinedStops}
+          journeyWarning={journeyWarning}
+          distance={distance}
+          time={time}
+          clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
+          tipsyTouristLogo3={tipsyTouristLogo3}
         />
-      </Box>
-      <div style={{ position: "absolute", top: "0", left: "0" }}>
-      <VStack>
-      <ActionButtonGroup clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)} />
-      </VStack>
-      </div>
-      <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
-      <PlanDrawer
-        isOpen={isOpen}
-        onClose={onClose}
-        startRef={startRef}
-        finishRef={finishRef}
-        handleCar={handleCar}
-        handleBicycling={handleBicycling}
-        handleWalking={handleWalking}
-        travelMethod={travelMethod}
-        setTravelMethod={setTravelMethod}
-        setJourneyWarning={setJourneyWarning}
-        pubStops={pubStops}
-        setPubStops={setPubStops}
-        attractionStops={attractionStops}
-        setAttractionStops={setAttractionStops}
-        calculateRoute={calculateRoute}
-        directionsService={directionsService}
-        setDirectionsResponse={setDirectionsResponse}
-        setDistance={setDistance}
-        setTime={setTime}
-        setCombinedStops={setCombinedStops}
-        journeyWarning={journeyWarning}
-        distance={distance}
-        time={time}
-        clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
-        tipsyTouristLogo3={tipsyTouristLogo3}
-      />
-    </Flex>
+      </Flex>
+    </ThemeContext.Provider>
   );
 }
 

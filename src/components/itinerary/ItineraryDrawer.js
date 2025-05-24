@@ -1,7 +1,6 @@
-//src/components/itinerary/ItineraryDrawer.js
+// src/components/itinerary/ItineraryDrawer.js
 
 import Itinerary from "./Itinerary";
-
 import {
   Drawer,
   DrawerOverlay,
@@ -11,20 +10,31 @@ import {
   DrawerHeader,
   DrawerFooter,
   Button,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
+import { useUITheme } from "../../context/ThemeContext";
 
 const ItineraryDrawer = ({ isOpen, onClose, combinedStops }) => {
+  const theme = useUITheme();
+
   return (
     <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent bg={theme.bg} color={theme.text}>
         <DrawerCloseButton />
+        <DrawerHeader borderBottomWidth="1px" borderColor={theme.accent}>
+          Itinerary:
+        </DrawerHeader>
         <DrawerBody>
-          <DrawerHeader>Itinerary:</DrawerHeader>
           <Itinerary combinedStops={combinedStops} />
         </DrawerBody>
-        <DrawerFooter>
-          <Button colorScheme="green" onClick={onClose}>
+        <DrawerFooter borderTopWidth="1px" borderColor={theme.accent}>
+          <Button
+            bg={theme.primary}
+            color="white"
+            _hover={{ bg: theme.accent }}
+            onClick={onClose}
+            boxShadow="md"
+          >
             Done
           </Button>
         </DrawerFooter>

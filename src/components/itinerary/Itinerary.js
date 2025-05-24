@@ -1,4 +1,4 @@
-//src/components/itinerary/Itinerary.js
+// src/components/itinerary/Itinerary.js
 
 import {
   Accordion,
@@ -10,11 +10,11 @@ import {
   Text,
   Image,
 } from "@chakra-ui/react";
-
+import { useUITheme } from "../../context/ThemeContext";
 import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
 import LocationDetailsCard from "./LocationDetailsCard";
 
-const NewAccordionItem = (data) => {
+const NewAccordionItem = (data, theme) => {
   let imageLink = "";
   const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
   if (data.photos === undefined) {
@@ -24,35 +24,39 @@ const NewAccordionItem = (data) => {
   }
 
   return (
-    <AccordionItem w="100%">
+    <AccordionItem w="100%" borderColor={theme.accent}>
       <h2>
-        <AccordionButton>
+        <AccordionButton _expanded={{ bg: theme.accent, color: "white" }}>
           <Box as="span" flex="1" textAlign="left">
-            <Text as="b">{data.name}</Text>
+            <Text as="b" color={theme.text}>{data.name}</Text>
           </Box>
           <AccordionIcon />
         </AccordionButton>
       </h2>
-      <AccordionPanel pb={4}>
-        <Box>
-          <Image w="200px" src={imageLink}></Image>
+      <AccordionPanel pb={4} bg={theme.bg}>
+        <Box mb={2}>
+          <Image w="200px" src={imageLink} borderRadius="md" />
         </Box>
-          <LocationDetailsCard place_id={data.place_id} />
+        <LocationDetailsCard place_id={data.place_id} />
       </AccordionPanel>
     </AccordionItem>
   );
 };
 
 const Itinerary = ({ combinedStops }) => {
-  if (combinedStops.length > 0 ) {
+  const theme = useUITheme();
+
+  if (combinedStops.length > 0) {
     return (
-      <Accordion allowToggle defaultIndex={[0]} bgColor="white">
+      <Accordion allowToggle defaultIndex={[0]} bg={theme.bg} borderRadius="md" p={2}>
         {combinedStops.map((result) => (
-          <NewAccordionItem key={result.place_id} {...result} />
+          <NewAccordionItem key={result.place_id} {...result} theme={theme} />
         ))}
       </Accordion>
     );
   }
+
+  return null;
 };
 
 export default Itinerary;
