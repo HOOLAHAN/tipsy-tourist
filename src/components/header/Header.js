@@ -54,9 +54,27 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
       >
         <HStack spacing={3} align="center">
           <Image src={logoSrc} alt="logo" boxSize="50px" />
-          <Heading size={isMobile ? "md" : "lg"} color={theme.primary}>
-            Tipsy Tourist
-          </Heading>
+            <Heading size={isMobile ? "md" : "lg"}>
+              {mapTheme === "classic" ? (
+                <>
+                  <Box as="span" color="#EA4335">T</Box>
+                  <Box as="span" color="#FBBC05">i</Box>
+                  <Box as="span" color="#4285F4">p</Box>
+                  <Box as="span" color="#34A853">s</Box>
+                  <Box as="span" color="#EA4335">y</Box>{" "}
+                  <Box as="span" color="#FBBC05">T</Box>
+                  <Box as="span" color="#4285F4">o</Box>
+                  <Box as="span" color="#34A853">u</Box>
+                  <Box as="span" color="#EA4335">r</Box>
+                  <Box as="span" color="#FBBC05">i</Box>
+                  <Box as="span" color="#4285F4">s</Box>
+                  <Box as="span" color="#34A853">t</Box>
+                </>
+              ) : (
+                <Box as="span" color={theme.primary}>Tipsy Tourist</Box>
+              )}
+            </Heading>
+
         </HStack>
 
         <HStack spacing={3}>
