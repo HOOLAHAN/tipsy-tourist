@@ -39,8 +39,9 @@ const PubAttractionSelectors = ({
         min={1}
         max={travelMethod === "WALKING" ? 7 : 1}
         onChange={(value) => handlePubs(setPubStops, value)}
+        maxW="60px"
       >
-        <NumberInputField {...inputStyle} />
+        <NumberInputField {...inputStyle} width="60px" />
         <NumberInputStepper>
           <NumberIncrementStepper />
           <NumberDecrementStepper />
@@ -53,8 +54,9 @@ const PubAttractionSelectors = ({
         min={1}
         max={3}
         onChange={(value) => handleAttractions(setAttractionStops, value)}
+        maxW="130px"
       >
-        <NumberInputField {...inputStyle} />
+        <NumberInputField {...inputStyle} width="60px" />
         <NumberInputStepper>
           <NumberIncrementStepper />
           <NumberDecrementStepper />

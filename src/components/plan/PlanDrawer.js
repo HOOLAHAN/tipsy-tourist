@@ -21,6 +21,19 @@ import { MdOutlineLocalDrink } from "react-icons/md";
 import { FaBeer } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 
+// Static imports of logos
+import logoClassic from "../../assets/images/logo_classic.svg";
+import logoDark from "../../assets/images/logo_dark.svg";
+import logoPlain from "../../assets/images/logo_plain.svg";
+import logoNeon from "../../assets/images/logo_neon.svg";
+
+const logoMap = {
+  classic: logoClassic,
+  dark: logoDark,
+  plain: logoPlain,
+  neon: logoNeon,
+};
+
 function PlanDrawer({
   isOpen,
   onClose,
@@ -46,9 +59,10 @@ function PlanDrawer({
   distance,
   time,
   clearRoute,
-  tipsyTouristLogo3,
+  mapTheme = "classic",
 }) {
   const theme = useUITheme();
+  const logoSrc = logoMap[mapTheme] || logoClassic;
 
   const planButtonIcon =
     travelMethod === "DRIVING" || travelMethod === "BICYCLING"
@@ -67,7 +81,7 @@ function PlanDrawer({
       <DrawerOverlay />
       <DrawerContent bg={theme.bg} color={theme.text}>
         <DrawerCloseButton />
-        <DrawerBody>
+        <DrawerBody px={6}>
           <Heading textAlign="center" color={theme.text} mt={4}>
             Tipsy Tourist
           </Heading>
@@ -75,8 +89,8 @@ function PlanDrawer({
           <VStack spacing={2} mt={4}>
             <Image
               boxSize="60px"
-              objectFit="cover"
-              src={tipsyTouristLogo3}
+              objectFit="contain"
+              src={logoSrc}
               alt="logo"
             />
             <StartFinishInput startRef={startRef} finishRef={finishRef} />

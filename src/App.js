@@ -134,6 +134,7 @@ function App() {
           time={time}
           clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
           tipsyTouristLogo3={tipsyTouristLogo3}
+          mapTheme={mapTheme}
         />
       </Flex>
     </ThemeContext.Provider>
