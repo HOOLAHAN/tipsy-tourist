@@ -54,7 +54,7 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
       >
         <HStack spacing={3} align="center">
           <Image src={logoSrc} alt="logo" boxSize="50px" />
-          <Heading size={isMobile ? "md" : "lg"} color={theme.text}>
+          <Heading size={isMobile ? "md" : "lg"} color={theme.primary}>
             Tipsy Tourist
           </Heading>
         </HStack>
@@ -74,26 +74,39 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
             <IconButton
               icon={<FaLocationArrow />}
               aria-label="Re-center map"
-              size="md"
+              size="sm"
               isRound
               bg={theme.primary}
               color="white"
               _hover={{ bg: theme.accent }}
               onClick={onCenter}
               boxShadow="sm"
+              border={`1px solid ${theme.accent}`}
             />
           </Tooltip>
           <Select
             size="sm"
-            bg={theme.bg}
-            color={theme.text}
-            borderColor={theme.accent}
+            variant="filled"
+            bg={theme.primary}
+            color="white"
+            borderRadius="md"
+            cursor="pointer"
+            border={`1px solid ${theme.accent}`}
+            px={3}
+            py={1.5}
+            w="fit-content"
+            minW="100px"
+            maxW="140px"
             value={mapTheme}
             onChange={(e) => setMapTheme(e.target.value)}
-            w="auto"
-            shadow="sm"
-            _hover={{ borderColor: theme.accent }}
-            _focus={{ borderColor: theme.accent }}
+            shadow="md"
+            _hover={{ bg: theme.accent }}
+            _focus={{
+              outline: "none",
+              bg: theme.accent,
+              borderColor: theme.accent,
+              boxShadow: "0 0 0 2px rgba(255,255,255,0.3)",
+            }}
           >
             <option value="classic">Classic</option>
             <option value="dark">Dark</option>
