@@ -9,7 +9,8 @@ import { clearRoute } from './features/routing/clearRoute';
 import { ThemeContext } from "./context/ThemeContext";
 import { uiThemes } from "./theme/uiThemes";
 import ThemeMenu from './components/header/ThemeMenu';
-
+import { FaListUl } from "react-icons/fa";
+import { Tooltip, IconButton } from "@chakra-ui/react";
 
 import {
   Box,
@@ -123,20 +124,20 @@ function App() {
           <VStack spacing={3}>
             <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
             {directionsResponse && (
-              <Box
-                as="button"
-                px={4}
-                py={2}
-                borderRadius="md"
-                bg={uiThemes[mapTheme].primary}
-                color="white"
-                _hover={{ bg: uiThemes[mapTheme].accent }}
-                border={`1px solid ${uiThemes[mapTheme].accent}`}
-                shadow="md"
-                onClick={onOpenItinerary}
-              >
-                Itinerary
-              </Box>
+              <Tooltip label="Itinerary" hasArrow>
+                <IconButton
+                  aria-label="Itinerary"
+                  icon={<FaListUl />}
+                  onClick={onOpenItinerary}
+                  isRound
+                  bg={uiThemes[mapTheme].primary}
+                  color="white"
+                  _hover={{ bg: uiThemes[mapTheme].accent }}
+                  border={`1px solid ${uiThemes[mapTheme].accent}`}
+                  boxShadow="md"
+                  size="sm"
+                />
+              </Tooltip>
             )}
           </VStack>
         </Box>

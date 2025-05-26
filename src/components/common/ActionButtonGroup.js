@@ -19,6 +19,7 @@ const ActionButtonGroup = ({ clearRoute, onCenter }) => {
           color="white"
           _hover={{ bg: theme.accent }}
           boxShadow="md"
+          size="sm"
         />
       </Tooltip>
       <Tooltip label="Clear route" hasArrow>
@@ -31,6 +32,7 @@ const ActionButtonGroup = ({ clearRoute, onCenter }) => {
           color="white"
           _hover={{ bg: theme.accent }}
           boxShadow="md"
+          size="sm"
         />
       </Tooltip>
     </VStack>

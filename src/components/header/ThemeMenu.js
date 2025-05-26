@@ -26,7 +26,7 @@ const ThemeMenu = ({ mapTheme, setMapTheme }) => {
           _hover={{ bg: theme.accent }}
           border={`1px solid ${theme.accent}`}
           shadow="md"
-          size="md"
+          size="sm"
           isRound
         />
       </Tooltip>
