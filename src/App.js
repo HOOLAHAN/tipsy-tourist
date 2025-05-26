@@ -124,20 +124,22 @@ function App() {
         <Box position="absolute" top={4} right={4} zIndex="1000">
           <VStack spacing={3}>
             <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
-            <Box
-              as="button"
-              px={4}
-              py={2}
-              borderRadius="md"
-              bg={uiThemes[mapTheme].primary}
-              color="white"
-              _hover={{ bg: uiThemes[mapTheme].accent }}
-              border={`1px solid ${uiThemes[mapTheme].accent}`}
-              shadow="md"
-              onClick={onOpenItinerary}
-            >
-              Itinerary
-            </Box>
+            {directionsResponse && (
+              <Box
+                as="button"
+                px={4}
+                py={2}
+                borderRadius="md"
+                bg={uiThemes[mapTheme].primary}
+                color="white"
+                _hover={{ bg: uiThemes[mapTheme].accent }}
+                border={`1px solid ${uiThemes[mapTheme].accent}`}
+                shadow="md"
+                onClick={onOpenItinerary}
+              >
+                Itinerary
+              </Box>
+            )}
           </VStack>
         </Box>
         <Box position="absolute" left={0} top={0} h="100%" w="100%">

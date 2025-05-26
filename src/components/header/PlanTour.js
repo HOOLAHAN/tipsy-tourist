@@ -37,6 +37,7 @@ const PlanTour = ({
   distance,
   time,
   clearRoute,
+  onAfterSubmit
 }) => {
   const theme = useUITheme();
 
@@ -74,8 +75,8 @@ const PlanTour = ({
           bg={theme.primary}
           _hover={{ bg: theme.accent }}
           color="white"
-          onClick={() =>
-            calculateRoute(
+          onClick={async () => {
+            await calculateRoute(
               startRef,
               finishRef,
               pubStops,
@@ -87,8 +88,9 @@ const PlanTour = ({
               setTime,
               setCombinedStops,
               setJourneyWarning
-            )
-          }
+            );
+            onAfterSubmit?.();
+          }}
           width="100%"
           shadow="md"
           size="sm"

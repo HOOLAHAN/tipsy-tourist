@@ -145,6 +145,7 @@ const Header = ({
               )
             }
             mapTheme={mapTheme}
+            onAfterSubmit={onToggle}
           />
         </VStack>
       </Collapse>
