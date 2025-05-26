@@ -8,7 +8,9 @@ import {
   HStack,
   VStack,
   Collapse,
+  useOutsideClick
 } from "@chakra-ui/react";
+import { useRef } from "react";
 import { FaBars } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 import PlanTour from "./PlanTour";
@@ -56,6 +58,14 @@ const Header = ({
   const { isOpen, onToggle } = useDisclosure();
   const theme = useUITheme();
   const logoSrc = logoMap[mapTheme] || logoNeon;
+  const collapseRef = useRef();
+  useOutsideClick({
+    ref: collapseRef,
+    handler: () => {
+      if (isOpen) onToggle();
+    },
+  });
+
 
   return (
     <Box
@@ -69,6 +79,7 @@ const Header = ({
       boxShadow="sm"
       px={4}
       py={3}
+      borderBottomRadius="lg"
     >
       {/* Top row with logo and burger */}
       <Flex justify="space-between" align="center" wrap="wrap">
@@ -108,7 +119,7 @@ const Header = ({
       </Flex>
 
       {/* Dropdown section */}
-      <Collapse in={isOpen} animateOpacity>
+      <Collapse ref={collapseRef} in={isOpen} animateOpacity>
         <VStack mt={4} spacing={3} align="stretch">
           <PlanTour
             startRef={startRef}
