@@ -1,5 +1,5 @@
 // App.js
-import ItineraryDrawer from './components/itinerary/ItineraryDrawer';
+import ItineraryModal from './components/itinerary/ItineraryModal';
 import Header from './components/header/Header';
 import GoogleMapDisplay from './components/map/GoogleMapDisplay';
 import ActionButtonGroup from './components/common/ActionButtonGroup';
@@ -171,7 +171,7 @@ function App() {
           />
         </VStack>
         </div>
-        <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
+        <ItineraryModal isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
       </Flex>
     </ThemeContext.Provider>
   );
