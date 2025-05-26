@@ -31,7 +31,8 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
 
   setCombinedStops(filteredCombinationArray);
   
-  const waypoints = calculateWaypoints(pubData, attractionData);
+  const waypoints = calculateWaypoints(pubData, attractionData, setJourneyWarning);
+
   let results = null;
   try {
     results = await directionsService.route({
