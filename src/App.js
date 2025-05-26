@@ -52,6 +52,8 @@ function App() {
 
   const onCloseItinerary = () => setIsOpenItinerary(false)
   const onOpenItinerary = () => setIsOpenItinerary(true)
+  const directionsRendererRef = useRef(null);
+
 
   useEffect(() => {
     localStorage.setItem("mapTheme", mapTheme);
@@ -105,7 +107,19 @@ function App() {
           journeyWarning={journeyWarning}
           distance={distance}
           time={time}
-          clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
+          clearRoute={() =>
+            clearRoute(
+              setCombinedStops,
+              setDirectionsResponse,
+              setDistance,
+              setTime,
+              setJourneyWarning,
+              startRef,
+              finishRef,
+              directionsRendererRef
+            )
+          }
+          directionsRendererRef={directionsRendererRef}
         />
 
         <Box position="absolute" left={0} top={0} h="100%" w="100%">
@@ -122,10 +136,21 @@ function App() {
         </Box>
         <div style={{ position: "absolute", top: "0", left: "0" }}>
         <VStack>
-        <ActionButtonGroup
-          clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
-          onCenter={onCenterMap}
-        />
+          <ActionButtonGroup
+            clearRoute={() =>
+              clearRoute(
+                setCombinedStops,
+                setDirectionsResponse,
+                setDistance,
+                setTime,
+                setJourneyWarning,
+                startRef,
+                finishRef,
+                directionsRendererRef
+              )
+            }
+            onCenter={onCenterMap}
+          />
         </VStack>
         </div>
         <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />

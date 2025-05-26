@@ -29,12 +29,22 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 
 // Render the app with BrowserRouter and ChakraProvider using the defined theme
+
+// Uncomment the following lines if you want to use React.StrictMode (in dev mode only)
+// root.render(
+//   <React.StrictMode>
+//     <BrowserRouter>
+//       <ChakraProvider theme={theme}>
+//         <App />
+//       </ChakraProvider>
+//     </BrowserRouter>
+//   </React.StrictMode>
+// );
+
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ChakraProvider theme={theme}>
-        <App />
-      </ChakraProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <ChakraProvider theme={theme}>
+      <App />
+    </ChakraProvider>
+  </BrowserRouter>
 );

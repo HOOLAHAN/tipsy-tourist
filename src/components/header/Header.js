@@ -52,6 +52,7 @@ const Header = ({
   distance,
   time,
   clearRoute,
+  directionsRendererRef,
 }) => {
   const { isOpen, onToggle } = useDisclosure();
   const theme = useUITheme();
@@ -147,7 +148,18 @@ const Header = ({
             journeyWarning={journeyWarning}
             distance={distance}
             time={time}
-            clearRoute={clearRoute}
+            clearRoute={() =>
+              clearRoute(
+                setCombinedStops,
+                setDirectionsResponse,
+                setDistance,
+                setTime,
+                setJourneyWarning,
+                startRef,
+                finishRef,
+                directionsRendererRef
+              )
+            }
             mapTheme={mapTheme}
           />
         </VStack>

@@ -1,5 +1,3 @@
-// src/components/map/GoogleMapDisplay.js
-
 import {
   GoogleMap,
   Marker,
@@ -21,6 +19,8 @@ const GoogleMapDisplay = ({
 }) => {
   const theme = useUITheme();
 
+  console.log("Rendering route:", directionsResponse);
+
   return (
     <GoogleMap
       center={center}
@@ -33,32 +33,31 @@ const GoogleMapDisplay = ({
         mapTypeControl: false,
         fullscreenControl: false,
       }}
-      onLoad={(map) => setMap(map)}
+      onLoad={(mapInstance) => setMap(mapInstance)}
     >
       {directionsResponse && (
         <DirectionsRenderer
+          key={JSON.stringify(directionsResponse?.routes?.[0]?.overview_polyline?.points || "")}
           directions={directionsResponse}
-          markerOptions={{ visible: false }}
           suppressMarkers={true}
         />
       )}
 
-      {combinedStops.length > 0 &&
-        combinedStops.map((location, index) => {
-          if (!location.geometry || !location.geometry.location) return null;
 
-          const key = `marker-${location.id}-${index}`;
-          return (
-            <Marker
-              key={key}
-              position={{
-                lat: location.geometry.location.lat,
-                lng: location.geometry.location.lng,
-              }}
-              onClick={() => setSelectedLocation(location)}
-            />
-          );
-        })}
+      {combinedStops.map((location, index) => {
+        if (!location.geometry || !location.geometry.location) return null;
+
+        return (
+          <Marker
+            key={`marker-${location.id || index}`}
+            position={{
+              lat: location.geometry.location.lat,
+              lng: location.geometry.location.lng,
+            }}
+            onClick={() => setSelectedLocation(location)}
+          />
+        );
+      })}
 
       {selectedLocation && (
         <InfoWindow
