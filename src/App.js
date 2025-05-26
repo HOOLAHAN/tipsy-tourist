@@ -76,8 +76,6 @@ function App() {
     map.panTo(center);
   };
 
-  
-
   return (
     <ThemeContext.Provider value={uiThemes[mapTheme]}>
       <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw">
