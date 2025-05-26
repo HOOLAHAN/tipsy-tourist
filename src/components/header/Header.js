@@ -59,13 +59,16 @@ const Header = ({
   const theme = useUITheme();
   const logoSrc = logoMap[mapTheme] || logoNeon;
   const collapseRef = useRef();
+  const buttonRef = useRef();
+  
   useOutsideClick({
     ref: collapseRef,
-    handler: () => {
-      if (isOpen) onToggle();
+    handler: (e) => {
+      if (isOpen && !buttonRef.current.contains(e.target)) {
+        onToggle();
+      }
     },
   });
-
 
   return (
     <Box
@@ -108,10 +111,14 @@ const Header = ({
         </HStack>
 
         <IconButton
+          ref={buttonRef}
           icon={<FaBars />}
           aria-label="Menu"
           size="md"
-          onClick={onToggle}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
           variant="ghost"
           color={theme.primary}
           ml={2}
@@ -119,9 +126,10 @@ const Header = ({
       </Flex>
 
       {/* Dropdown section */}
-      <Collapse ref={collapseRef} in={isOpen} animateOpacity>
-        <VStack mt={4} spacing={3} align="stretch">
-          <PlanTour
+      <Collapse in={isOpen} animateOpacity>
+        <Box ref={collapseRef}>
+          <VStack mt={4} spacing={3} align="stretch">
+            <PlanTour
             startRef={startRef}
             finishRef={finishRef}
             handleCar={handleCar}
@@ -159,6 +167,7 @@ const Header = ({
             onAfterSubmit={onToggle}
           />
         </VStack>
+        </Box>
       </Collapse>
     </Box>
   );
