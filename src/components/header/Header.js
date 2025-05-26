@@ -73,6 +73,8 @@ const Header = ({
   return (
     <Box
       as="header"
+      mt={4}
+      borderRadius="lg"
       position="sticky"
       top={0}
       zIndex="999"
@@ -82,7 +84,6 @@ const Header = ({
       boxShadow="sm"
       px={4}
       py={3}
-      borderBottomRadius="lg"
     >
       {/* Top row with logo and burger */}
       <Flex justify="space-between" align="center" wrap="wrap">
