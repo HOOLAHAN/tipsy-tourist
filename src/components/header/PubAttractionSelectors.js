@@ -1,6 +1,7 @@
 // components/header/PubAttractionSelectors.js
 
 import {
+  VStack,
   HStack,
   Text,
   NumberInput,
@@ -32,37 +33,40 @@ const PubAttractionSelectors = ({
   };
 
   return (
-    <HStack>
-      <Text color={theme.text}>Pubs:</Text>
-      <NumberInput
-        value={pubStops}
-        min={1}
-        max={travelMethod === "WALKING" ? 7 : 1}
-        onChange={(value) => handlePubs(setPubStops, value)}
-        maxW="60px"
-      >
-        <NumberInputField {...inputStyle} width="60px" />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
-
-      <Text color={theme.text}>Attractions:</Text>
-      <NumberInput
-        value={attractionStops}
-        min={1}
-        max={3}
-        onChange={(value) => handleAttractions(setAttractionStops, value)}
-        maxW="130px"
-      >
-        <NumberInputField {...inputStyle} width="60px" />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
-    </HStack>
+    <VStack>
+      <HStack>
+        <Text color={theme.text}>Pubs:</Text>
+        <NumberInput
+          value={pubStops}
+          min={1}
+          max={travelMethod === "WALKING" ? 7 : 1}
+          onChange={(value) => handlePubs(setPubStops, value)}
+          maxW="60px"
+        >
+          <NumberInputField {...inputStyle} width="60px" />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </HStack>
+      <HStack>
+        <Text color={theme.text}>Attractions:</Text>
+        <NumberInput
+          value={attractionStops}
+          min={1}
+          max={3}
+          onChange={(value) => handleAttractions(setAttractionStops, value)}
+          maxW="130px"
+        >
+          <NumberInputField {...inputStyle} width="60px" />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </HStack>
+    </VStack>
   );
 };
 
