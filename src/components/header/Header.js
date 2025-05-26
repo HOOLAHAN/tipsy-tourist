@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { FaBars } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
-import ThemeMenu from "./ThemeMenu";
 import PlanTour from "./PlanTour";
 
 import logoClassic from "../../assets/images/logo_classic.svg";
@@ -57,16 +56,6 @@ const Header = ({
   const { isOpen, onToggle } = useDisclosure();
   const theme = useUITheme();
   const logoSrc = logoMap[mapTheme] || logoNeon;
-
-  const buttonStyle = {
-    w: "100%",
-    borderRadius: "md",
-    bg: theme.primary,
-    color: "white",
-    _hover: { bg: theme.accent },
-    border: `1px solid ${theme.accent}`,
-    shadow: "md",
-  };
 
   return (
     <Box
@@ -121,11 +110,6 @@ const Header = ({
       {/* Dropdown section */}
       <Collapse in={isOpen} animateOpacity>
         <VStack mt={4} spacing={3} align="stretch">
-          <Box {...buttonStyle} as="button" onClick={onSeeItinerary}>
-            Itinerary
-          </Box>
-          <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} fullWidth />
-
           <PlanTour
             startRef={startRef}
             finishRef={finishRef}

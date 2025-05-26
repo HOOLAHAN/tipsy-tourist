@@ -8,6 +8,8 @@ import { handleCar, handleBicycling, handleWalking } from './features/routing/st
 import { clearRoute } from './features/routing/clearRoute';
 import { ThemeContext } from "./context/ThemeContext";
 import { uiThemes } from "./theme/uiThemes";
+import ThemeMenu from './components/header/ThemeMenu';
+
 
 import {
   Box,
@@ -16,11 +18,9 @@ import {
   SkeletonText,
 } from "@chakra-ui/react";
 
-// import tipsyTouristLogo3 from "./assets/images/logo3.svg";
-
 import {
   useJsApiLoader,
-} from "@react-google-maps/api"; // provides 'is loaded'
+} from "@react-google-maps/api";
 
 import { useState, useRef, React, useEffect } from "react";
 
@@ -121,7 +121,25 @@ function App() {
           }
           directionsRendererRef={directionsRendererRef}
         />
-
+        <Box position="absolute" top={4} right={4} zIndex="1000">
+          <VStack spacing={3}>
+            <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
+            <Box
+              as="button"
+              px={4}
+              py={2}
+              borderRadius="md"
+              bg={uiThemes[mapTheme].primary}
+              color="white"
+              _hover={{ bg: uiThemes[mapTheme].accent }}
+              border={`1px solid ${uiThemes[mapTheme].accent}`}
+              shadow="md"
+              onClick={onOpenItinerary}
+            >
+              Itinerary
+            </Box>
+          </VStack>
+        </Box>
         <Box position="absolute" left={0} top={0} h="100%" w="100%">
           <GoogleMapDisplay
             center={center}
