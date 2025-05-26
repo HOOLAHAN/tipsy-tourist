@@ -82,7 +82,6 @@ const Header = ({
       color={theme.text}
       backdropFilter="blur(6px)"
       boxShadow="sm"
-      px={4}
       py={3}
     >
       {/* Top row with logo and burger */}
