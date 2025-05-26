@@ -3,7 +3,6 @@ import ItineraryDrawer from './components/itinerary/ItineraryDrawer';
 import Header from './components/header/Header';
 import GoogleMapDisplay from './components/map/GoogleMapDisplay';
 import ActionButtonGroup from './components/common/ActionButtonGroup';
-import PlanDrawer from './components/plan/PlanDrawer';
 import { calculateRoute } from "./features/routing/calculateRoute";
 import { handleCar, handleBicycling, handleWalking } from './features/routing/stateHandlers';
 import { clearRoute } from './features/routing/clearRoute';
@@ -17,7 +16,7 @@ import {
   SkeletonText,
 } from "@chakra-ui/react";
 
-import tipsyTouristLogo3 from "./assets/images/logo3.svg";
+// import tipsyTouristLogo3 from "./assets/images/logo3.svg";
 
 import {
   useJsApiLoader,
@@ -46,14 +45,11 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [journeyWarning, setJourneyWarning] = useState("walking");
-  const [isOpen, setIsOpen] = useState(false)
   const [isOpenItinerary, setIsOpenItinerary] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const getInitialTheme = () => localStorage.getItem("mapTheme") || "classic";
   const [mapTheme, setMapTheme] = useState(getInitialTheme);
 
-  const onClose = () => setIsOpen(false)
-  const onOpen = () => setIsOpen(true)
   const onCloseItinerary = () => setIsOpenItinerary(false)
   const onOpenItinerary = () => setIsOpenItinerary(true)
 
@@ -85,35 +81,9 @@ function App() {
       <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw">
         <Header
           onCenter={onCenterMap}
-          onPlanTrip={onOpen}
           onSeeItinerary={onOpenItinerary}
           setMapTheme={setMapTheme}
-          mapTheme={mapTheme} // make sure this is passed down
-        />
-        <Box position="absolute" left={0} top={0} h="100%" w="100%">
-          <GoogleMapDisplay
-            center={center}
-            map={map}
-            setMap={setMap}
-            directionsResponse={directionsResponse}
-            combinedStops={combinedStops}
-            setSelectedLocation={setSelectedLocation}
-            selectedLocation={selectedLocation}
-            mapTheme={mapTheme}
-          />
-        </Box>
-        <div style={{ position: "absolute", top: "0", left: "0" }}>
-        <VStack>
-        <ActionButtonGroup
-          clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
-          onCenter={onCenterMap}
-        />
-        </VStack>
-        </div>
-        <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
-        <PlanDrawer
-          isOpen={isOpen}
-          onClose={onClose}
+          mapTheme={mapTheme}
           startRef={startRef}
           finishRef={finishRef}
           handleCar={handleCar}
@@ -136,9 +106,29 @@ function App() {
           distance={distance}
           time={time}
           clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
-          tipsyTouristLogo3={tipsyTouristLogo3}
-          mapTheme={mapTheme}
         />
+
+        <Box position="absolute" left={0} top={0} h="100%" w="100%">
+          <GoogleMapDisplay
+            center={center}
+            map={map}
+            setMap={setMap}
+            directionsResponse={directionsResponse}
+            combinedStops={combinedStops}
+            setSelectedLocation={setSelectedLocation}
+            selectedLocation={selectedLocation}
+            mapTheme={mapTheme}
+          />
+        </Box>
+        <div style={{ position: "absolute", top: "0", left: "0" }}>
+        <VStack>
+        <ActionButtonGroup
+          clearRoute={() => clearRoute(setCombinedStops, setDirectionsResponse, setDistance, setJourneyWarning, startRef, finishRef)}
+          onCenter={onCenterMap}
+        />
+        </VStack>
+        </div>
+        <ItineraryDrawer isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
       </Flex>
     </ThemeContext.Provider>
   );

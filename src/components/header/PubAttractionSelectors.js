@@ -1,4 +1,4 @@
-// components/plan/PubAttractionSelectors.js
+// components/header/PubAttractionSelectors.js
 
 import {
   HStack,

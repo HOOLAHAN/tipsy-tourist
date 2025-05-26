@@ -5,15 +5,14 @@ import {
   Image,
   Heading,
   useDisclosure,
-  useBreakpointValue,
   HStack,
   VStack,
   Collapse,
 } from "@chakra-ui/react";
-import {  FaBars } from "react-icons/fa";
-import PlanTripButtons from "./PlanTripButtons";
+import { FaBars } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 import ThemeMenu from "./ThemeMenu";
+import PlanTour from "./PlanTour";
 
 import logoClassic from "../../assets/images/logo_classic.svg";
 import logoDark from "../../assets/images/logo_dark.svg";
@@ -27,8 +26,33 @@ const logoMap = {
   neon: logoNeon,
 };
 
-const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme }) => {
-  const isMobile = useBreakpointValue({ base: true, md: false });
+const Header = ({
+  onSeeItinerary,
+  mapTheme,
+  setMapTheme,
+  startRef,
+  finishRef,
+  handleCar,
+  handleBicycling,
+  handleWalking,
+  travelMethod,
+  setTravelMethod,
+  setJourneyWarning,
+  pubStops,
+  setPubStops,
+  attractionStops,
+  setAttractionStops,
+  calculateRoute,
+  directionsService,
+  setDirectionsResponse,
+  setDistance,
+  setTime,
+  setCombinedStops,
+  journeyWarning,
+  distance,
+  time,
+  clearRoute,
+}) => {
   const { isOpen, onToggle } = useDisclosure();
   const theme = useUITheme();
   const logoSrc = logoMap[mapTheme] || logoNeon;
@@ -56,6 +80,7 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
       px={4}
       py={3}
     >
+      {/* Top row with logo and burger */}
       <Flex justify="space-between" align="center" wrap="wrap">
         <HStack spacing={3} align="center" mx={2}>
           <Image src={logoSrc} alt="logo" boxSize="40px" />
@@ -81,39 +106,52 @@ const Header = ({ onCenter, onPlanTrip, onSeeItinerary, mapTheme, setMapTheme })
           </Heading>
         </HStack>
 
-        {isMobile ? (
-          <IconButton
-            icon={<FaBars />}
-            aria-label="Menu"
-            size="md"
-            onClick={onToggle}
-            variant="ghost"
-            color={theme.primary}
-            ml={2}
-          />
-        ) : (
-          <HStack spacing={3} align="center">
-            <PlanTripButtons onPlanTrip={onPlanTrip} onSeeItinerary={onSeeItinerary} position="left" />
-            <PlanTripButtons onPlanTrip={onPlanTrip} onSeeItinerary={onSeeItinerary} position="right" />
-            <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
-          </HStack>
-        )}
+        <IconButton
+          icon={<FaBars />}
+          aria-label="Menu"
+          size="md"
+          onClick={onToggle}
+          variant="ghost"
+          color={theme.primary}
+          ml={2}
+        />
       </Flex>
 
-      {/* Mobile dropdown section */}
-      {isMobile && (
-        <Collapse in={isOpen} animateOpacity>
-          <VStack mt={4} spacing={3} align="stretch">
-            <Box {...buttonStyle} as="button" onClick={onPlanTrip}>
-              Plan my Tipsy Tour!
-            </Box>
-            <Box {...buttonStyle} as="button" onClick={onSeeItinerary}>
-              Itinerary
-            </Box>
-            <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} fullWidth />
-          </VStack>
-        </Collapse>
-      )}
+      {/* Dropdown section */}
+      <Collapse in={isOpen} animateOpacity>
+        <VStack mt={4} spacing={3} align="stretch">
+          <Box {...buttonStyle} as="button" onClick={onSeeItinerary}>
+            Itinerary
+          </Box>
+          <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} fullWidth />
+
+          <PlanTour
+            startRef={startRef}
+            finishRef={finishRef}
+            handleCar={handleCar}
+            handleBicycling={handleBicycling}
+            handleWalking={handleWalking}
+            travelMethod={travelMethod}
+            setTravelMethod={setTravelMethod}
+            setJourneyWarning={setJourneyWarning}
+            pubStops={pubStops}
+            setPubStops={setPubStops}
+            attractionStops={attractionStops}
+            setAttractionStops={setAttractionStops}
+            calculateRoute={calculateRoute}
+            directionsService={directionsService}
+            setDirectionsResponse={setDirectionsResponse}
+            setDistance={setDistance}
+            setTime={setTime}
+            setCombinedStops={setCombinedStops}
+            journeyWarning={journeyWarning}
+            distance={distance}
+            time={time}
+            clearRoute={clearRoute}
+            mapTheme={mapTheme}
+          />
+        </VStack>
+      </Collapse>
     </Box>
   );
 };
