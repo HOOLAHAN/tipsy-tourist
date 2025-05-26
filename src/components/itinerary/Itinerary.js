@@ -43,8 +43,9 @@ const OpenNow = ({ data }) => {
 
 const ItineraryItem = ({ data, theme }) => {
   const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
-  const imageLink = data.photos?.[0]?.photo_reference
-    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${data.photos[0].photo_reference}&key=${googleMapsApiKey}`
+  const photoRef = data?.photos?.[0]?.photo_reference;
+  const imageLink = photoRef
+    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${photoRef}&key=${googleMapsApiKey}`
     : tipsyTouristLogo3;
 
   return (
