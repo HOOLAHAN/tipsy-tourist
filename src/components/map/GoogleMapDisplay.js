@@ -1,26 +1,25 @@
 import {
   GoogleMap,
   Marker,
-  InfoWindow,
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import { mapThemes } from "./styles/customMapStyle";
-import { useUITheme } from "../../context/ThemeContext";
 
 const GoogleMapDisplay = ({
   center,
-  map,
   setMap,
   directionsResponse,
   combinedStops,
   setSelectedLocation,
-  selectedLocation,
   mapTheme = "classic",
   onMarkerClick,
 }) => {
-  const theme = useUITheme();
 
-  console.log("Rendering route:", directionsResponse);
+  const validStops = combinedStops.filter(
+    (stop) =>
+      stop?.geometry?.location?.lat &&
+      stop?.geometry?.location?.lng
+  );
 
   return (
     <GoogleMap
@@ -38,49 +37,24 @@ const GoogleMapDisplay = ({
     >
       {directionsResponse && (
         <DirectionsRenderer
-          key={JSON.stringify(directionsResponse?.routes?.[0]?.overview_polyline?.points || "")}
           directions={directionsResponse}
           suppressMarkers={true}
         />
       )}
 
-
-      {combinedStops.map((location, index) => {
-        if (!location.geometry || !location.geometry.location) return null;
-
-        return (
-          <Marker
-            key={`marker-${location.id || index}`}
-            position={{
-              lat: location.geometry.location.lat,
-              lng: location.geometry.location.lng,
-            }}
-            onClick={() => onMarkerClick(location)}
-
-          />
-        );
-      })}
-
-      {selectedLocation && (
-        <InfoWindow
+      {validStops.map((location, index) => (
+        <Marker
+          key={location.place_id || index}
           position={{
-            lat: selectedLocation.geometry.location.lat,
-            lng: selectedLocation.geometry.location.lng,
+            lat: location.geometry.location.lat,
+            lng: location.geometry.location.lng,
           }}
-          onCloseClick={() => setSelectedLocation(null)}
-        >
-          <div>
-            <strong>
-              <h3 style={{ color: theme.accent }}>{selectedLocation.name}</h3>
-            </strong>
-            <p>{selectedLocation.vicinity}</p>
-            <p>
-              Status:{" "}
-              {selectedLocation.opening_hours?.open_now ? "Open" : "Closed"}
-            </p>
-          </div>
-        </InfoWindow>
-      )}
+          onClick={() => {
+            onMarkerClick?.(location);
+            setSelectedLocation?.(location);
+          }}
+        />
+      ))}
     </GoogleMap>
   );
 };
