@@ -5,7 +5,6 @@ import {
   Image,
   Heading,
   useDisclosure,
-  HStack,
   VStack,
   Collapse,
   useOutsideClick
@@ -84,11 +83,14 @@ useOutsideClick({
       backdropFilter="blur(6px)"
       boxShadow="sm"
       py={3}
+      px={2}
     >
-      {/* Top row with logo and burger */}
-      <Flex justify="space-between" align="center" wrap="wrap">
-        <HStack spacing={3} align="center" mx={2}>
-          <Image src={logoSrc} alt="logo" boxSize="40px" />
+      <Flex justify="space-between" align="center" wrap="nowrap" px={2}>
+        {/* Left: Logo */}
+        <Image src={logoSrc} alt="logo" boxSize="40px" />
+
+        {/* Centre: Heading */}
+        <Box flex="1" textAlign="center">
           <Heading size="md" color={theme.primary} whiteSpace="nowrap">
             {mapTheme === "classic" ? (
               <>
@@ -109,8 +111,9 @@ useOutsideClick({
               <Box as="span" color={theme.primary}>Tipsy Tourist</Box>
             )}
           </Heading>
-        </HStack>
+        </Box>
 
+        {/* Right: Burger Icon */}
         <IconButton
           ref={buttonRef}
           icon={<FaBars />}
@@ -122,7 +125,6 @@ useOutsideClick({
           }}
           variant="ghost"
           color={theme.primary}
-          ml={2}
         />
       </Flex>
 

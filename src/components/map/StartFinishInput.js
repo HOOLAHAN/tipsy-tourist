@@ -23,16 +23,14 @@ const StartFinishInput = ({ startRef, finishRef }) => {
           type="text"
           placeholder="Start (e.g. Camden, UK)"
           ref={startRef}
-          width="250px"
           {...inputStyle}
         />
       </Autocomplete>
       <Autocomplete>
         <Input
           type="text"
-          placeholder="Finish (e.g. Westminster, UK)"
+          placeholder="Finish (e.g. Brixton, UK)"
           ref={finishRef}
-          width="250px"
           {...inputStyle}
         />
       </Autocomplete>

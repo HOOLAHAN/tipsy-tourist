@@ -54,7 +54,7 @@ const PlanTour = ({
       : "Plan my best bike route";
 
   return (
-    <Box mt={4} px={4}>
+    <Box mt={4} px={1}>
       <VStack spacing={2}>
         <StartFinishInput startRef={startRef} finishRef={finishRef} />
         <TravelModeButtons
@@ -91,7 +91,6 @@ const PlanTour = ({
             );
             onAfterSubmit?.();
           }}
-          width="100%"
           shadow="md"
           size="sm"
           m={2}
