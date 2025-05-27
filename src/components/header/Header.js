@@ -14,7 +14,7 @@ import { FaBars } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 import PlanTour from "./PlanTour";
 
-import logoClassic from "../../assets/images/logo_classic.svg";
+import logoClassic from "../../assets/images/logo_classic.png";
 import logoDark from "../../assets/images/logo_dark.svg";
 import logoPlain from "../../assets/images/logo_plain.svg";
 import logoNeon from "../../assets/images/logo_neon.svg";

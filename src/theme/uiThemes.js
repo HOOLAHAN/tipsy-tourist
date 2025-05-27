@@ -2,7 +2,7 @@ export const uiThemes = {
   classic: {
     bg: "white",
     text: "#1a202c",
-    primary: "#3182ce",
+    primary: "#4285F4",
     accent: "#63b3ed",
   },
   dark: {
