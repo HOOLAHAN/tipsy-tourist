@@ -3,6 +3,7 @@ import ItineraryModal from './components/itinerary/ItineraryModal';
 import Header from './components/header/Header';
 import GoogleMapDisplay from './components/map/GoogleMapDisplay';
 import ActionButtonGroup from './components/common/ActionButtonGroup';
+import LocationModal from './components/itinerary/LocationModal';
 import { calculateRoute } from "./features/routing/calculateRoute";
 import { handleCar, handleBicycling, handleWalking } from './features/routing/stateHandlers';
 import { clearRoute } from './features/routing/clearRoute';
@@ -50,6 +51,8 @@ function App() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const getInitialTheme = () => localStorage.getItem("mapTheme") || "classic";
   const [mapTheme, setMapTheme] = useState(getInitialTheme);
+  const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+  const closeLocationModal = () => setSelectedPlaceId(null);
 
   const onCloseItinerary = () => setIsOpenItinerary(false)
   const onOpenItinerary = () => setIsOpenItinerary(true)
@@ -151,8 +154,10 @@ function App() {
             setSelectedLocation={setSelectedLocation}
             selectedLocation={selectedLocation}
             mapTheme={mapTheme}
+            onMarkerClick={(location) => setSelectedPlaceId(location.place_id)}
           />
         </Box>
+        <LocationModal isOpen={!!selectedPlaceId} onClose={closeLocationModal} placeId={selectedPlaceId} />
         <Box position="absolute" top={3} left={3} zIndex="1000">
           <VStack spacing={3}>
             <ActionButtonGroup

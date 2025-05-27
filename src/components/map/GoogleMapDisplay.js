@@ -15,7 +15,8 @@ const GoogleMapDisplay = ({
   combinedStops,
   setSelectedLocation,
   selectedLocation,
-  mapTheme = "classic"
+  mapTheme = "classic",
+  onMarkerClick,
 }) => {
   const theme = useUITheme();
 
@@ -54,7 +55,8 @@ const GoogleMapDisplay = ({
               lat: location.geometry.location.lat,
               lng: location.geometry.location.lng,
             }}
-            onClick={() => setSelectedLocation(location)}
+            onClick={() => onMarkerClick(location)}
+
           />
         );
       })}
