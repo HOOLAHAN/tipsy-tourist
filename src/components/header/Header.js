@@ -87,7 +87,7 @@ useOutsideClick({
     >
       <Flex justify="space-between" align="center" wrap="nowrap" px={2}>
         {/* Left: Logo */}
-        <Image src={logoSrc} alt="logo" boxSize="40px" />
+        <Image src={logoSrc} alt="logo" boxSize="40px" marginRight={3}/>
 
         {/* Centre: Heading */}
         <Box flex="1" textAlign="center">
@@ -125,6 +125,7 @@ useOutsideClick({
           }}
           variant="ghost"
           color={theme.primary}
+          marginLeft={3}
         />
       </Flex>
 
