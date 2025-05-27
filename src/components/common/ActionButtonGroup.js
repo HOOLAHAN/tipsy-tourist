@@ -8,7 +8,7 @@ const ActionButtonGroup = ({ clearRoute, onCenter }) => {
   const theme = useUITheme();
 
   return (
-    <VStack spacing={2} px={4} py={3}>
+    <VStack spacing={2} >
       <Tooltip label="Re-center map" hasArrow>
         <IconButton
           aria-label="Re-center map"

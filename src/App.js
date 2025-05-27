@@ -120,8 +120,8 @@ function App() {
           }
           directionsRendererRef={directionsRendererRef}
         />
-        <Box position="absolute" top={4} right={4} zIndex="1000">
-          <VStack spacing={3}>
+        <Box position="absolute" top={3} right={3} zIndex="1000">
+          <VStack spacing={2}>
             <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
             {directionsResponse && (
               <Tooltip label="Itinerary" hasArrow>
@@ -153,25 +153,25 @@ function App() {
             mapTheme={mapTheme}
           />
         </Box>
-        <div style={{ position: "absolute", top: "0", left: "0" }}>
-        <VStack>
-          <ActionButtonGroup
-            clearRoute={() =>
-              clearRoute(
-                setCombinedStops,
-                setDirectionsResponse,
-                setDistance,
-                setTime,
-                setJourneyWarning,
-                startRef,
-                finishRef,
-                directionsRendererRef
-              )
-            }
-            onCenter={onCenterMap}
-          />
-        </VStack>
-        </div>
+        <Box position="absolute" top={3} left={3} zIndex="1000">
+          <VStack spacing={3}>
+            <ActionButtonGroup
+              clearRoute={() =>
+                clearRoute(
+                  setCombinedStops,
+                  setDirectionsResponse,
+                  setDistance,
+                  setTime,
+                  setJourneyWarning,
+                  startRef,
+                  finishRef,
+                  directionsRendererRef
+                )
+              }
+              onCenter={onCenterMap}
+            />
+          </VStack>
+        </Box>
         <ItineraryModal isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
       </Flex>
     </ThemeContext.Provider>
