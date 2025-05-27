@@ -61,14 +61,15 @@ const Header = ({
   const collapseRef = useRef();
   const buttonRef = useRef();
   
-  useOutsideClick({
-    ref: collapseRef,
-    handler: (e) => {
-      if (isOpen && !buttonRef.current.contains(e.target)) {
-        onToggle();
-      }
-    },
-  });
+useOutsideClick({
+  ref: collapseRef,
+  handler: (e) => {
+    const clickedInsideAutocomplete = e.target.closest(".pac-container");
+    if (isOpen && !buttonRef.current.contains(e.target) && !clickedInsideAutocomplete) {
+      onToggle();
+    }
+  },
+});
 
   return (
     <Box
