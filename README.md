@@ -1,67 +1,60 @@
 # Tipsy Tourist
-<div>
-
-<h5 align="center">
-<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Spec'> Tech </a> <span> · </span>
-<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Spec'> Spec </a> <span> · </span>
-<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Installation'> Installation </a><span> · </span>
-<a href='https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README.md#Running-locally'> Running locally</a>
-<h5>
-</div>
 
 <h3 align="center">
-Makers final engineering project created by Iain Hoolahan, Kay Watts, Tim Buller & Will Lines.</h3>
+Makers final engineering project initially created by Iain Hoolahan, Kay Watts, Tim Buller & Will Lines. The app has since been refactored, redeveloped and extended by Iain Hoolahan.
+</h3>
 
-# Tech
-![Image](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Image](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
-![Image](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
-![Image](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white)
-![Image](https://img.shields.io/badge/Chakra--UI-319795?style=for-the-badge&logo=chakra-ui&logoColor=white)
+## Tech Stack
 
-# Spec
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+![Serverless](https://img.shields.io/badge/Serverless-FD5750?style=for-the-badge&logo=serverless&logoColor=white)
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+![Chakra UI](https://img.shields.io/badge/Chakra--UI-319795?style=for-the-badge&logo=chakra-ui&logoColor=white)
+![Google Maps API](https://img.shields.io/badge/Google%20Maps%20API-4285F4?style=for-the-badge)
 
-An app to plot a pub crawl whilst taking in the sights along the way!
+## Spec
 
-# Website
+An interactive app for plotting a pub crawl while taking in the sights along the way. Simply input a start and end location, choose how many pubs and attractions you'd like to visit, and let the app handle the rest. Routes are optimised, themed, and supported with live place info pulled from Google Maps.
 
-The website has been fully deployed and can can be viewed via [this link](http://tipsytourist.s3-website.eu-west-2.amazonaws.com/)
+## Website
 
-# Installation
+The app is live and can be used here: [https://d3pbhrkalr09t8.cloudfront.net/](https://d3pbhrkalr09t8.cloudfront.net/)
 
-## Backend
+## Installation
 
-The backend has been deployed using AWS Lambda: 
+### Backend
+
+The backend is deployed using AWS Lambda:  
 [Link to Repo](https://github.com/HOOLAHAN/tipsy-tourst-lambda)
 
-## Frontend
+### Frontend
 
 [Clone this repo](https://github.com/HOOLAHAN/tipsy-tourist)
 
 In terminal (Mac), run:
 
-```
+```bash
 cd tipsy_tourist
 npm install
 ```
-Create a .env.local file in the root of the directory and add in this code:
+
+Create a `.env.local` file in the root of the directory and add:
+
 ```
 REACT_APP_GOOGLE_MAPS_API_KEY="<YOUR-API-KEY>"
 ```
 
-# Running locally
+## Running locally
 
-## Frontend
-
-```
+```bash
 cd tipsy_tourist
-npm run build
-serve -s build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app in your browser.
+Then visit [http://localhost:3000](http://localhost:3000) to view the app.
 
-# Folder Structure
+## Folder Structure
 
 ```
 src/
@@ -119,30 +112,22 @@ src/
 └── index.js
 ```
 
-# Demo
+## Demo
 
-Tipsy Tourist has a single page with 4 main components (map, search form, itinerary, location details). When you first land on the website you will see the map component which fills the screen and a button to open up the search form which provides many options for the user to tailor their requirements. Once the user has provided a start-point, end-point, number of pubs/attractions and clicked the search button the route will be displayed.
+### 🔍 Searching a Route
+The user begins by selecting their start and end locations and how many pubs/attractions they want to include.
+![Search](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/searching_route.png)
 
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/searching_route.png)
+### 🗺️ Route Display
+Once the route is generated, users can view it plotted on a map with location markers and a line to connect the route.
+![Route](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/route.png)
 
-The user can minimise the search form and view the route full screen.
+### 📋 Viewing Itinerary and Location Details
+The itinerary modal lets users view an ordered list of all stops.
+![Itinerary](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/itinerary.png)
+Clicking one of the location markers will bring up details of that location. 
+![Location](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/viewing_location.png)
 
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/route.png)
-
-The user can click a button which opens up a side drawer containing the route itinerary.
-
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/itinerary.png)
-
-The user can click on any of the locations in the itinerary to find out more details.
-
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/viewing_location.png)
-
-The UX has been designed so that it will work well both on mobile devices as well as computer screens:
-
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_search.png)
-
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_route.png)
-
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_itinerary.png)
-
-![Image](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/phone_location_details.png)
+### 🎨 Theme Customisation
+Users can customise the look and feel with dynamic map themes.
+![Themes](https://github.com/HOOLAHAN/tipsy-tourist/blob/main/README_Images/themes.png)
