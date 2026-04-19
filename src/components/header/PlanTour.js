@@ -26,6 +26,7 @@ const PlanTour = ({
   handleCar,
   handleBicycling,
   handleWalking,
+  recalculateRouteForMode,
   travelMethod,
   setTravelMethod,
   setJourneyWarning,
@@ -78,9 +79,20 @@ const PlanTour = ({
         />
         <Divider borderColor={theme.accent} opacity={0.45} />
         <TravelModeButtons
-          onCarClick={() => handleCar(setTravelMethod, setJourneyWarning)}
-          onBikeClick={() => handleBicycling(setTravelMethod, setJourneyWarning)}
-          onWalkClick={() => handleWalking(setTravelMethod, setJourneyWarning)}
+          onCarClick={() => {
+            handleCar(setTravelMethod, setJourneyWarning);
+            setPubStops(1);
+            recalculateRouteForMode?.("DRIVING", 1);
+          }}
+          onBikeClick={() => {
+            handleBicycling(setTravelMethod, setJourneyWarning);
+            setPubStops(1);
+            recalculateRouteForMode?.("BICYCLING", 1);
+          }}
+          onWalkClick={() => {
+            handleWalking(setTravelMethod, setJourneyWarning);
+            recalculateRouteForMode?.("WALKING");
+          }}
           travelMethod={travelMethod}
         />
         <PubAttractionSelectors

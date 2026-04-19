@@ -39,6 +39,7 @@ const Header = ({
   handleCar,
   handleBicycling,
   handleWalking,
+  recalculateRouteForMode,
   travelMethod,
   setTravelMethod,
   setJourneyWarning,
@@ -164,6 +165,7 @@ useOutsideClick({
             handleCar={handleCar}
             handleBicycling={handleBicycling}
             handleWalking={handleWalking}
+            recalculateRouteForMode={recalculateRouteForMode}
             travelMethod={travelMethod}
             setTravelMethod={setTravelMethod}
             setJourneyWarning={setJourneyWarning}

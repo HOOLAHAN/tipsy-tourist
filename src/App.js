@@ -96,6 +96,31 @@ function App() {
     setIsPlannerOpen(true);
   };
 
+  const recalculateRouteForMode = async (nextTravelMethod, nextPubStops = pubStops) => {
+    if (!directionsResponse || isPlanningRoute) return;
+
+    setIsPlanningRoute(true);
+    setRouteError("");
+    try {
+      await calculateRoute(
+        startRef,
+        finishRef,
+        nextPubStops,
+        attractionStops,
+        nextTravelMethod,
+        directionsService,
+        setDirectionsResponse,
+        setDistance,
+        setTime,
+        setCombinedStops,
+        setJourneyWarning,
+        setRouteError
+      );
+    } finally {
+      setIsPlanningRoute(false);
+    }
+  };
+
 
   useEffect(() => {
     localStorage.setItem("mapTheme", mapTheme);
@@ -133,6 +158,7 @@ function App() {
           handleCar={handleCar}
           handleBicycling={handleBicycling}
           handleWalking={handleWalking}
+          recalculateRouteForMode={recalculateRouteForMode}
           travelMethod={travelMethod}
           setTravelMethod={setTravelMethod}
           setJourneyWarning={setJourneyWarning}
