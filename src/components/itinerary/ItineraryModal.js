@@ -16,7 +16,7 @@ import {
 import { useUITheme } from "../../context/ThemeContext";
 import Itinerary from "./Itinerary";
 
-const ItineraryModal = ({ isOpen, onClose, combinedStops, distance, time, travelMethod }) => {
+const ItineraryModal = ({ isOpen, onClose, combinedStops, distance, time, travelMethod, onMoveStop }) => {
   const theme = useUITheme();
 
   return (
@@ -36,7 +36,7 @@ const ItineraryModal = ({ isOpen, onClose, combinedStops, distance, time, travel
                 {time && <Badge colorScheme="purple">{time}</Badge>}
                 {travelMethod && <Badge>{travelMethod.toLowerCase()}</Badge>}
               </HStack>
-              <Itinerary combinedStops={combinedStops} />
+              <Itinerary combinedStops={combinedStops} onMoveStop={onMoveStop} />
             </>
           ) : (
             <Text>No stops in your itinerary yet.</Text>

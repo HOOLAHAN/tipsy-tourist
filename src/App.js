@@ -60,6 +60,18 @@ function App() {
   const onOpenItinerary = () => setIsOpenItinerary(true)
   const directionsRendererRef = useRef(null);
 
+  const moveStop = (fromIndex, direction) => {
+    setCombinedStops((currentStops) => {
+      const toIndex = fromIndex + direction;
+      if (toIndex < 0 || toIndex >= currentStops.length) return currentStops;
+
+      const nextStops = [...currentStops];
+      const [movedStop] = nextStops.splice(fromIndex, 1);
+      nextStops.splice(toIndex, 0, movedStop);
+      return nextStops;
+    });
+  };
+
 
   useEffect(() => {
     localStorage.setItem("mapTheme", mapTheme);
@@ -196,6 +208,7 @@ function App() {
           distance={distance}
           time={time}
           travelMethod={travelMethod}
+          onMoveStop={moveStop}
         />
       </Flex>
     </ThemeContext.Provider>

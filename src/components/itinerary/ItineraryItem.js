@@ -11,9 +11,10 @@ import {
   Tooltip,
   Badge,
   Spinner,
+  IconButton,
 } from "@chakra-ui/react";
 import { StarIcon, LinkIcon, PhoneIcon, CalendarIcon } from "@chakra-ui/icons";
-import { FaHome } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaHome } from "react-icons/fa";
 import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
 import { useUITheme } from "../../context/ThemeContext";
 import { getCachedPlaceDetails } from "../../lib/placeDetailsCache";
@@ -45,7 +46,15 @@ const OpenNow = ({ opening_hours }) => {
   );
 };
 
-const ItineraryItem = ({ place_id, stopNumber, stopType }) => {
+const ItineraryItem = ({
+  place_id,
+  stopNumber,
+  stopType,
+  canMoveUp = false,
+  canMoveDown = false,
+  onMoveUp,
+  onMoveDown,
+}) => {
   const theme = useUITheme();
   const [data, setData] = useState(null);
   const [hasFailed, setHasFailed] = useState(false);
@@ -126,6 +135,36 @@ const ItineraryItem = ({ place_id, stopNumber, stopType }) => {
           </Badge>
         )}
       </HStack>
+      {(onMoveUp || onMoveDown) && (
+        <HStack justify="flex-end" spacing={2} mb={2}>
+          <Tooltip label="Move stop earlier" hasArrow>
+            <IconButton
+              aria-label={`Move ${data.name} earlier`}
+              icon={<FaChevronUp />}
+              size="xs"
+              isRound
+              isDisabled={!canMoveUp}
+              onClick={onMoveUp}
+              bg={theme.primary}
+              color="white"
+              _hover={{ bg: theme.accent }}
+            />
+          </Tooltip>
+          <Tooltip label="Move stop later" hasArrow>
+            <IconButton
+              aria-label={`Move ${data.name} later`}
+              icon={<FaChevronDown />}
+              size="xs"
+              isRound
+              isDisabled={!canMoveDown}
+              onClick={onMoveDown}
+              bg={theme.primary}
+              color="white"
+              _hover={{ bg: theme.accent }}
+            />
+          </Tooltip>
+        </HStack>
+      )}
       <Image src={imageLink} alt={data.name} borderRadius="md" maxW="100%" maxH="150px" objectFit="cover" mb={2} />
 
       <VStack align="start" spacing={2}>

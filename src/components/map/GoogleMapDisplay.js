@@ -27,14 +27,14 @@ const GoogleMapDisplay = ({
   const lastLegs = directionsResponse?.routes?.[0]?.legs || [];
   const lastLeg = lastLegs[lastLegs.length - 1];
 
-  const makeMarkerIcon = (fillColor) => ({
+  const makeMarkerIcon = (fillColor, scale = 14) => ({
     // eslint-disable-next-line no-undef
     path: google.maps.SymbolPath.CIRCLE,
     fillColor,
     fillOpacity: 1,
     strokeColor: "#ffffff",
     strokeWeight: 2,
-    scale: 14,
+    scale,
   });
 
   const makeMarkerLabel = (text) => ({
@@ -61,7 +61,7 @@ const GoogleMapDisplay = ({
       {directionsResponse && (
         <DirectionsRenderer
           directions={directionsResponse}
-          suppressMarkers={true}
+          options={{ suppressMarkers: true }}
         />
       )}
 
@@ -69,8 +69,8 @@ const GoogleMapDisplay = ({
         <Marker
           position={firstLeg.start_location}
           title={startLabel || "Start"}
-          icon={makeMarkerIcon("#2563eb")}
-          label={makeMarkerLabel("A")}
+          icon={makeMarkerIcon("#2563eb", 20)}
+          label={makeMarkerLabel("Start")}
         />
       )}
 
@@ -95,8 +95,8 @@ const GoogleMapDisplay = ({
         <Marker
           position={lastLeg.end_location}
           title={finishLabel || "Finish"}
-          icon={makeMarkerIcon("#16a34a")}
-          label={makeMarkerLabel("B")}
+          icon={makeMarkerIcon("#16a34a", 20)}
+          label={makeMarkerLabel("Finish")}
         />
       )}
     </GoogleMap>
