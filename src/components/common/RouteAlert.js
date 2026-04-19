@@ -11,12 +11,14 @@ function RouteAlert({ error }) {
     w: "100%",
     px: 3,
     py: 2,
+    justifyContent: "center",
+    textAlign: "center",
   };
 
   const container = (status, children) => (
-    <Box w="100%" maxW="250px">
+    <Box w="100%">
       <Alert status={status} {...commonProps}>
-        <AlertIcon />
+        <AlertIcon mr={2} />
         {children}
       </Alert>
     </Box>

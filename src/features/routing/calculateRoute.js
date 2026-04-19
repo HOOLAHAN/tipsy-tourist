@@ -44,6 +44,11 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
     return false;
   }
 
+  if (!Number.isFinite(start?.[0]) || !Number.isFinite(start?.[1]) || !Number.isFinite(end?.[0]) || !Number.isFinite(end?.[1])) {
+    setRouteError?.("geocode-failed");
+    return false;
+  }
+
   const pubPlotPoints = findPlotPoints(start, end, Number(pubStops));
   const attractionPlotPoints = findPlotPoints(start, end, Number(attractionStops));
 

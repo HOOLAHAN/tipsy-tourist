@@ -16,6 +16,7 @@ import { Tooltip, IconButton } from "@chakra-ui/react";
 import {
   Box,
   Flex,
+  Text,
   VStack,
   SkeletonText,
 } from "@chakra-ui/react";
@@ -54,6 +55,10 @@ function App() {
   const getInitialTheme = () => localStorage.getItem("mapTheme") || "classic";
   const [mapTheme, setMapTheme] = useState(getInitialTheme);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+  const [activePicker, setActivePicker] = useState(null);
+  const [pickedStart, setPickedStart] = useState(null);
+  const [pickedFinish, setPickedFinish] = useState(null);
+  const [isPlannerOpen, setIsPlannerOpen] = useState(false);
   const closeLocationModal = () => setSelectedPlaceId(null);
 
   const onCloseItinerary = () => setIsOpenItinerary(false)
@@ -70,6 +75,25 @@ function App() {
       nextStops.splice(toIndex, 0, movedStop);
       return nextStops;
     });
+  };
+
+  const handleMapPick = (event) => {
+    if (!activePicker || !event.latLng) return;
+
+    const coordinateValue = `${event.latLng.lat().toFixed(6)}, ${event.latLng.lng().toFixed(6)}`;
+    const targetRef = activePicker === "start" ? startRef : finishRef;
+    if (targetRef.current) {
+      targetRef.current.value = coordinateValue;
+    }
+
+    if (activePicker === "start") {
+      setPickedStart({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+    } else {
+      setPickedFinish({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+    }
+
+    setActivePicker(null);
+    setIsPlannerOpen(true);
   };
 
 
@@ -102,6 +126,8 @@ function App() {
           onSeeItinerary={onOpenItinerary}
           setMapTheme={setMapTheme}
           mapTheme={mapTheme}
+          isPlannerOpen={isPlannerOpen}
+          setIsPlannerOpen={setIsPlannerOpen}
           startRef={startRef}
           finishRef={finishRef}
           handleCar={handleCar}
@@ -125,6 +151,8 @@ function App() {
           setRouteError={setRouteError}
           isPlanningRoute={isPlanningRoute}
           setIsPlanningRoute={setIsPlanningRoute}
+          activePicker={activePicker}
+          setActivePicker={setActivePicker}
           distance={distance}
           time={time}
           clearRoute={() =>
@@ -136,6 +164,8 @@ function App() {
               setJourneyWarning,
               setRouteError,
               setIsPlanningRoute,
+              setPickedStart,
+              setPickedFinish,
               startRef,
               finishRef,
               directionsRendererRef
@@ -173,12 +203,36 @@ function App() {
             combinedStops={combinedStops}
             startLabel={startRef.current?.value}
             finishLabel={finishRef.current?.value}
+            pickedStart={pickedStart}
+            pickedFinish={pickedFinish}
+            activePicker={activePicker}
+            onMapPick={handleMapPick}
             setSelectedLocation={setSelectedLocation}
             selectedLocation={selectedLocation}
             mapTheme={mapTheme}
             onMarkerClick={(location) => setSelectedPlaceId(location.place_id)}
           />
         </Box>
+        {activePicker && (
+          <Box
+            position="absolute"
+            top={{ base: 4, md: 20 }}
+            left="50%"
+            transform="translateX(-50%)"
+            zIndex="1000"
+            bg={uiThemes[mapTheme].bg}
+            color={uiThemes[mapTheme].text}
+            border={`1px solid ${uiThemes[mapTheme].accent}`}
+            borderRadius="full"
+            boxShadow="lg"
+            px={4}
+            py={2}
+          >
+            <Text fontSize="sm" fontWeight="semibold">
+              Click the map to set your {activePicker} point
+            </Text>
+          </Box>
+        )}
         <LocationModal isOpen={!!selectedPlaceId} onClose={closeLocationModal} placeId={selectedPlaceId} />
         <Box position="absolute" top={3} left={3} zIndex="1000">
           <VStack spacing={3}>
@@ -192,6 +246,8 @@ function App() {
                   setJourneyWarning,
                   setRouteError,
                   setIsPlanningRoute,
+                  setPickedStart,
+                  setPickedFinish,
                   startRef,
                   finishRef,
                   directionsRendererRef

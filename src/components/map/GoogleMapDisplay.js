@@ -12,6 +12,10 @@ const GoogleMapDisplay = ({
   combinedStops,
   startLabel,
   finishLabel,
+  pickedStart,
+  pickedFinish,
+  activePicker,
+  onMapPick,
   setSelectedLocation,
   mapTheme = "classic",
   onMarkerClick,
@@ -37,10 +41,10 @@ const GoogleMapDisplay = ({
     scale,
   });
 
-  const makeMarkerLabel = (text) => ({
+  const makeMarkerLabel = (text, fontSize = "12px") => ({
     text,
     color: "#ffffff",
-    fontSize: "12px",
+    fontSize,
     fontWeight: "700",
   });
 
@@ -55,8 +59,10 @@ const GoogleMapDisplay = ({
         streetViewControl: false,
         mapTypeControl: false,
         fullscreenControl: false,
+        draggableCursor: activePicker ? "crosshair" : undefined,
       }}
       onLoad={(mapInstance) => setMap(mapInstance)}
+      onClick={onMapPick}
     >
       {directionsResponse && (
         <DirectionsRenderer
@@ -69,8 +75,17 @@ const GoogleMapDisplay = ({
         <Marker
           position={firstLeg.start_location}
           title={startLabel || "Start"}
-          icon={makeMarkerIcon("#2563eb", 20)}
-          label={makeMarkerLabel("Start")}
+          icon={makeMarkerIcon("#2563eb", 28)}
+          label={makeMarkerLabel("Start", "10px")}
+        />
+      )}
+
+      {!firstLeg?.start_location && pickedStart && (
+        <Marker
+          position={pickedStart}
+          title={startLabel || "Start"}
+          icon={makeMarkerIcon("#2563eb", 28)}
+          label={makeMarkerLabel("Start", "10px")}
         />
       )}
 
@@ -95,8 +110,17 @@ const GoogleMapDisplay = ({
         <Marker
           position={lastLeg.end_location}
           title={finishLabel || "Finish"}
-          icon={makeMarkerIcon("#16a34a", 20)}
-          label={makeMarkerLabel("Finish")}
+          icon={makeMarkerIcon("#16a34a", 30)}
+          label={makeMarkerLabel("Finish", "9px")}
+        />
+      )}
+
+      {!lastLeg?.end_location && pickedFinish && (
+        <Marker
+          position={pickedFinish}
+          title={finishLabel || "Finish"}
+          icon={makeMarkerIcon("#16a34a", 30)}
+          label={makeMarkerLabel("Finish", "9px")}
         />
       )}
     </GoogleMap>

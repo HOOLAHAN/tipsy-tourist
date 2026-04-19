@@ -11,7 +11,7 @@ import {
   Tooltip,
   Badge,
   Spinner,
-  IconButton,
+  Button,
 } from "@chakra-ui/react";
 import { StarIcon, LinkIcon, PhoneIcon, CalendarIcon } from "@chakra-ui/icons";
 import { FaChevronDown, FaChevronUp, FaHome } from "react-icons/fa";
@@ -138,30 +138,32 @@ const ItineraryItem = ({
       {(onMoveUp || onMoveDown) && (
         <HStack justify="flex-end" spacing={2} mb={2}>
           <Tooltip label="Move stop earlier" hasArrow>
-            <IconButton
+            <Button
               aria-label={`Move ${data.name} earlier`}
-              icon={<FaChevronUp />}
+              leftIcon={<FaChevronUp />}
               size="xs"
-              isRound
               isDisabled={!canMoveUp}
               onClick={onMoveUp}
               bg={theme.primary}
               color="white"
               _hover={{ bg: theme.accent }}
-            />
+            >
+              Earlier
+            </Button>
           </Tooltip>
           <Tooltip label="Move stop later" hasArrow>
-            <IconButton
+            <Button
               aria-label={`Move ${data.name} later`}
-              icon={<FaChevronDown />}
+              leftIcon={<FaChevronDown />}
               size="xs"
-              isRound
               isDisabled={!canMoveDown}
               onClick={onMoveDown}
               bg={theme.primary}
               color="white"
               _hover={{ bg: theme.accent }}
-            />
+            >
+              Later
+            </Button>
           </Tooltip>
         </HStack>
       )}

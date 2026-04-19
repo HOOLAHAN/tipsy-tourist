@@ -8,6 +8,8 @@ const clearRoute = (
   setJourneyWarning,
   setRouteError,
   setIsPlanningRoute,
+  setPickedStart,
+  setPickedFinish,
   startRef,
   finishRef,
   directionsRendererRef
@@ -25,6 +27,12 @@ const clearRoute = (
   }
   if (typeof setIsPlanningRoute === "function") {
     setIsPlanningRoute(false);
+  }
+  if (typeof setPickedStart === "function") {
+    setPickedStart(null);
+  }
+  if (typeof setPickedFinish === "function") {
+    setPickedFinish(null);
   }
 
   // Clear inputs safely

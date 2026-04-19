@@ -1,9 +1,10 @@
 // components/header/PubAttractionSelectors.js
 
 import {
-  VStack,
+  SimpleGrid,
   HStack,
   Text,
+  Box,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -33,9 +34,10 @@ const PubAttractionSelectors = ({
   };
 
   return (
-    <VStack>
-      <HStack>
-        <Text color={theme.text}>Pubs:</Text>
+    <SimpleGrid columns={2} spacing={2} w="100%">
+      <Box borderWidth="1px" borderColor={theme.accent} borderRadius="md" p={3}>
+        <Text color={theme.text} fontSize="xs" mb={2}>Pubs</Text>
+        <HStack justify="space-between">
         <NumberInput
           value={pubStops}
           min={1}
@@ -49,9 +51,11 @@ const PubAttractionSelectors = ({
             <NumberDecrementStepper />
           </NumberInputStepper>
         </NumberInput>
-      </HStack>
-      <HStack>
-        <Text color={theme.text}>Attractions:</Text>
+        </HStack>
+      </Box>
+      <Box borderWidth="1px" borderColor={theme.accent} borderRadius="md" p={3}>
+        <Text color={theme.text} fontSize="xs" mb={2}>Attractions</Text>
+        <HStack justify="space-between">
         <NumberInput
           value={attractionStops}
           min={1}
@@ -65,8 +69,9 @@ const PubAttractionSelectors = ({
             <NumberDecrementStepper />
           </NumberInputStepper>
         </NumberInput>
-      </HStack>
-    </VStack>
+        </HStack>
+      </Box>
+    </SimpleGrid>
   );
 };
 

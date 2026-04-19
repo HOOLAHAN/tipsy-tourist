@@ -32,6 +32,8 @@ const Header = ({
   onSeeItinerary,
   mapTheme,
   setMapTheme,
+  isPlannerOpen,
+  setIsPlannerOpen,
   startRef,
   finishRef,
   handleCar,
@@ -55,12 +57,18 @@ const Header = ({
   setRouteError,
   isPlanningRoute,
   setIsPlanningRoute,
+  activePicker,
+  setActivePicker,
   distance,
   time,
   clearRoute,
   directionsRendererRef,
 }) => {
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onClose, onToggle } = useDisclosure({
+    isOpen: isPlannerOpen,
+    onOpen: () => setIsPlannerOpen(true),
+    onClose: () => setIsPlannerOpen(false),
+  });
   const theme = useUITheme();
   const logoSrc = logoMap[mapTheme] || logoNeon;
   const collapseRef = useRef();
@@ -89,12 +97,12 @@ useOutsideClick({
       bg={theme.bg}
       color={theme.text}
       border={`1px solid ${theme.accent}`}
-      borderRadius="lg"
+      borderRadius="xl"
       backdropFilter="blur(10px)"
-      boxShadow="lg"
-      py={3}
-      px={3}
-      w={{ base: "auto", md: "min(520px, calc(100vw - 160px))" }}
+      boxShadow="0 18px 45px rgba(15, 23, 42, 0.22)"
+      py={4}
+      px={4}
+      w={{ base: "auto", md: "min(460px, calc(100vw - 160px))" }}
       maxH={{ base: "calc(100vh - 24px)", md: "calc(100vh - 32px)" }}
       overflowY="auto"
     >
@@ -174,6 +182,9 @@ useOutsideClick({
             setRouteError={setRouteError}
             isPlanningRoute={isPlanningRoute}
             setIsPlanningRoute={setIsPlanningRoute}
+            activePicker={activePicker}
+            setActivePicker={setActivePicker}
+            onPlannerClose={onClose}
             distance={distance}
             time={time}
             clearRoute={clearRoute}

@@ -10,6 +10,7 @@ import {
   StatLabel,
   StatNumber,
   SimpleGrid,
+  Divider,
 } from "@chakra-ui/react";
 import StartFinishInput from "../map/StartFinishInput";
 import TravelModeButtons from "../common/TravelModeButtons";
@@ -43,6 +44,9 @@ const PlanTour = ({
   setRouteError,
   isPlanningRoute,
   setIsPlanningRoute,
+  activePicker,
+  setActivePicker,
+  onPlannerClose,
   distance,
   time,
   clearRoute,
@@ -65,7 +69,14 @@ const PlanTour = ({
   return (
     <Box px={1}>
       <VStack spacing={3} align="stretch">
-        <StartFinishInput startRef={startRef} finishRef={finishRef} />
+        <StartFinishInput
+          startRef={startRef}
+          finishRef={finishRef}
+          activePicker={activePicker}
+          setActivePicker={setActivePicker}
+          onPlannerClose={onPlannerClose}
+        />
+        <Divider borderColor={theme.accent} opacity={0.45} />
         <TravelModeButtons
           onCarClick={() => handleCar(setTravelMethod, setJourneyWarning)}
           onBikeClick={() => handleBicycling(setTravelMethod, setJourneyWarning)}
@@ -79,11 +90,14 @@ const PlanTour = ({
           setAttractionStops={setAttractionStops}
           travelMethod={travelMethod}
         />
+        <Divider borderColor={theme.accent} opacity={0.45} />
         <Button
           leftIcon={planButtonIcon}
           bg={theme.primary}
-          _hover={{ bg: theme.accent }}
+          _hover={{ bg: theme.accent, transform: "translateY(-1px)" }}
+          _active={{ transform: "translateY(0)" }}
           color="white"
+          border={`1px solid ${theme.primary}`}
           isLoading={isPlanningRoute}
           loadingText="Planning route"
           onClick={async () => {
@@ -146,12 +160,13 @@ const PlanTour = ({
           </Text>
         </HStack>
         <Button
-          bg={theme.primary}
-          color="white"
-          _hover={{ bg: theme.accent }}
+          bg="transparent"
+          color={theme.primary}
+          border={`1px solid ${theme.accent}`}
+          _hover={{ bg: `${theme.accent}22` }}
           onClick={clearRoute}
           size={"sm"}
-          variant="solid"
+          variant="outline"
         >
           Clear Route
         </Button>
