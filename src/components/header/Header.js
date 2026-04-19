@@ -89,8 +89,8 @@ useOutsideClick({
     <Box
       as="header"
       position="fixed"
-      top={{ base: "auto", md: 4 }}
-      bottom={{ base: 3, md: "auto" }}
+      top={{ base: 3, md: 4 }}
+      bottom="auto"
       left={{ base: 3, md: "50%" }}
       right={{ base: 3, md: "auto" }}
       transform={{ base: "none", md: "translateX(-50%)" }}

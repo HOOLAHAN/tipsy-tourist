@@ -1,6 +1,6 @@
 // components/common/ActionButtonGroup.js
 
-import { VStack, IconButton, Tooltip } from "@chakra-ui/react";
+import { Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { FaTimes, FaLocationArrow } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 
@@ -8,7 +8,7 @@ const ActionButtonGroup = ({ clearRoute, onCenter }) => {
   const theme = useUITheme();
 
   return (
-    <VStack spacing={2} >
+    <Flex gap={2} direction={{ base: "row", md: "column" }}>
       <Tooltip label="Re-center map" hasArrow>
         <IconButton
           aria-label="Re-center map"
@@ -35,7 +35,7 @@ const ActionButtonGroup = ({ clearRoute, onCenter }) => {
           size="sm"
         />
       </Tooltip>
-    </VStack>
+    </Flex>
   );
 };
 

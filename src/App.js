@@ -17,7 +17,6 @@ import {
   Box,
   Flex,
   Text,
-  VStack,
   SkeletonText,
 } from "@chakra-ui/react";
 
@@ -242,16 +241,24 @@ function App() {
         <Box
           position="absolute"
           zIndex="900"
-          right={{ base: 3, md: 4 }}
-          top={{ base: 4, md: "50%" }}
-          transform={{ base: "none", md: "translateY(-50%)" }}
+          right={{ base: "50%", md: 4 }}
+          bottom={{ base: 3, md: "auto" }}
+          top={{ base: "auto", md: "50%" }}
+          transform={{ base: "translateX(50%)", md: "translateY(-50%)" }}
           bg={uiThemes[mapTheme].bg}
           border={`1px solid ${uiThemes[mapTheme].accent}`}
           borderRadius="full"
           boxShadow="lg"
-          p={2}
+          px={{ base: 3, md: 2 }}
+          py={{ base: 2, md: 3 }}
+          minW={{ base: "148px", md: "auto" }}
         >
-          <VStack spacing={2}>
+          <Flex
+            gap={{ base: 3, md: 2 }}
+            direction={{ base: "row", md: "column" }}
+            align="center"
+            justify="center"
+          >
             <ActionButtonGroup
               clearRoute={() =>
                 clearRoute(
@@ -288,7 +295,7 @@ function App() {
                 />
               </Tooltip>
             )}
-          </VStack>
+          </Flex>
         </Box>
         <ItineraryModal
           isOpen={isOpenItinerary}

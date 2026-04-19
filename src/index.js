@@ -10,6 +10,25 @@ import App from "./App";
 const theme = extendTheme({
   styles: {
     global: {
+      html: {
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        overscrollBehavior: "none",
+      },
+      body: {
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        overscrollBehavior: "none",
+        position: "fixed",
+        inset: 0,
+      },
+      "#root": {
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+      },
       // Targeting the Google Maps Autocomplete dropdown
       '.pac-container': {
         zIndex: '9999', // Ensure it's above most other components
