@@ -199,27 +199,6 @@ function App() {
           }
           directionsRendererRef={directionsRendererRef}
         />
-        <Box position="absolute" top={3} right={3} zIndex="1000">
-          <VStack spacing={2}>
-            <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
-            {directionsResponse && (
-              <Tooltip label="Itinerary" hasArrow>
-                <IconButton
-                  aria-label="Itinerary"
-                  icon={<FaListUl />}
-                  onClick={onOpenItinerary}
-                  isRound
-                  bg={uiThemes[mapTheme].primary}
-                  color="white"
-                  _hover={{ bg: uiThemes[mapTheme].accent }}
-                  border={`1px solid ${uiThemes[mapTheme].accent}`}
-                  boxShadow="md"
-                  size="sm"
-                />
-              </Tooltip>
-            )}
-          </VStack>
-        </Box>
         <Box position="absolute" left={0} top={0} h="100%" w="100%">
           <GoogleMapDisplay
             center={center}
@@ -260,8 +239,19 @@ function App() {
           </Box>
         )}
         <LocationModal isOpen={!!selectedPlaceId} onClose={closeLocationModal} placeId={selectedPlaceId} />
-        <Box position="absolute" top={3} left={3} zIndex="1000">
-          <VStack spacing={3}>
+        <Box
+          position="absolute"
+          zIndex="900"
+          right={{ base: 3, md: 4 }}
+          top={{ base: 4, md: "50%" }}
+          transform={{ base: "none", md: "translateY(-50%)" }}
+          bg={uiThemes[mapTheme].bg}
+          border={`1px solid ${uiThemes[mapTheme].accent}`}
+          borderRadius="full"
+          boxShadow="lg"
+          p={2}
+        >
+          <VStack spacing={2}>
             <ActionButtonGroup
               clearRoute={() =>
                 clearRoute(
@@ -281,6 +271,23 @@ function App() {
               }
               onCenter={onCenterMap}
             />
+            <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
+            {directionsResponse && (
+              <Tooltip label="Itinerary" hasArrow placement="left">
+                <IconButton
+                  aria-label="Itinerary"
+                  icon={<FaListUl />}
+                  onClick={onOpenItinerary}
+                  isRound
+                  bg={uiThemes[mapTheme].primary}
+                  color="white"
+                  _hover={{ bg: uiThemes[mapTheme].accent }}
+                  border={`1px solid ${uiThemes[mapTheme].accent}`}
+                  boxShadow="md"
+                  size="sm"
+                />
+              </Tooltip>
+            )}
           </VStack>
         </Box>
         <ItineraryModal
