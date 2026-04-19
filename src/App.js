@@ -47,6 +47,8 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [journeyWarning, setJourneyWarning] = useState("walking");
+  const [routeError, setRouteError] = useState("");
+  const [isPlanningRoute, setIsPlanningRoute] = useState(false);
   const [isOpenItinerary, setIsOpenItinerary] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const getInitialTheme = () => localStorage.getItem("mapTheme") || "classic";
@@ -107,6 +109,10 @@ function App() {
           setTime={setTime}
           setCombinedStops={setCombinedStops}
           journeyWarning={journeyWarning}
+          routeError={routeError}
+          setRouteError={setRouteError}
+          isPlanningRoute={isPlanningRoute}
+          setIsPlanningRoute={setIsPlanningRoute}
           distance={distance}
           time={time}
           clearRoute={() =>
@@ -116,6 +122,8 @@ function App() {
               setDistance,
               setTime,
               setJourneyWarning,
+              setRouteError,
+              setIsPlanningRoute,
               startRef,
               finishRef,
               directionsRendererRef
@@ -151,6 +159,8 @@ function App() {
             setMap={setMap}
             directionsResponse={directionsResponse}
             combinedStops={combinedStops}
+            startLabel={startRef.current?.value}
+            finishLabel={finishRef.current?.value}
             setSelectedLocation={setSelectedLocation}
             selectedLocation={selectedLocation}
             mapTheme={mapTheme}
@@ -168,6 +178,8 @@ function App() {
                   setDistance,
                   setTime,
                   setJourneyWarning,
+                  setRouteError,
+                  setIsPlanningRoute,
                   startRef,
                   finishRef,
                   directionsRendererRef
@@ -177,7 +189,14 @@ function App() {
             />
           </VStack>
         </Box>
-        <ItineraryModal isOpen={isOpenItinerary} onClose={onCloseItinerary} combinedStops={combinedStops} />
+        <ItineraryModal
+          isOpen={isOpenItinerary}
+          onClose={onCloseItinerary}
+          combinedStops={combinedStops}
+          distance={distance}
+          time={time}
+          travelMethod={travelMethod}
+        />
       </Flex>
     </ThemeContext.Provider>
   );

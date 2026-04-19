@@ -4,13 +4,15 @@ import {
   IconButton,
   Image,
   Heading,
+  Text,
+  HStack,
   useDisclosure,
   VStack,
   Collapse,
   useOutsideClick
 } from "@chakra-ui/react";
 import { useRef } from "react";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaRoute } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 import PlanTour from "./PlanTour";
 
@@ -49,6 +51,10 @@ const Header = ({
   setTime,
   setCombinedStops,
   journeyWarning,
+  routeError,
+  setRouteError,
+  isPlanningRoute,
+  setIsPlanningRoute,
   distance,
   time,
   clearRoute,
@@ -73,24 +79,29 @@ useOutsideClick({
   return (
     <Box
       as="header"
-      mt={4}
-      borderRadius="lg"
-      position="sticky"
-      top={0}
+      position="fixed"
+      top={{ base: "auto", md: 4 }}
+      bottom={{ base: 3, md: "auto" }}
+      left={{ base: 3, md: "50%" }}
+      right={{ base: 3, md: "auto" }}
+      transform={{ base: "none", md: "translateX(-50%)" }}
       zIndex="999"
       bg={theme.bg}
       color={theme.text}
-      backdropFilter="blur(6px)"
-      boxShadow="sm"
+      border={`1px solid ${theme.accent}`}
+      borderRadius="lg"
+      backdropFilter="blur(10px)"
+      boxShadow="lg"
       py={3}
-      px={2}
+      px={3}
+      w={{ base: "auto", md: "min(520px, calc(100vw - 160px))" }}
+      maxH={{ base: "calc(100vh - 24px)", md: "calc(100vh - 32px)" }}
+      overflowY="auto"
     >
-      <Flex justify="space-between" align="center" wrap="nowrap" px={2}>
-        {/* Left: Logo */}
+      <Flex justify="space-between" align="center" wrap="nowrap" gap={3}>
         <Image src={logoSrc} alt="logo" boxSize="40px" marginRight={3}/>
 
-        {/* Centre: Heading */}
-        <Box flex="1" textAlign="center">
+        <Box flex="1" minW={0}>
           <Heading size="md" color={theme.primary} whiteSpace="nowrap">
             {mapTheme === "classic" ? (
               <>
@@ -111,13 +122,20 @@ useOutsideClick({
               <Box as="span" color={theme.primary}>Tipsy Tourist</Box>
             )}
           </Heading>
+          <HStack spacing={2} mt={1} color={theme.text} opacity={0.85}>
+            <FaRoute />
+            <Text fontSize="xs" noOfLines={1}>
+              {distance && time
+                ? `${distance} · ${time} · ${travelMethod.toLowerCase()}`
+                : "Plan a pub-and-sights route"}
+            </Text>
+          </HStack>
         </Box>
 
-        {/* Right: Burger Icon */}
         <IconButton
           ref={buttonRef}
           icon={<FaBars />}
-          aria-label="Menu"
+          aria-label="Plan route"
           size="md"
           onClick={(e) => {
             e.stopPropagation();
@@ -129,7 +147,6 @@ useOutsideClick({
         />
       </Flex>
 
-      {/* Dropdown section */}
       <Collapse in={isOpen} animateOpacity>
         <Box ref={collapseRef}>
           <VStack mt={4} spacing={3} align="stretch">
@@ -153,20 +170,13 @@ useOutsideClick({
             setTime={setTime}
             setCombinedStops={setCombinedStops}
             journeyWarning={journeyWarning}
+            routeError={routeError}
+            setRouteError={setRouteError}
+            isPlanningRoute={isPlanningRoute}
+            setIsPlanningRoute={setIsPlanningRoute}
             distance={distance}
             time={time}
-            clearRoute={() =>
-              clearRoute(
-                setCombinedStops,
-                setDirectionsResponse,
-                setDistance,
-                setTime,
-                setJourneyWarning,
-                startRef,
-                finishRef,
-                directionsRendererRef
-              )
-            }
+            clearRoute={clearRoute}
             mapTheme={mapTheme}
             onAfterSubmit={onToggle}
           />

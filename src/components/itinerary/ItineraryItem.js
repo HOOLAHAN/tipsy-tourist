@@ -9,12 +9,14 @@ import {
   HStack,
   Link,
   Tooltip,
+  Badge,
+  Spinner,
 } from "@chakra-ui/react";
 import { StarIcon, LinkIcon, PhoneIcon, CalendarIcon } from "@chakra-ui/icons";
 import { FaHome } from "react-icons/fa";
 import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
 import { useUITheme } from "../../context/ThemeContext";
-import details from "../../lib/details";
+import { getCachedPlaceDetails } from "../../lib/placeDetailsCache";
 
 const convertDay = (day) => (day === 0 ? 6 : day - 1);
 
@@ -43,23 +45,54 @@ const OpenNow = ({ opening_hours }) => {
   );
 };
 
-const ItineraryItem = ({ place_id }) => {
+const ItineraryItem = ({ place_id, stopNumber, stopType }) => {
   const theme = useUITheme();
   const [data, setData] = useState(null);
+  const [hasFailed, setHasFailed] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchDetails() {
-      const response = await details(place_id);
-      console.log("Fetched place details:", response);
-      setData(response.result);
+      setHasFailed(false);
+      try {
+        const response = await getCachedPlaceDetails(place_id);
+        if (isMounted) setData(response);
+      } catch (error) {
+        if (isMounted) setHasFailed(true);
+      }
     }
+
     fetchDetails();
+
+    return () => {
+      isMounted = false;
+    };
   }, [place_id]);
 
-  if (!data || !data.name) {
+  if (hasFailed) {
     return (
       <Box p={3}>
         <Text fontStyle="italic" color="gray.500">Failed to load details for this location.</Text>
+      </Box>
+    );
+  }
+
+  if (!data) {
+    return (
+      <Box p={3} borderWidth="1px" borderRadius="md" borderColor={theme.accent} mb={4}>
+        <HStack>
+          <Spinner size="sm" />
+          <Text fontStyle="italic" color="gray.500">Loading stop details...</Text>
+        </HStack>
+      </Box>
+    );
+  }
+
+  if (!data.name) {
+    return (
+      <Box p={3}>
+        <Text fontStyle="italic" color="gray.500">No details available for this location.</Text>
       </Box>
     );
   }
@@ -71,7 +104,28 @@ const ItineraryItem = ({ place_id }) => {
 
   return (
     <Box p={3} borderWidth="1px" borderRadius="md" borderColor={theme.accent} mb={4}>
-      <Text fontSize="lg" fontWeight="bold" mb={2}>{data.name}</Text>
+      <HStack justify="space-between" align="start" mb={2}>
+        <HStack align="center">
+          {stopNumber && (
+            <Badge
+              bg={theme.primary}
+              color="white"
+              borderRadius="full"
+              minW="24px"
+              textAlign="center"
+              py={1}
+            >
+              {stopNumber}
+            </Badge>
+          )}
+          <Text fontSize="lg" fontWeight="bold">{data.name}</Text>
+        </HStack>
+        {stopType && (
+          <Badge colorScheme={stopType === "attraction" ? "purple" : "red"}>
+            {stopType}
+          </Badge>
+        )}
+      </HStack>
       <Image src={imageLink} alt={data.name} borderRadius="md" maxW="100%" maxH="150px" objectFit="cover" mb={2} />
 
       <VStack align="start" spacing={2}>

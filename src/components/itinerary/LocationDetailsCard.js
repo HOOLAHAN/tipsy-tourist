@@ -1,6 +1,6 @@
 // src/components/itinerary/LocationDetailsCard.js
 
-import details from "../../lib/details";
+import { getCachedPlaceDetails } from "../../lib/placeDetailsCache";
 import {
   Box,
   Modal,
@@ -60,9 +60,8 @@ const LocationDetailsCard = ({ place_id }) => {
 
   async function getDetails(place_id) {
     if (!locationCardData.place_id) {
-      const place = await details(place_id);
-      const locationData = place.result;
-      setLocationCardData(locationData);
+      const locationData = await getCachedPlaceDetails(place_id);
+      setLocationCardData(locationData || {});
     }
   }
 

@@ -51,6 +51,18 @@ function RouteAlert({ error }) {
     return container("error", <>No viable routes found.</>);
   }
 
+  if (error === "missing-inputs") {
+    return container("warning", <>Choose both a start and finish location.</>);
+  }
+
+  if (error === "geocode-failed") {
+    return container("error", <>We could not find one of those locations.</>);
+  }
+
+  if (error === "places-failed") {
+    return container("error", <>We could not find enough nearby stops. Try a shorter route.</>);
+  }
+
   return null;
 }
 

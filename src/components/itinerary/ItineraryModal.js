@@ -10,11 +10,13 @@ import {
   ModalFooter,
   Button,
   Text,
+  HStack,
+  Badge,
 } from "@chakra-ui/react";
 import { useUITheme } from "../../context/ThemeContext";
 import Itinerary from "./Itinerary";
 
-const ItineraryModal = ({ isOpen, onClose, combinedStops }) => {
+const ItineraryModal = ({ isOpen, onClose, combinedStops, distance, time, travelMethod }) => {
   const theme = useUITheme();
 
   return (
@@ -27,7 +29,15 @@ const ItineraryModal = ({ isOpen, onClose, combinedStops }) => {
         <ModalCloseButton />
         <ModalBody>
           {combinedStops.length > 0 ? (
-            <Itinerary combinedStops={combinedStops} />
+            <>
+              <HStack spacing={2} mb={4} wrap="wrap">
+                <Badge colorScheme="blue">{combinedStops.length} stops</Badge>
+                {distance && <Badge colorScheme="green">{distance}</Badge>}
+                {time && <Badge colorScheme="purple">{time}</Badge>}
+                {travelMethod && <Badge>{travelMethod.toLowerCase()}</Badge>}
+              </HStack>
+              <Itinerary combinedStops={combinedStops} />
+            </>
           ) : (
             <Text>No stops in your itinerary yet.</Text>
           )}

@@ -6,6 +6,8 @@ const clearRoute = (
   setDistance,
   setTime,
   setJourneyWarning,
+  setRouteError,
+  setIsPlanningRoute,
   startRef,
   finishRef,
   directionsRendererRef
@@ -17,6 +19,12 @@ const clearRoute = (
   setTime("");
   if (typeof setJourneyWarning === "function") {
     setJourneyWarning("walking");
+  }
+  if (typeof setRouteError === "function") {
+    setRouteError("");
+  }
+  if (typeof setIsPlanningRoute === "function") {
+    setIsPlanningRoute(false);
   }
 
   // Clear inputs safely

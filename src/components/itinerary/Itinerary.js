@@ -6,8 +6,13 @@ const Itinerary = ({ combinedStops }) => {
 
   return (
     <Box maxH="400px" overflowY="auto">
-      {combinedStops.map((item) => (
-        <ItineraryItem key={item.place_id} place_id={item.place_id} />
+      {combinedStops.map((item, index) => (
+        <ItineraryItem
+          key={item.place_id}
+          place_id={item.place_id}
+          stopNumber={index + 1}
+          stopType={item.stopType}
+        />
       ))}
     </Box>
   );

@@ -10,6 +10,8 @@ const GoogleMapDisplay = ({
   setMap,
   directionsResponse,
   combinedStops,
+  startLabel,
+  finishLabel,
   setSelectedLocation,
   mapTheme = "classic",
   onMarkerClick,
@@ -20,6 +22,27 @@ const GoogleMapDisplay = ({
       stop?.geometry?.location?.lat &&
       stop?.geometry?.location?.lng
   );
+
+  const firstLeg = directionsResponse?.routes?.[0]?.legs?.[0];
+  const lastLegs = directionsResponse?.routes?.[0]?.legs || [];
+  const lastLeg = lastLegs[lastLegs.length - 1];
+
+  const makeMarkerIcon = (fillColor) => ({
+    // eslint-disable-next-line no-undef
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor,
+    fillOpacity: 1,
+    strokeColor: "#ffffff",
+    strokeWeight: 2,
+    scale: 14,
+  });
+
+  const makeMarkerLabel = (text) => ({
+    text,
+    color: "#ffffff",
+    fontSize: "12px",
+    fontWeight: "700",
+  });
 
   return (
     <GoogleMap
@@ -42,6 +65,15 @@ const GoogleMapDisplay = ({
         />
       )}
 
+      {firstLeg?.start_location && (
+        <Marker
+          position={firstLeg.start_location}
+          title={startLabel || "Start"}
+          icon={makeMarkerIcon("#2563eb")}
+          label={makeMarkerLabel("A")}
+        />
+      )}
+
       {validStops.map((location, index) => (
         <Marker
           key={location.place_id || index}
@@ -49,12 +81,24 @@ const GoogleMapDisplay = ({
             lat: location.geometry.location.lat,
             lng: location.geometry.location.lng,
           }}
+          title={location.name}
+          icon={makeMarkerIcon(location.stopType === "attraction" ? "#7c3aed" : "#dc2626")}
+          label={makeMarkerLabel(String(index + 1))}
           onClick={() => {
             onMarkerClick?.(location);
             setSelectedLocation?.(location);
           }}
         />
       ))}
+
+      {lastLeg?.end_location && (
+        <Marker
+          position={lastLeg.end_location}
+          title={finishLabel || "Finish"}
+          icon={makeMarkerIcon("#16a34a")}
+          label={makeMarkerLabel("B")}
+        />
+      )}
     </GoogleMap>
   );
 };
