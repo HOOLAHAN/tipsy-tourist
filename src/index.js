@@ -21,8 +21,7 @@ const theme = extendTheme({
         height: "100%",
         overflow: "hidden",
         overscrollBehavior: "none",
-        position: "fixed",
-        inset: 0,
+        margin: 0,
       },
       "#root": {
         width: "100%",

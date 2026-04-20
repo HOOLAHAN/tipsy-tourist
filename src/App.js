@@ -148,9 +148,9 @@ function App() {
         position="relative"
         flexDirection="column"
         alignItems="center"
-        h="100vh"
+        h="100dvh"
         minH="100dvh"
-        w="100vw"
+        w="100%"
         overflow="hidden"
       >
         <Header
@@ -250,7 +250,7 @@ function App() {
           position="absolute"
           zIndex="900"
           right={{ base: "50%", md: 4 }}
-          bottom={{ base: "calc(env(safe-area-inset-bottom, 0px) + 18px)", md: "auto" }}
+          bottom={{ base: "calc(env(safe-area-inset-bottom, 0px) + 24px)", md: "auto" }}
           top={{ base: "auto", md: "50%" }}
           transform={{ base: "translateX(50%)", md: "translateY(-50%)" }}
           bg={uiThemes[mapTheme].bg}
