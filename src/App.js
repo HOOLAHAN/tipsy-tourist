@@ -144,7 +144,15 @@ function App() {
 
   return (
     <ThemeContext.Provider value={uiThemes[mapTheme]}>
-      <Flex position="relative" flexDirection="column" alignItems="center" h="100vh" w="100vw">
+      <Flex
+        position="relative"
+        flexDirection="column"
+        alignItems="center"
+        h="100vh"
+        minH="100dvh"
+        w="100vw"
+        overflow="hidden"
+      >
         <Header
           onCenter={onCenterMap}
           onSeeItinerary={onOpenItinerary}
@@ -242,7 +250,7 @@ function App() {
           position="absolute"
           zIndex="900"
           right={{ base: "50%", md: 4 }}
-          bottom={{ base: 3, md: "auto" }}
+          bottom={{ base: "calc(env(safe-area-inset-bottom, 0px) + 18px)", md: "auto" }}
           top={{ base: "auto", md: "50%" }}
           transform={{ base: "translateX(50%)", md: "translateY(-50%)" }}
           bg={uiThemes[mapTheme].bg}

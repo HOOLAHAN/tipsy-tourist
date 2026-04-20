@@ -29,6 +29,11 @@ const theme = extendTheme({
         height: "100%",
         overflow: "hidden",
       },
+      "@supports (height: 100dvh)": {
+        "#root": {
+          height: "100dvh",
+        },
+      },
       // Targeting the Google Maps Autocomplete dropdown
       '.pac-container': {
         zIndex: '9999', // Ensure it's above most other components
