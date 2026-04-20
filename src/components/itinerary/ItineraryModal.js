@@ -22,7 +22,7 @@ const ItineraryModal = ({ isOpen, onClose, combinedStops, distance, time, travel
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
       <ModalOverlay />
-      <ModalContent bg={theme.bg} color={theme.text}>
+      <ModalContent bg={theme.bg} color={theme.text} mx={{ base: 4, md: "auto" }}>
         <ModalHeader borderBottomWidth="1px" borderColor={theme.accent}>
           Your Itinerary
         </ModalHeader>

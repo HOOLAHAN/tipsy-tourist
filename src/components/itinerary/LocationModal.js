@@ -18,7 +18,7 @@ const LocationModal = ({ isOpen, onClose, placeId }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
       <ModalOverlay />
-      <ModalContent bg={theme.bg} color={theme.text}>
+      <ModalContent bg={theme.bg} color={theme.text} mx={{ base: 4, md: "auto" }}>
         <ModalHeader borderBottomWidth="1px" borderColor={theme.accent}>
           Location Details
         </ModalHeader>
