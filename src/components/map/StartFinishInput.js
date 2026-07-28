@@ -15,6 +15,8 @@ const StartFinishInput = ({ startRef, finishRef, activePicker, setActivePicker, 
     _placeholder: { color: theme.text },
     _hover: { borderColor: theme.accent },
     _focus: { borderColor: theme.accent, boxShadow: `0 0 0 1px ${theme.accent}` },
+    borderRadius: "full",
+    h: "52px",
   };
 
   const pickerButtonProps = (picker, label) => ({
@@ -25,6 +27,8 @@ const StartFinishInput = ({ startRef, finishRef, activePicker, setActivePicker, 
     color: activePicker === picker ? "white" : theme.primary,
     borderColor: theme.accent,
     borderWidth: "1px",
+    borderRadius: "full",
+    boxSize: "52px",
     _hover: {
       bg: activePicker === picker ? theme.accent : `${theme.accent}22`,
     },

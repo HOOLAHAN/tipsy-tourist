@@ -35,6 +35,7 @@ const PubAttractionSelectors = ({
     fontWeight: "semibold",
     lineHeight: "40px",
     px: 0,
+    borderRadius: "full",
     _placeholder: { color: theme.text },
     _hover: { borderColor: theme.accent },
     _focus: { borderColor: theme.accent, boxShadow: `0 0 0 1px ${theme.accent}` },
@@ -43,7 +44,7 @@ const PubAttractionSelectors = ({
   const clamp = (value, min, max) => Math.min(Math.max(Number(value) || min, min), max);
 
   const StepperCard = ({ label, icon, value, min, max, onChange }) => (
-    <Box borderWidth="1px" borderColor={theme.accent} borderRadius="md" p={3}>
+    <Box borderWidth="1px" borderColor={theme.accent} borderRadius="3xl" p={3}>
       <HStack justify="space-between" mb={3}>
         <HStack spacing={2}>
           {icon}
@@ -96,7 +97,7 @@ const PubAttractionSelectors = ({
         icon={<MdLocalBar color={theme.primary} />}
         value={pubStops}
         min={1}
-        max={travelMethod === "WALKING" ? 7 : 1}
+        max={10}
         onChange={(value) => handlePubs(setPubStops, value)}
       />
       <StepperCard
@@ -104,7 +105,7 @@ const PubAttractionSelectors = ({
         icon={<FaCameraRetro color={theme.primary} />}
         value={attractionStops}
         min={1}
-        max={3}
+        max={10}
         onChange={(value) => handleAttractions(setAttractionStops, value)}
       />
     </SimpleGrid>

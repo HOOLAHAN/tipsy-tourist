@@ -10,7 +10,8 @@ import { clearRoute } from './features/routing/clearRoute';
 import { ThemeContext } from "./context/ThemeContext";
 import { uiThemes } from "./theme/uiThemes";
 import ThemeMenu from './components/header/ThemeMenu';
-import { FaListUl } from "react-icons/fa";
+import { FaInfoCircle, FaListUl } from "react-icons/fa";
+import { Link as RouterLink } from "react-router-dom";
 import { Tooltip, IconButton } from "@chakra-ui/react";
 
 import {
@@ -259,10 +260,10 @@ function App() {
           boxShadow="lg"
           px={{ base: 3, md: 2 }}
           py={{ base: 2, md: 3 }}
-          minW={{ base: "148px", md: "auto" }}
+          minW="auto"
         >
           <Flex
-            gap={{ base: 3, md: 2 }}
+            gap={2}
             direction={{ base: "row", md: "column" }}
             align="center"
             justify="center"
@@ -287,6 +288,9 @@ function App() {
               onCenter={onCenterMap}
             />
             <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
+            <Tooltip label="About & support" hasArrow placement="left">
+              <IconButton as={RouterLink} to="/support" aria-label="About and support" icon={<FaInfoCircle />} isRound bg={uiThemes[mapTheme].bg} color={uiThemes[mapTheme].text} _hover={{ bg: `${uiThemes[mapTheme].accent}22` }} border={`1px solid ${uiThemes[mapTheme].accent}`} boxShadow="md" size="lg" />
+            </Tooltip>
             {directionsResponse && (
               <Tooltip label="Itinerary" hasArrow placement="left">
                 <IconButton
@@ -294,12 +298,12 @@ function App() {
                   icon={<FaListUl />}
                   onClick={onOpenItinerary}
                   isRound
-                  bg={uiThemes[mapTheme].primary}
-                  color="white"
+                  bg={uiThemes[mapTheme].bg}
+                  color={uiThemes[mapTheme].text}
                   _hover={{ bg: uiThemes[mapTheme].accent }}
                   border={`1px solid ${uiThemes[mapTheme].accent}`}
                   boxShadow="md"
-                  size="sm"
+                  size="lg"
                 />
               </Tooltip>
             )}

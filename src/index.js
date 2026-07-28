@@ -1,10 +1,11 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import "@fontsource/raleway/400.css";
 import "@fontsource/open-sans/700.css";
 import App from "./App";
+import SupportPage from "./components/support/SupportPage";
 
 // Define your theme configuration
 const theme = extendTheme({
@@ -65,9 +66,17 @@ const root = createRoot(container);
 // );
 
 root.render(
-  <BrowserRouter>
+  <HashRouter>
     <ChakraProvider theme={theme}>
-      <App />
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/support" element={<SupportPage />} />
+        <Route path="/privacy" element={<SupportPage />} />
+        <Route path="/terms" element={<SupportPage />} />
+        <Route path="/safety" element={<SupportPage />} />
+        <Route path="/data-deletion" element={<SupportPage />} />
+        <Route path="*" element={<SupportPage />} />
+      </Routes>
     </ChakraProvider>
-  </BrowserRouter>
+  </HashRouter>
 );

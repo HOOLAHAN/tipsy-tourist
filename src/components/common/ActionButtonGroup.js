@@ -19,7 +19,7 @@ const ActionButtonGroup = ({ clearRoute, onCenter }) => {
           color="white"
           _hover={{ bg: theme.accent }}
           boxShadow="md"
-          size="sm"
+          size="lg"
         />
       </Tooltip>
       <Tooltip label="Clear route" hasArrow>
@@ -28,11 +28,11 @@ const ActionButtonGroup = ({ clearRoute, onCenter }) => {
           icon={<FaTimes />}
           onClick={clearRoute}
           isRound
-          bg={theme.primary}
-          color="white"
+          bg={theme.bg}
+          color={theme.text}
           _hover={{ bg: theme.accent }}
           boxShadow="md"
-          size="sm"
+          size="lg"
         />
       </Tooltip>
     </Flex>

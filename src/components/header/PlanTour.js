@@ -23,7 +23,6 @@ import { useUITheme } from "../../context/ThemeContext";
 const PlanTour = ({
   startRef,
   finishRef,
-  handleCar,
   handleBicycling,
   handleWalking,
   recalculateRouteForMode,
@@ -55,15 +54,10 @@ const PlanTour = ({
 }) => {
   const theme = useUITheme();
 
-  const planButtonIcon =
-    travelMethod === "DRIVING" || travelMethod === "BICYCLING"
-      ? <MdOutlineLocalDrink />
-      : <FaBeer />;
+  const planButtonIcon = travelMethod === "BICYCLING" ? <MdOutlineLocalDrink /> : <FaBeer />;
 
   const planButtonText =
-    travelMethod === "DRIVING"
-      ? "Plan my Sober Sejour"
-      : travelMethod === "WALKING"
+    travelMethod === "WALKING"
       ? "Plan my Tipsy Tour"
       : "Plan my best bike route";
 
@@ -79,11 +73,6 @@ const PlanTour = ({
         />
         <Divider borderColor={theme.accent} opacity={0.45} />
         <TravelModeButtons
-          onCarClick={() => {
-            handleCar(setTravelMethod, setJourneyWarning);
-            setPubStops(1);
-            recalculateRouteForMode?.("DRIVING", 1);
-          }}
           onBikeClick={() => {
             handleBicycling(setTravelMethod, setJourneyWarning);
             setPubStops(1);
@@ -138,6 +127,7 @@ const PlanTour = ({
           shadow="md"
           size="md"
           w="100%"
+          borderRadius="full"
         >
           {planButtonText}
         </Button>
@@ -146,7 +136,7 @@ const PlanTour = ({
             <Stat
               borderWidth="1px"
               borderColor={theme.accent}
-              borderRadius="md"
+              borderRadius="2xl"
               px={3}
               py={2}
             >
@@ -156,7 +146,7 @@ const PlanTour = ({
             <Stat
               borderWidth="1px"
               borderColor={theme.accent}
-              borderRadius="md"
+              borderRadius="2xl"
               px={3}
               py={2}
             >
@@ -179,6 +169,7 @@ const PlanTour = ({
           onClick={clearRoute}
           size={"sm"}
           variant="outline"
+          borderRadius="full"
         >
           Clear Route
         </Button>

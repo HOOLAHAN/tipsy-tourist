@@ -1,10 +1,10 @@
 // components/common/TravelModeButtons.js
 
 import { Button, ButtonGroup } from "@chakra-ui/react";
-import { FaCar, FaBicycle, FaWalking } from "react-icons/fa";
+import { FaBicycle, FaWalking } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 
-const TravelModeButtons = ({ onCarClick, onBikeClick, onWalkClick, travelMethod }) => {
+const TravelModeButtons = ({ onBikeClick, onWalkClick, travelMethod }) => {
   const theme = useUITheme();
 
   const getButtonStyle = (mode) => ({
@@ -17,13 +17,12 @@ const TravelModeButtons = ({ onCarClick, onBikeClick, onWalkClick, travelMethod 
   });
 
   const modes = [
-    { mode: "DRIVING", label: "Car", icon: <FaCar />, onClick: onCarClick },
     { mode: "BICYCLING", label: "Bike", icon: <FaBicycle />, onClick: onBikeClick },
     { mode: "WALKING", label: "Walk", icon: <FaWalking />, onClick: onWalkClick },
   ];
 
   return (
-    <ButtonGroup isAttached w="100%" size="sm">
+    <ButtonGroup w="100%" size="md" bg={theme.bg} border={`1px solid ${theme.accent}`} borderRadius="full" p={1} spacing={1}>
       {modes.map(({ mode, label, icon, onClick }) => (
         <Button
           key={mode}
@@ -32,6 +31,7 @@ const TravelModeButtons = ({ onCarClick, onBikeClick, onWalkClick, travelMethod 
           onClick={onClick}
           flex="1"
           borderWidth="1px"
+          borderRadius="full"
           {...getButtonStyle(mode)}
         >
           {label}

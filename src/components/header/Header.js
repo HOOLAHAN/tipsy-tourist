@@ -17,16 +17,6 @@ import { useUITheme } from "../../context/ThemeContext";
 import PlanTour from "./PlanTour";
 
 import logoClassic from "../../assets/images/logo_classic.png";
-import logoDark from "../../assets/images/logo_dark.svg";
-import logoPlain from "../../assets/images/logo_plain.svg";
-import logoNeon from "../../assets/images/logo_neon.svg";
-
-const logoMap = {
-  classic: logoClassic,
-  dark: logoDark,
-  plain: logoPlain,
-  neon: logoNeon,
-};
 
 const Header = ({
   onSeeItinerary,
@@ -36,7 +26,6 @@ const Header = ({
   setIsPlannerOpen,
   startRef,
   finishRef,
-  handleCar,
   handleBicycling,
   handleWalking,
   recalculateRouteForMode,
@@ -71,7 +60,7 @@ const Header = ({
     onClose: () => setIsPlannerOpen(false),
   });
   const theme = useUITheme();
-  const logoSrc = logoMap[mapTheme] || logoNeon;
+  const logoSrc = logoClassic;
   const collapseRef = useRef();
   const buttonRef = useRef();
   
@@ -86,6 +75,7 @@ useOutsideClick({
 });
 
   return (
+    <>
     <Box
       as="header"
       position="fixed"
@@ -98,21 +88,19 @@ useOutsideClick({
       bg={theme.bg}
       color={theme.text}
       border={`1px solid ${theme.accent}`}
-      borderRadius="xl"
+      borderRadius="full"
       backdropFilter="blur(10px)"
       boxShadow="0 18px 45px rgba(15, 23, 42, 0.22)"
-      py={4}
-      px={4}
+      py={3}
+      px={3}
       w={{ base: "auto", md: "min(460px, calc(100vw - 160px))" }}
-      maxH={{ base: "calc(100vh - 24px)", md: "calc(100vh - 32px)" }}
-      overflowY="auto"
     >
       <Flex justify="space-between" align="center" wrap="nowrap" gap={3}>
-        <Image src={logoSrc} alt="logo" boxSize="40px" marginRight={3}/>
+        <Image src={logoSrc} alt="Tipsy Tourist" boxSize="48px" />
 
         <Box flex="1" minW={0}>
           <Heading size="md" color={theme.primary} whiteSpace="nowrap">
-            {mapTheme === "classic" ? (
+            {(
               <>
                 <Box as="span" color="#EA4335">T</Box>
                 <Box as="span" color="#FBBC05">i</Box>
@@ -127,8 +115,6 @@ useOutsideClick({
                 <Box as="span" color="#4285F4">s</Box>
                 <Box as="span" color="#34A853">t</Box>
               </>
-            ) : (
-              <Box as="span" color={theme.primary}>Tipsy Tourist</Box>
             )}
           </Heading>
           <HStack spacing={2} mt={1} color={theme.text} opacity={0.85}>
@@ -153,16 +139,22 @@ useOutsideClick({
           variant="ghost"
           color={theme.primary}
           marginLeft={3}
+          isRound
+          bg={`${theme.accent}18`}
         />
       </Flex>
+    </Box>
 
       <Collapse in={isOpen} animateOpacity>
-        <Box ref={collapseRef}>
-          <VStack mt={4} spacing={3} align="stretch">
+        <Box ref={collapseRef} position="fixed" zIndex="998" left={{ base: 0, md: "50%" }} right={{ base: 0, md: "auto" }} bottom={0} transform={{ base: "none", md: "translateX(-50%)" }} w={{ base: "100%", md: "520px" }} maxH="82dvh" overflowY="auto" bg={theme.bg} color={theme.text} border={`1px solid ${theme.accent}`} borderBottomWidth={0} borderTopRadius="3xl" boxShadow="0 -18px 55px rgba(15,23,42,.18)" px={{ base: 5, md: 6 }} pt={3} pb="calc(env(safe-area-inset-bottom, 0px) + 24px)">
+          <Box w="44px" h="5px" bg={theme.accent} opacity={0.45} borderRadius="full" mx="auto" mb={4} />
+          <Text color={theme.primary} fontSize="xs" fontWeight="extrabold" letterSpacing="0.18em">BUILD A ROUTE</Text>
+          <Heading size="lg" mt={1}>Where are we going?</Heading>
+          <Text fontSize="sm" opacity={0.68} mt={1} mb={4}>Choose your route and we’ll find the stops.</Text>
+          <VStack spacing={3} align="stretch">
             <PlanTour
             startRef={startRef}
             finishRef={finishRef}
-            handleCar={handleCar}
             handleBicycling={handleBicycling}
             handleWalking={handleWalking}
             recalculateRouteForMode={recalculateRouteForMode}
@@ -196,7 +188,7 @@ useOutsideClick({
         </VStack>
         </Box>
       </Collapse>
-    </Box>
+    </>
   );
 };
 
