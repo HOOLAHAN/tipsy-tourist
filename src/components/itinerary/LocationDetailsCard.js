@@ -5,6 +5,7 @@ import { FaDirections, FaHome, FaMapMarkedAlt, FaPoundSign, FaWheelchair } from 
 import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
 import { useUITheme } from "../../context/ThemeContext";
 import { getCachedPlaceDetails } from "../../lib/placeDetailsCache";
+import { googleMapsApiKey } from "../../lib/googleMapsKey";
 
 function openingLabel(data) {
   if (!data?.opening_hours) return "No opening hours info";
@@ -31,9 +32,8 @@ export default function LocationDetailsCard({ place_id, place, stopNumber }) {
   if (!details) return <Center minH="260px"><Spinner color={theme.primary} size="lg" /></Center>;
   const attraction = details.stopType === "attraction" || place?.stopType === "attraction";
   const color = attraction ? "#7c3aed" : "#e11d48";
-  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
   const image = details.photos?.[0]?.photo_reference
-    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${details.photos[0].photo_reference}&key=${apiKey}`
+    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${details.photos[0].photo_reference}&key=${googleMapsApiKey}`
     : tipsyTouristLogo3;
   const rows = [
     [<FaHome />, details.formatted_address || details.vicinity],

@@ -23,7 +23,7 @@ jobs:
 
       - name: Build React app
         env:
-          REACT_APP_GOOGLE_MAPS_API_KEY: ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
+          REACT_APP_TIPSY_TOURIST_GOOGLE_MAPS_KEY_PRODUCTION: ${{ secrets.REACT_APP_TIPSY_TOURIST_GOOGLE_MAPS_KEY_PRODUCTION }}
         run: npm run build
 
       - name: Deploy to S3

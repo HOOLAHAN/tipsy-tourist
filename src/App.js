@@ -17,6 +17,7 @@ import ThemeMenu from './components/header/ThemeMenu';
 import { FaInfoCircle, FaListUl } from "react-icons/fa";
 import { Link as RouterLink } from "react-router-dom";
 import { Tooltip, IconButton } from "@chakra-ui/react";
+import { googleMapsApiKey } from "./lib/googleMapsKey";
 
 import {
   Box,
@@ -38,7 +39,6 @@ const libraries = ["places"];
 
 function App() {
   // loads google maps script
-  const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey,
     libraries,

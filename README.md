@@ -39,10 +39,10 @@ cd tipsy_tourist
 npm install
 ```
 
-Create a `.env.local` file in the root of the directory and add:
+Copy `.env.example` to `.env.development.local` in the project root and add the development website key:
 
 ```
-REACT_APP_GOOGLE_MAPS_API_KEY="<YOUR-API-KEY>"
+REACT_APP_TIPSY_TOURIST_GOOGLE_MAPS_KEY_DEVELOPMENT="<YOUR-DEVELOPMENT-WEBSITE-API-KEY>"
 ```
 
 ## Running locally
