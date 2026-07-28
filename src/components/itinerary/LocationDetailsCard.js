@@ -5,7 +5,8 @@ import { FaDirections, FaHome, FaMapMarkedAlt, FaPoundSign, FaWheelchair } from 
 import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
 import { useUITheme } from "../../context/ThemeContext";
 import { getCachedPlaceDetails } from "../../lib/placeDetailsCache";
-import { googleMapsApiKey } from "../../lib/googleMapsKey";
+
+const API_URL = process.env.REACT_APP_TIPSY_TOURIST_API_URL || "https://t5jalxqqsb.execute-api.eu-west-2.amazonaws.com";
 
 function openingLabel(data) {
   if (!data?.opening_hours) return "No opening hours info";
@@ -33,7 +34,7 @@ export default function LocationDetailsCard({ place_id, place, stopNumber }) {
   const attraction = details.stopType === "attraction" || place?.stopType === "attraction";
   const color = attraction ? "#7c3aed" : "#e11d48";
   const image = details.photos?.[0]?.photo_reference
-    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${details.photos[0].photo_reference}&key=${googleMapsApiKey}`
+    ? `${API_URL}/place-photo?maxwidth=1000&photo_reference=${encodeURIComponent(details.photos[0].photo_reference)}`
     : tipsyTouristLogo3;
   const rows = [
     [<FaHome />, details.formatted_address || details.vicinity],
@@ -52,7 +53,7 @@ export default function LocationDetailsCard({ place_id, place, stopNumber }) {
         </HStack>
         <Text flexShrink={0} bg={attraction ? "purple.100" : "red.100"} color={attraction ? "purple.700" : "red.700"} borderRadius="full" px={3} py={1} fontSize="xs" fontWeight="extrabold">{attraction ? "ATTRACTION" : "PUB"}</Text>
       </HStack>
-      <Image src={image} alt={details.name || "Location"} w="100%" h={{ base: "190px", md: "230px" }} objectFit="cover" borderRadius="2xl" mb={5} />
+      <Image src={image} fallbackSrc={tipsyTouristLogo3} alt={details.name || "Location"} w="100%" h={{ base: "190px", md: "230px" }} objectFit="cover" borderRadius="2xl" mb={5} />
       <VStack align="stretch" spacing={3}>
         {rows.filter(([, value]) => value).map(([icon, value], index) => <HStack key={index} align="start" spacing={3}><Box color={theme.text} pt="3px">{icon}</Box><Text>{value}</Text></HStack>)}
         {details.website && <HStack spacing={3}><LinkIcon /><Link href={details.website} isExternal color={theme.primary}>{details.name} – website</Link></HStack>}
