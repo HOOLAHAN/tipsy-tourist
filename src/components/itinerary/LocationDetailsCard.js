@@ -1,145 +1,59 @@
-// src/components/itinerary/LocationDetailsCard.js
-
-import { getCachedPlaceDetails } from "../../lib/placeDetailsCache";
-import {
-  Box,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  useDisclosure,
-  Center,
-  HStack,
-  Link,
-  Text,
-  Image,
-  Tooltip,
-} from "@chakra-ui/react";
-import { StarIcon, LinkIcon, PhoneIcon, CalendarIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { CalendarIcon, LinkIcon, PhoneIcon, StarIcon } from "@chakra-ui/icons";
+import { Box, Center, HStack, Image, Link, Spinner, Text, VStack } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { FaHome } from "react-icons/fa";
 import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
 import { useUITheme } from "../../context/ThemeContext";
+import { getCachedPlaceDetails } from "../../lib/placeDetailsCache";
 
-function convertDay(day) {
-  return day === 0 ? 6 : day - 1;
+function openingLabel(data) {
+  if (!data?.opening_hours) return "No opening hours info";
+  if (!data.opening_hours.open_now) return "Closed now";
+  const day = new Date().getDay();
+  const index = day === 0 ? 6 : day - 1;
+  const hours = data.opening_hours.weekday_text?.[index];
+  return hours?.includes("–") ? `Open – closes at ${hours.split("–")[1].trim()}` : "Open now";
 }
 
-const OpenNow = ({ data }) => {
-  const today = new Date();
-  const dayIndex = convertDay(today.getDay());
-
-  if (!data.opening_hours) return <Box />;
-
-  const label = data.opening_hours.weekday_text[dayIndex];
-  const openNow = data.opening_hours.open_now;
-
-  if (openNow) {
-    const closingAt = label.split("–")[1];
-    return (
-      <Tooltip label={label} aria-label="Open today">
-        <Text>Open – Closes at {closingAt}</Text>
-      </Tooltip>
-    );
-  } else {
-    return (
-      <Tooltip label={label} aria-label="Closed today">
-        <Text>Closed</Text>
-      </Tooltip>
-    );
-  }
-};
-
-const LocationDetailsCard = ({ place_id }) => {
+export default function LocationDetailsCard({ place_id, place, stopNumber }) {
   const theme = useUITheme();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [locationCardData, setLocationCardData] = useState({});
+  const [details, setDetails] = useState(place || null);
 
-  async function getDetails(place_id) {
-    if (!locationCardData.place_id) {
-      const locationData = await getCachedPlaceDetails(place_id);
-      setLocationCardData(locationData || {});
-    }
-  }
+  useEffect(() => {
+    let active = true;
+    setDetails(place || null);
+    if (place_id) getCachedPlaceDetails(place_id).then((data) => active && setDetails({ ...place, ...data }));
+    return () => { active = false; };
+  }, [place_id, place]);
 
-  async function handleClick() {
-    onOpen();
-    getDetails(place_id);
-  }
-
-  const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
-  const imageLink = locationCardData.photos
-    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${locationCardData.photos[0].photo_reference}&key=${googleMapsApiKey}`
+  if (!details) return <Center minH="260px"><Spinner color={theme.primary} size="lg" /></Center>;
+  const attraction = details.stopType === "attraction" || place?.stopType === "attraction";
+  const color = attraction ? "#7c3aed" : "#e11d48";
+  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const image = details.photos?.[0]?.photo_reference
+    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${details.photos[0].photo_reference}&key=${apiKey}`
     : tipsyTouristLogo3;
+  const rows = [
+    [<FaHome />, details.formatted_address || details.vicinity],
+    [<PhoneIcon />, details.formatted_phone_number],
+    [<CalendarIcon />, openingLabel(details)],
+  ];
 
   return (
-    <Box mt={2}>
-      <Button
-        onClick={handleClick}
-        bg={theme.primary}
-        color="white"
-        _hover={{ bg: theme.accent }}
-        boxShadow="md"
-      >
-        More Info
-      </Button>
-
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent bg={theme.bg} color={theme.text}>
-          <ModalHeader fontWeight="bold">{locationCardData.name}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Center mb={2}>
-              <Box display="flex" mt="2" alignItems="center">
-                {Array(5)
-                  .fill("")
-                  .map((_, i) => (
-                    <StarIcon
-                      key={i}
-                      color={
-                        i < Math.round(locationCardData.rating)
-                          ? "yellow.400"
-                          : "gray.300"
-                      }
-                    />
-                  ))}
-              </Box>
-            </Center>
-
-            <HStack spacing={2} mb={1}>
-              <LinkIcon />
-              <Link href={locationCardData.website} isExternal color={theme.accent}>
-                {locationCardData.name} – website
-              </Link>
-            </HStack>
-
-            <HStack spacing={2} mb={1}>
-              <PhoneIcon />
-              <Text>{locationCardData.formatted_phone_number}</Text>
-            </HStack>
-
-            <HStack spacing={2} mb={1}>
-              <FaHome />
-              <Text>{locationCardData.vicinity}</Text>
-            </HStack>
-
-            <HStack spacing={2} mb={4}>
-              <CalendarIcon />
-              <OpenNow data={locationCardData} />
-            </HStack>
-
-            <Center>
-              <Image src={imageLink} alt="Location" maxW="300px" borderRadius="md" />
-            </Center>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+    <Box bg={`${theme.accent}12`} border={`1px solid ${theme.accent}`} borderRadius="3xl" p={{ base: 4, md: 5 }}>
+      <HStack mb={4} justify="space-between" align="center">
+        <HStack minW={0}>
+          {stopNumber && <Center flexShrink={0} w="44px" h="44px" borderRadius="full" bg={color} color="white" fontWeight="extrabold">{stopNumber}</Center>}
+          <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="extrabold" noOfLines={2}>{details.name}</Text>
+        </HStack>
+        <Text flexShrink={0} bg={attraction ? "purple.100" : "red.100"} color={attraction ? "purple.700" : "red.700"} borderRadius="full" px={3} py={1} fontSize="xs" fontWeight="extrabold">{attraction ? "ATTRACTION" : "PUB"}</Text>
+      </HStack>
+      <Image src={image} alt={details.name || "Location"} w="100%" h={{ base: "190px", md: "230px" }} objectFit="cover" borderRadius="2xl" mb={5} />
+      <VStack align="stretch" spacing={3}>
+        {rows.filter(([, value]) => value).map(([icon, value], index) => <HStack key={index} align="start" spacing={3}><Box color={theme.text} pt="3px">{icon}</Box><Text>{value}</Text></HStack>)}
+        {details.website && <HStack spacing={3}><LinkIcon /><Link href={details.website} isExternal color={theme.primary}>{details.name} – website</Link></HStack>}
+        {details.rating && <HStack><HStack spacing={1}>{Array.from({ length: 5 }, (_, i) => <StarIcon key={i} color={i < Math.round(details.rating) ? "yellow.400" : "gray.300"} />)}</HStack><Text fontWeight="semibold">{details.rating}{details.user_ratings_total ? ` (${details.user_ratings_total})` : ""}</Text></HStack>}
+      </VStack>
     </Box>
   );
-};
-
-export default LocationDetailsCard;
+}

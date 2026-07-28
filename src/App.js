@@ -7,6 +7,8 @@ import LocationModal from './components/itinerary/LocationModal';
 import { calculateRoute } from "./features/routing/calculateRoute";
 import { handleCar, handleBicycling, handleWalking } from './features/routing/stateHandlers';
 import { clearRoute } from './features/routing/clearRoute';
+import calculateDistance from "./utils/calculateDistance";
+import calculateTime from "./utils/calculateTime";
 import { ThemeContext } from "./context/ThemeContext";
 import { uiThemes } from "./theme/uiThemes";
 import ThemeMenu from './components/header/ThemeMenu';
@@ -54,27 +56,48 @@ function App() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const getInitialTheme = () => localStorage.getItem("mapTheme") || "classic";
   const [mapTheme, setMapTheme] = useState(getInitialTheme);
-  const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [detailsFromItinerary, setDetailsFromItinerary] = useState(false);
   const [activePicker, setActivePicker] = useState(null);
   const [pickedStart, setPickedStart] = useState(null);
   const [pickedFinish, setPickedFinish] = useState(null);
   const [isPlannerOpen, setIsPlannerOpen] = useState(false);
-  const closeLocationModal = () => setSelectedPlaceId(null);
+  const closeLocationModal = () => {
+    setSelectedPlace(null);
+    setDetailsFromItinerary(false);
+  };
 
   const onCloseItinerary = () => setIsOpenItinerary(false)
   const onOpenItinerary = () => setIsOpenItinerary(true)
   const directionsRendererRef = useRef(null);
 
-  const moveStop = (fromIndex, direction) => {
-    setCombinedStops((currentStops) => {
-      const toIndex = fromIndex + direction;
-      if (toIndex < 0 || toIndex >= currentStops.length) return currentStops;
-
-      const nextStops = [...currentStops];
-      const [movedStop] = nextStops.splice(fromIndex, 1);
-      nextStops.splice(toIndex, 0, movedStop);
-      return nextStops;
-    });
+  const moveStop = async (fromIndex, direction) => {
+    const toIndex = fromIndex + direction;
+    if (toIndex < 0 || toIndex >= combinedStops.length || isPlanningRoute) return;
+    const previousStops = combinedStops;
+    const nextStops = [...combinedStops];
+    const [movedStop] = nextStops.splice(fromIndex, 1);
+    nextStops.splice(toIndex, 0, movedStop);
+    setCombinedStops(nextStops);
+    setIsPlanningRoute(true);
+    try {
+      const results = await directionsService.route({
+        origin: startRef.current?.value,
+        destination: finishRef.current?.value,
+        waypoints: nextStops.map((stop) => ({ location: stop.geometry.location, stopover: true })),
+        optimizeWaypoints: false,
+        // eslint-disable-next-line no-undef
+        travelMode: google.maps.TravelMode[travelMethod],
+      });
+      setDirectionsResponse(results);
+      setDistance(calculateDistance(results));
+      setTime(calculateTime(results));
+    } catch (error) {
+      setCombinedStops(previousStops);
+      setRouteError("non-viable");
+    } finally {
+      setIsPlanningRoute(false);
+    }
   };
 
   const handleMapPick = (event) => {
@@ -223,7 +246,10 @@ function App() {
             setSelectedLocation={setSelectedLocation}
             selectedLocation={selectedLocation}
             mapTheme={mapTheme}
-            onMarkerClick={(location) => setSelectedPlaceId(location.place_id)}
+            onMarkerClick={(location) => {
+              setSelectedPlace(location);
+              setDetailsFromItinerary(false);
+            }}
           />
         </Box>
         {activePicker && (
@@ -246,7 +272,17 @@ function App() {
             </Text>
           </Box>
         )}
-        <LocationModal isOpen={!!selectedPlaceId} onClose={closeLocationModal} placeId={selectedPlaceId} />
+        <LocationModal
+          isOpen={!!selectedPlace}
+          onClose={closeLocationModal}
+          place={selectedPlace}
+          stopNumber={selectedPlace ? combinedStops.findIndex((stop) => stop.place_id === selectedPlace.place_id) + 1 : null}
+          onBack={detailsFromItinerary ? () => {
+            setSelectedPlace(null);
+            setDetailsFromItinerary(false);
+            setIsOpenItinerary(true);
+          } : undefined}
+        />
         <Box
           position="absolute"
           zIndex="900"
@@ -317,6 +353,11 @@ function App() {
           time={time}
           travelMethod={travelMethod}
           onMoveStop={moveStop}
+          onSelectStop={(stop) => {
+            setIsOpenItinerary(false);
+            setSelectedPlace(stop);
+            setDetailsFromItinerary(true);
+          }}
         />
       </Flex>
     </ThemeContext.Provider>

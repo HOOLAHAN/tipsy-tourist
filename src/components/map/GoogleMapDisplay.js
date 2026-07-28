@@ -31,14 +31,17 @@ const GoogleMapDisplay = ({
   const lastLegs = directionsResponse?.routes?.[0]?.legs || [];
   const lastLeg = lastLegs[lastLegs.length - 1];
 
-  const makeMarkerIcon = (fillColor, scale = 14) => ({
-    // eslint-disable-next-line no-undef
-    path: google.maps.SymbolPath.CIRCLE,
+  const makeMarkerIcon = (fillColor, scale = 0.72) => ({
+    path: "M 0,-22 C -12,-22 -20,-13 -20,-2 C -20,11 0,30 0,30 C 0,30 20,11 20,-2 C 20,-13 12,-22 0,-22 Z",
     fillColor,
     fillOpacity: 1,
     strokeColor: "#ffffff",
     strokeWeight: 2,
     scale,
+    // eslint-disable-next-line no-undef
+    anchor: new google.maps.Point(0, 30),
+    // eslint-disable-next-line no-undef
+    labelOrigin: new google.maps.Point(0, -1),
   });
 
   const makeMarkerLabel = (text, fontSize = "12px") => ({
@@ -67,7 +70,7 @@ const GoogleMapDisplay = ({
       {directionsResponse && (
         <DirectionsRenderer
           directions={directionsResponse}
-          options={{ suppressMarkers: true }}
+          options={{ suppressMarkers: true, polylineOptions: { strokeColor: "#4285f4", strokeWeight: 6, strokeOpacity: 0.9 } }}
         />
       )}
 
@@ -75,8 +78,8 @@ const GoogleMapDisplay = ({
         <Marker
           position={firstLeg.start_location}
           title={startLabel || "Start"}
-          icon={makeMarkerIcon("#2563eb", 28)}
-          label={makeMarkerLabel("Start", "10px")}
+          icon={makeMarkerIcon("#2563eb", 0.84)}
+          label={makeMarkerLabel("S", "13px")}
         />
       )}
 
@@ -84,8 +87,8 @@ const GoogleMapDisplay = ({
         <Marker
           position={pickedStart}
           title={startLabel || "Start"}
-          icon={makeMarkerIcon("#2563eb", 28)}
-          label={makeMarkerLabel("Start", "10px")}
+          icon={makeMarkerIcon("#2563eb", 0.84)}
+          label={makeMarkerLabel("S", "13px")}
         />
       )}
 
@@ -97,7 +100,7 @@ const GoogleMapDisplay = ({
             lng: location.geometry.location.lng,
           }}
           title={location.name}
-          icon={makeMarkerIcon(location.stopType === "attraction" ? "#7c3aed" : "#dc2626")}
+          icon={makeMarkerIcon(location.stopType === "attraction" ? "#7c3aed" : "#e11d48")}
           label={makeMarkerLabel(String(index + 1))}
           onClick={() => {
             onMarkerClick?.(location);
@@ -110,8 +113,8 @@ const GoogleMapDisplay = ({
         <Marker
           position={lastLeg.end_location}
           title={finishLabel || "Finish"}
-          icon={makeMarkerIcon("#16a34a", 30)}
-          label={makeMarkerLabel("Finish", "9px")}
+          icon={makeMarkerIcon("#16a34a", 0.84)}
+          label={makeMarkerLabel("F", "13px")}
         />
       )}
 
@@ -119,8 +122,8 @@ const GoogleMapDisplay = ({
         <Marker
           position={pickedFinish}
           title={finishLabel || "Finish"}
-          icon={makeMarkerIcon("#16a34a", 30)}
-          label={makeMarkerLabel("Finish", "9px")}
+          icon={makeMarkerIcon("#16a34a", 0.84)}
+          label={makeMarkerLabel("F", "13px")}
         />
       )}
     </GoogleMap>

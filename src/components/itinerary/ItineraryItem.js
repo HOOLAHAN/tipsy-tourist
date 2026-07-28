@@ -1,194 +1,29 @@
-// src/components/itinerary/ItineraryItem.js
-
-import { useEffect, useState } from "react";
-import {
-  Box,
-  Text,
-  Image,
-  VStack,
-  HStack,
-  Link,
-  Tooltip,
-  Badge,
-  Spinner,
-  Button,
-} from "@chakra-ui/react";
-import { StarIcon, LinkIcon, PhoneIcon, CalendarIcon } from "@chakra-ui/icons";
-import { FaChevronDown, FaChevronUp, FaHome } from "react-icons/fa";
-import tipsyTouristLogo3 from "../../assets/images/logo3.svg";
+import { Box, HStack, IconButton, Text, Tooltip, VStack } from "@chakra-ui/react";
+import { FaBeer, FaCameraRetro, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
-import { getCachedPlaceDetails } from "../../lib/placeDetailsCache";
 
-const convertDay = (day) => (day === 0 ? 6 : day - 1);
-
-const OpenNow = ({ opening_hours }) => {
-  const today = new Date();
-  const dayIndex = convertDay(today.getDay());
-
-  if (
-    !opening_hours ||
-    !Array.isArray(opening_hours.weekday_text) ||
-    opening_hours.weekday_text.length <= dayIndex
-  ) {
-    return <Text fontStyle="italic" color="gray.500">No opening hours info</Text>;
-  }
-
-  const label = opening_hours.weekday_text[dayIndex];
-  const openNow = opening_hours.open_now;
-  const closingAt = label.includes("–") ? label.split("–")[1] : "";
-
-  return (
-    <Tooltip label={label} aria-label="Opening hours">
-      <Text>
-        {openNow ? `Open${closingAt ? ` – Closes at ${closingAt}` : ""}` : "Closed"}
-      </Text>
-    </Tooltip>
-  );
-};
-
-const ItineraryItem = ({
-  place_id,
-  stopNumber,
-  stopType,
-  canMoveUp = false,
-  canMoveDown = false,
-  onMoveUp,
-  onMoveDown,
-}) => {
+export default function ItineraryItem({ place, stopNumber, isLast, canMoveUp, canMoveDown, onMoveUp, onMoveDown, onOpen }) {
   const theme = useUITheme();
-  const [data, setData] = useState(null);
-  const [hasFailed, setHasFailed] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function fetchDetails() {
-      setHasFailed(false);
-      try {
-        const response = await getCachedPlaceDetails(place_id);
-        if (isMounted) setData(response);
-      } catch (error) {
-        if (isMounted) setHasFailed(true);
-      }
-    }
-
-    fetchDetails();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [place_id]);
-
-  if (hasFailed) {
-    return (
-      <Box p={3}>
-        <Text fontStyle="italic" color="gray.500">Failed to load details for this location.</Text>
-      </Box>
-    );
-  }
-
-  if (!data) {
-    return (
-      <Box p={3} borderWidth="1px" borderRadius="md" borderColor={theme.accent} mb={4}>
-        <HStack>
-          <Spinner size="sm" />
-          <Text fontStyle="italic" color="gray.500">Loading stop details...</Text>
-        </HStack>
-      </Box>
-    );
-  }
-
-  if (!data.name) {
-    return (
-      <Box p={3}>
-        <Text fontStyle="italic" color="gray.500">No details available for this location.</Text>
-      </Box>
-    );
-  }
-
-  const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || window.REACT_APP_GOOGLE_MAPS_API_KEY;
-  const imageLink = data.photos?.[0]?.photo_reference
-    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photo_reference=${data.photos[0].photo_reference}&key=${googleMapsApiKey}`
-    : tipsyTouristLogo3;
-
+  if (!place) return null;
+  const attraction = place.stopType === "attraction";
+  const color = attraction ? "#7c3aed" : "#e11d48";
   return (
-    <Box p={3} borderWidth="1px" borderRadius="md" borderColor={theme.accent} mb={4}>
-      <HStack justify="space-between" align="start" mb={2}>
-        <HStack align="center">
-          {stopNumber && (
-            <Badge
-              bg={theme.primary}
-              color="white"
-              borderRadius="full"
-              minW="24px"
-              textAlign="center"
-              py={1}
-            >
-              {stopNumber}
-            </Badge>
-          )}
-          <Text fontSize="lg" fontWeight="bold">{data.name}</Text>
-        </HStack>
-        {stopType && (
-          <Badge colorScheme={stopType === "attraction" ? "purple" : "red"}>
-            {stopType}
-          </Badge>
-        )}
-      </HStack>
-      {(onMoveUp || onMoveDown) && (
-        <HStack justify="flex-end" spacing={2} mb={2}>
-          <Tooltip label="Move stop earlier" hasArrow>
-            <Button
-              aria-label={`Move ${data.name} earlier`}
-              leftIcon={<FaChevronUp />}
-              size="xs"
-              isDisabled={!canMoveUp}
-              onClick={onMoveUp}
-              bg={theme.primary}
-              color="white"
-              _hover={{ bg: theme.accent }}
-            >
-              Earlier
-            </Button>
-          </Tooltip>
-          <Tooltip label="Move stop later" hasArrow>
-            <Button
-              aria-label={`Move ${data.name} later`}
-              leftIcon={<FaChevronDown />}
-              size="xs"
-              isDisabled={!canMoveDown}
-              onClick={onMoveDown}
-              bg={theme.primary}
-              color="white"
-              _hover={{ bg: theme.accent }}
-            >
-              Later
-            </Button>
-          </Tooltip>
-        </HStack>
-      )}
-      <Image src={imageLink} alt={data.name} borderRadius="md" maxW="100%" maxH="150px" objectFit="cover" mb={2} />
-
-      <VStack align="start" spacing={2}>
-        <HStack spacing={2}><FaHome /><Text>{data.vicinity}</Text></HStack>
-        {data.formatted_phone_number && (
-          <HStack spacing={2}><PhoneIcon /><Text>{data.formatted_phone_number}</Text></HStack>
-        )}
-        {data.website && (
-          <HStack spacing={2}><LinkIcon /><Link href={data.website} isExternal color={theme.accent}>{data.name} – website</Link></HStack>
-        )}
-        {data.rating && (
-          <HStack spacing={1}>
-            {[...Array(5)].map((_, i) => (
-              <StarIcon key={i} color={i < Math.round(data.rating) ? "yellow.400" : "gray.300"} />
-            ))}
-            <Text>({data.rating})</Text>
-          </HStack>
-        )}
-        <HStack spacing={2}><CalendarIcon /><OpenNow opening_hours={data.opening_hours} /></HStack>
+    <HStack align="stretch" spacing={2} minH="104px">
+      <VStack w="42px" spacing={0} position="relative">
+        <Box w="34px" h="34px" borderRadius="full" bg={color} color="white" display="grid" placeItems="center" fontWeight="extrabold" zIndex={1}>{stopNumber}</Box>
+        {!isLast && <Box position="absolute" top="33px" bottom="-1px" w="2px" bg={theme.accent} opacity={0.45} />}
       </VStack>
-    </Box>
+      <HStack flex={1} align="center" bg={`${theme.accent}12`} border={`1px solid ${theme.accent}`} borderRadius="2xl" px={4} py={3} mb={3} minW={0} cursor="pointer" onClick={onOpen} _hover={{ borderColor: theme.primary }}>
+        <Box flex={1} minW={0}>
+          <HStack color={color} spacing={2} mb={1}>{attraction ? <FaCameraRetro /> : <FaBeer />}<Text fontSize="xs" fontWeight="extrabold" letterSpacing="0.12em">{attraction ? "ATTRACTION" : "PUB"}</Text></HStack>
+          <Text fontSize="lg" fontWeight="extrabold" noOfLines={1}>{place.name}</Text>
+          <Text fontSize="sm" opacity={0.65} noOfLines={1}>{place.vicinity || "Place details available from the map pin"}</Text>
+        </Box>
+        <VStack spacing={1}>
+          <Tooltip label="Move earlier"><IconButton aria-label="Move earlier" icon={<FaChevronUp />} size="xs" isRound isDisabled={!canMoveUp} onClick={(event) => { event.stopPropagation(); onMoveUp?.(); }} color={theme.primary} /></Tooltip>
+          <Tooltip label="Move later"><IconButton aria-label="Move later" icon={<FaChevronDown />} size="xs" isRound isDisabled={!canMoveDown} onClick={(event) => { event.stopPropagation(); onMoveDown?.(); }} color={theme.primary} /></Tooltip>
+        </VStack>
+      </HStack>
+    </HStack>
   );
-};
-
-export default ItineraryItem;
+}

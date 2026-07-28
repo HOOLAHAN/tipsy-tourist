@@ -4,7 +4,6 @@ import geocode from "../../lib/geocode";
 import findPlotPoints from "../../utils/findPlotPoints";
 import getAllPubs from "../../lib/getAllPubs";
 import getAllAttractions from "../../lib/getAllAttractions";
-import { calculateWaypoints } from "./calculateWaypoints";
 import calculateDistance from "../../utils/calculateDistance";
 import calculateTime from "../../utils/calculateTime";
 import onlyUnique from "../../utils/onlyUnique";
@@ -14,12 +13,19 @@ const withStopType = (stop, stopType) => {
   return { ...stop, stopType };
 };
 
-const orderStopsByDirections = (stops, directionsResult) => {
-  const waypointOrder = directionsResult?.routes?.[0]?.waypoint_order;
-  if (!Array.isArray(waypointOrder) || waypointOrder.length === 0) {
-    return stops;
-  }
-  return waypointOrder.map((index) => stops[index]).filter(Boolean);
+const mixedStopTypes = (pubCount, attractionCount) => {
+  const total = pubCount + attractionCount;
+  let pubsUsed = 0;
+  let attractionsUsed = 0;
+  return Array.from({ length: total }, (_, index) => {
+    if (pubsUsed >= pubCount) { attractionsUsed += 1; return "attraction"; }
+    if (attractionsUsed >= attractionCount) { pubsUsed += 1; return "pub"; }
+    const pubDeficit = ((index + 1) * pubCount) / total - pubsUsed;
+    const attractionDeficit = ((index + 1) * attractionCount) / total - attractionsUsed;
+    if (pubDeficit >= attractionDeficit) { pubsUsed += 1; return "pub"; }
+    attractionsUsed += 1;
+    return "attraction";
+  });
 };
 
 export async function calculateRoute(startRef, finishRef, pubStops, attractionStops, travelMethod, directionsService, setDirectionsResponse, setDistance, setTime, setCombinedStops, setJourneyWarning, setRouteError) {
@@ -49,8 +55,10 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
     return false;
   }
 
-  const pubPlotPoints = findPlotPoints(start, end, Number(pubStops));
-  const attractionPlotPoints = findPlotPoints(start, end, Number(attractionStops));
+  const stopTypes = mixedStopTypes(Number(pubStops), Number(attractionStops));
+  const plotPoints = findPlotPoints(start, end, stopTypes.length);
+  const pubPlotPoints = plotPoints.filter((_, index) => stopTypes[index] === "pub");
+  const attractionPlotPoints = plotPoints.filter((_, index) => stopTypes[index] === "attraction");
 
   let pubData;
   let attractionData;
@@ -62,16 +70,12 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
     return false;
   }
 
-  const combinationArray = pubData
-    .map((stop) => withStopType(stop, "pub"))
-    .concat(attractionData.map((stop) => withStopType(stop, "attraction")));
-  const combinationArray2 = combinationArray.filter(
-    (location) => location !== undefined
-  );
-
-  const filteredCombinationArray = combinationArray2.filter(onlyUnique);
-  
-  const waypoints = calculateWaypoints(pubData, attractionData, setJourneyWarning);
+  let pubIndex = 0;
+  let attractionIndex = 0;
+  const mixedStops = stopTypes.map((type) => type === "pub" ? withStopType(pubData[pubIndex++], "pub") : withStopType(attractionData[attractionIndex++], "attraction"));
+  const filteredCombinationArray = mixedStops.filter(Boolean).filter(onlyUnique);
+  if (filteredCombinationArray.length < stopTypes.length) setJourneyWarning("shortened");
+  const waypoints = filteredCombinationArray.map((stop) => ({ location: stop.geometry.location, stopover: true }));
 
   let results = null;
   try {
@@ -79,7 +83,7 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
       origin: startInput,
       destination: finishInput,
       waypoints: waypoints,
-      optimizeWaypoints: true,
+      optimizeWaypoints: false,
       // eslint-disable-next-line no-undef
       travelMode: google.maps.TravelMode[travelMethod],
     });
@@ -90,7 +94,7 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
   }
   
   setDirectionsResponse(results);
-  setCombinedStops(orderStopsByDirections(filteredCombinationArray, results));
+  setCombinedStops(filteredCombinationArray);
   setDistance(calculateDistance(results));
   setTime(calculateTime(results));
   return true;
