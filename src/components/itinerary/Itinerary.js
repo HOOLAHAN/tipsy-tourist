@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import ItineraryItem from "./ItineraryItem";
 
-const Itinerary = ({ combinedStops, onMoveStop, onSelectStop }) => {
+const Itinerary = ({ combinedStops, onMoveStop, onSelectStop, onRemoveStop, onRegenerateStop, updatingStopId }) => {
   if (!combinedStops?.length) return null;
 
   return (
@@ -18,6 +18,9 @@ const Itinerary = ({ combinedStops, onMoveStop, onSelectStop }) => {
           onMoveUp={() => onMoveStop?.(index, -1)}
           onMoveDown={() => onMoveStop?.(index, 1)}
           onOpen={() => onSelectStop?.(item)}
+          updating={updatingStopId === item.place_id}
+          onRemove={() => onRemoveStop?.(item)}
+          onRegenerate={() => onRegenerateStop?.(item)}
         />
       ))}
     </Box>

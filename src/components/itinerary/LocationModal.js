@@ -1,9 +1,10 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Box, HStack, IconButton, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { Box, Button, HStack, IconButton, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { RepeatIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useUITheme } from "../../context/ThemeContext";
 import LocationDetailsCard from "./LocationDetailsCard";
 
-export default function LocationModal({ isOpen, onClose, place, stopNumber, onBack }) {
+export default function LocationModal({ isOpen, onClose, place, stopNumber, onBack, onRemove, onRegenerate, updating }) {
   const theme = useUITheme();
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom" scrollBehavior="inside">
@@ -17,7 +18,7 @@ export default function LocationModal({ isOpen, onClose, place, stopNumber, onBa
           </HStack>
         </ModalHeader>
         <ModalBody px={{ base: 4, md: 5 }} pt={1} pb="calc(env(safe-area-inset-bottom, 0px) + 24px)">
-          {place && <LocationDetailsCard place_id={place.place_id} place={place} stopNumber={stopNumber} />}
+          {place && <><HStack mb={3}><Button flex={1} borderRadius="full" leftIcon={<RepeatIcon />} onClick={onRegenerate} isLoading={updating} color={theme.primary}>Replace stop</Button><Button flex={1} borderRadius="full" leftIcon={<DeleteIcon />} onClick={onRemove} isDisabled={updating} colorScheme="red" variant="ghost">Remove</Button></HStack><LocationDetailsCard place_id={place.place_id} place={place} stopNumber={stopNumber} /></>}
         </ModalBody>
       </ModalContent>
     </Modal>

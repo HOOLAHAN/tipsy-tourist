@@ -9,6 +9,8 @@ import { handleCar, handleBicycling, handleWalking } from './features/routing/st
 import { clearRoute } from './features/routing/clearRoute';
 import calculateDistance from "./utils/calculateDistance";
 import calculateTime from "./utils/calculateTime";
+import Locations from "./lib/Locations";
+import Attractions from "./lib/Attractions";
 import { ThemeContext } from "./context/ThemeContext";
 import { uiThemes } from "./theme/uiThemes";
 import ThemeMenu from './components/header/ThemeMenu';
@@ -62,6 +64,7 @@ function App() {
   const [pickedStart, setPickedStart] = useState(null);
   const [pickedFinish, setPickedFinish] = useState(null);
   const [isPlannerOpen, setIsPlannerOpen] = useState(false);
+  const [updatingStopId, setUpdatingStopId] = useState(null);
   const closeLocationModal = () => {
     setSelectedPlace(null);
     setDetailsFromItinerary(false);
@@ -97,6 +100,60 @@ function App() {
       setRouteError("non-viable");
     } finally {
       setIsPlanningRoute(false);
+    }
+  };
+
+  const applyStops = async (nextStops, previousStops = combinedStops) => {
+    setCombinedStops(nextStops);
+    setIsPlanningRoute(true);
+    try {
+      const results = await directionsService.route({
+        origin: startRef.current?.value,
+        destination: finishRef.current?.value,
+        waypoints: nextStops.map((stop) => ({ location: stop.geometry.location, stopover: true })),
+        optimizeWaypoints: false,
+        // eslint-disable-next-line no-undef
+        travelMode: google.maps.TravelMode[travelMethod],
+      });
+      setDirectionsResponse(results);
+      setDistance(calculateDistance(results));
+      setTime(calculateTime(results));
+      return true;
+    } catch (error) {
+      setCombinedStops(previousStops);
+      setRouteError("non-viable");
+      return false;
+    } finally {
+      setIsPlanningRoute(false);
+    }
+  };
+
+  const removeStop = async (place) => {
+    if (updatingStopId || !window.confirm(`Remove ${place.name} and recalculate the route?`)) return;
+    setUpdatingStopId(place.place_id);
+    const succeeded = await applyStops(combinedStops.filter((stop) => stop.place_id !== place.place_id));
+    if (succeeded && selectedPlace?.place_id === place.place_id) closeLocationModal();
+    setUpdatingStopId(null);
+  };
+
+  const regenerateStop = async (place) => {
+    if (updatingStopId) return;
+    setUpdatingStopId(place.place_id);
+    try {
+      const { lat, lng } = place.geometry.location;
+      const response = place.stopType === "attraction" ? await Attractions(lat, lng) : await Locations(lat, lng);
+      const excluded = new Set(combinedStops.map((stop) => stop.place_id));
+      const candidates = (response?.results || [])
+        .filter((item) => item.place_id && item.geometry?.location && !excluded.has(item.place_id) && item.business_status !== "CLOSED_PERMANENTLY")
+        .sort((a, b) => ((b.rating || 0) * 2.2 + Math.log10((b.user_ratings_total || 0) + 1) * 1.4) - ((a.rating || 0) * 2.2 + Math.log10((a.user_ratings_total || 0) + 1) * 1.4));
+      if (!candidates.length) throw new Error("No different place found nearby");
+      const replacement = { ...candidates[0], stopType: place.stopType };
+      const succeeded = await applyStops(combinedStops.map((stop) => stop.place_id === place.place_id ? replacement : stop));
+      if (succeeded && selectedPlace?.place_id === place.place_id) setSelectedPlace(replacement);
+    } catch (error) {
+      setRouteError("places-failed");
+    } finally {
+      setUpdatingStopId(null);
     }
   };
 
@@ -282,6 +339,9 @@ function App() {
             setDetailsFromItinerary(false);
             setIsOpenItinerary(true);
           } : undefined}
+          updating={updatingStopId === selectedPlace?.place_id}
+          onRemove={() => removeStop(selectedPlace)}
+          onRegenerate={() => regenerateStop(selectedPlace)}
         />
         <Box
           position="absolute"
@@ -354,6 +414,9 @@ function App() {
           time={time}
           travelMethod={travelMethod}
           onMoveStop={moveStop}
+          updatingStopId={updatingStopId}
+          onRemoveStop={removeStop}
+          onRegenerateStop={regenerateStop}
           onSelectStop={(stop) => {
             setIsOpenItinerary(false);
             setSelectedPlace(stop);

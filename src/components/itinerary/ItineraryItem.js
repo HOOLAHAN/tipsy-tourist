@@ -1,8 +1,8 @@
 import { Box, HStack, IconButton, Text, Tooltip, VStack } from "@chakra-ui/react";
-import { FaBeer, FaCameraRetro, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaBeer, FaCameraRetro, FaChevronDown, FaChevronUp, FaRedo, FaTrash } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 
-export default function ItineraryItem({ place, stopNumber, isLast, canMoveUp, canMoveDown, onMoveUp, onMoveDown, onOpen }) {
+export default function ItineraryItem({ place, stopNumber, isLast, canMoveUp, canMoveDown, onMoveUp, onMoveDown, onOpen, onRemove, onRegenerate, updating }) {
   const theme = useUITheme();
   if (!place) return null;
   const attraction = place.stopType === "attraction";
@@ -20,6 +20,8 @@ export default function ItineraryItem({ place, stopNumber, isLast, canMoveUp, ca
           <Text fontSize="sm" opacity={0.65} noOfLines={1}>{place.vicinity || "Place details available from the map pin"}</Text>
         </Box>
         <VStack spacing={1}>
+          <Tooltip label="Replace stop"><IconButton aria-label="Replace stop" icon={<FaRedo />} size="xs" isRound isLoading={updating} onClick={(event) => { event.stopPropagation(); onRegenerate?.(); }} color={theme.primary} /></Tooltip>
+          <Tooltip label="Remove stop"><IconButton aria-label="Remove stop" icon={<FaTrash />} size="xs" isRound isDisabled={updating} onClick={(event) => { event.stopPropagation(); onRemove?.(); }} color="#e11d48" /></Tooltip>
           <Tooltip label="Move earlier"><IconButton aria-label="Move earlier" icon={<FaChevronUp />} size="xs" isRound isDisabled={!canMoveUp} onClick={(event) => { event.stopPropagation(); onMoveUp?.(); }} color={theme.primary} /></Tooltip>
           <Tooltip label="Move later"><IconButton aria-label="Move later" icon={<FaChevronDown />} size="xs" isRound isDisabled={!canMoveDown} onClick={(event) => { event.stopPropagation(); onMoveDown?.(); }} color={theme.primary} /></Tooltip>
         </VStack>
