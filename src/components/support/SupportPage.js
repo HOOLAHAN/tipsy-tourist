@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { Badge, Box, Button, Container, Flex, Heading, Image, Link, SimpleGrid, Stack, Text } from "@chakra-ui/react";
-import { FaEnvelope, FaGithub, FaMapMarkedAlt } from "react-icons/fa";
+import { FaEnvelope, FaMapMarkedAlt } from "react-icons/fa";
 import logo from "../../assets/images/logo_classic.png";
 
 const SUPPORT_EMAIL = "info@ijrhservices.co.uk";
@@ -19,7 +19,7 @@ function Section({ title, children }) {
 }
 
 function SupportContent() {
-  return <Stack spacing={5}><SimpleGrid columns={{ base: 1, md: 2 }} spacing={5}><Section title="How it works"><Text>Choose a start and finish, select walking or cycling, and choose how many pubs and sights you want. Tipsy Tourist proposes a mixed route which you can inspect and reorder.</Text><Text>Place information comes from Google Maps and can change. Always confirm opening hours, accessibility, booking requirements and venue rules directly.</Text></Section><Section title="Troubleshooting"><Text><b>No route:</b> check both locations, try fewer stops, or shorten the journey.</Text><Text><b>Location unavailable:</b> enable location permission in system settings, or type a location manually.</Text><Text><b>Old icon or build:</b> update or reinstall the app; launchers may cache icons.</Text></Section></SimpleGrid><Section title="Contact support"><Text>Include your device model, operating-system version, app version and a short description. Do not include passwords, payment data or other sensitive information.</Text><Flex gap={3} wrap="wrap"><Button as={Link} href={`mailto:${SUPPORT_EMAIL}?subject=Tipsy%20Tourist%20support`} leftIcon={<FaEnvelope />} colorScheme="blue" borderRadius="full">Email support</Button><Button as={Link} href="https://github.com/HOOLAHAN/tipsy-tourist/issues" isExternal leftIcon={<FaGithub />} variant="outline" colorScheme="blue" borderRadius="full">Report a bug</Button></Flex></Section></Stack>;
+  return <Stack spacing={5}><SimpleGrid columns={{ base: 1, md: 2 }} spacing={5}><Section title="How it works"><Text>Choose a start and finish, select walking or cycling, and choose how many pubs and sights you want. Tipsy Tourist proposes a mixed route which you can inspect and reorder.</Text><Text>Place information comes from Google Maps and can change. Always confirm opening hours, accessibility, booking requirements and venue rules directly.</Text></Section><Section title="Troubleshooting"><Text><b>No route:</b> check both locations, try fewer stops, or shorten the journey.</Text><Text><b>Location unavailable:</b> enable location permission in system settings, or type a location manually.</Text><Text><b>Old icon or build:</b> update or reinstall the app; launchers may cache icons.</Text></Section></SimpleGrid><Section title="Contact support"><Text>Include your device model, operating-system version, app version and a short description. Do not include passwords, payment data or other sensitive information.</Text><Flex gap={3} wrap="wrap"><Button as={Link} href={`mailto:${SUPPORT_EMAIL}?subject=Tipsy%20Tourist%20support`} leftIcon={<FaEnvelope />} colorScheme="blue" borderRadius="full">Email support</Button></Flex></Section></Stack>;
 }
 
 function PrivacyContent() {
