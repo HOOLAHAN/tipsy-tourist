@@ -4,7 +4,7 @@ import { Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { FaTimes, FaLocationArrow } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 
-const ActionButtonGroup = ({ clearRoute, onCenter }) => {
+const ActionButtonGroup = ({ clearRoute, onCenter, hasRoute }) => {
   const theme = useUITheme();
 
   return (
@@ -22,19 +22,21 @@ const ActionButtonGroup = ({ clearRoute, onCenter }) => {
           size="lg"
         />
       </Tooltip>
-      <Tooltip label="Clear route" hasArrow>
-        <IconButton
-          aria-label="Clear route"
-          icon={<FaTimes />}
-          onClick={clearRoute}
-          isRound
-          bg={theme.bg}
-          color={theme.text}
-          _hover={{ bg: theme.accent }}
-          boxShadow="md"
-          size="lg"
-        />
-      </Tooltip>
+      {hasRoute && (
+        <Tooltip label="Clear route" hasArrow>
+          <IconButton
+            aria-label="Clear route"
+            icon={<FaTimes />}
+            onClick={clearRoute}
+            isRound
+            bg={theme.bg}
+            color={theme.text}
+            _hover={{ bg: theme.accent }}
+            boxShadow="md"
+            size="lg"
+          />
+        </Tooltip>
+      )}
     </Flex>
   );
 };

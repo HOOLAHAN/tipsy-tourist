@@ -305,6 +305,7 @@ function App() {
             justify="center"
           >
             <ActionButtonGroup
+              hasRoute={!!directionsResponse}
               clearRoute={() =>
                 clearRoute(
                   setCombinedStops,
