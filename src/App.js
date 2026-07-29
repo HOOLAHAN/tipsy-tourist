@@ -157,6 +157,81 @@ function App() {
     }
   };
 
+  const addStop = async (stopType) => {
+    if (!directionsResponse || updatingStopId || isPlanningRoute) return;
+    const typeCount = combinedStops.filter((stop) => stop.stopType === stopType).length;
+    if (typeCount >= 10) {
+      window.alert(`A route can contain up to 10 ${stopType === "pub" ? "pubs" : "attractions"}.`);
+      return;
+    }
+
+    const valueOf = (value) => typeof value === "function" ? value() : value;
+    const firstLeg = directionsResponse.routes?.[0]?.legs?.[0];
+    const lastLeg = directionsResponse.routes?.[0]?.legs?.at(-1);
+    const toPoint = (location) => ({
+      lat: valueOf(location?.lat),
+      lng: valueOf(location?.lng),
+    });
+    const points = [
+      toPoint(firstLeg?.start_location),
+      ...combinedStops.map((stop) => toPoint(stop.geometry.location)),
+      toPoint(lastLeg?.end_location),
+    ];
+    if (points.some((point) => !Number.isFinite(point.lat) || !Number.isFinite(point.lng))) {
+      setRouteError("places-failed");
+      return;
+    }
+
+    let insertionIndex = 0;
+    let largestGap = -1;
+    for (let index = 0; index < points.length - 1; index += 1) {
+      const latitude = points[index + 1].lat - points[index].lat;
+      const longitude = points[index + 1].lng - points[index].lng;
+      const gap = latitude * latitude + longitude * longitude;
+      if (gap > largestGap) {
+        largestGap = gap;
+        insertionIndex = index;
+      }
+    }
+    const searchPoint = {
+      lat: (points[insertionIndex].lat + points[insertionIndex + 1].lat) / 2,
+      lng: (points[insertionIndex].lng + points[insertionIndex + 1].lng) / 2,
+    };
+
+    setUpdatingStopId("__adding__");
+    setRouteError("");
+    try {
+      const response = stopType === "attraction"
+        ? await Attractions(searchPoint.lat, searchPoint.lng)
+        : await Locations(searchPoint.lat, searchPoint.lng);
+      const excluded = new Set(combinedStops.map((stop) => stop.place_id));
+      const candidates = (response?.results || [])
+        .filter((item) =>
+          item.place_id &&
+          item.geometry?.location &&
+          !excluded.has(item.place_id) &&
+          item.business_status !== "CLOSED_PERMANENTLY" &&
+          (item.rating || 0) >= 3.8
+        )
+        .sort((a, b) =>
+          ((b.rating || 0) * 2.2 + Math.log10((b.user_ratings_total || 0) + 1) * 1.4) -
+          ((a.rating || 0) * 2.2 + Math.log10((a.user_ratings_total || 0) + 1) * 1.4)
+        );
+      if (!candidates.length) throw new Error("No suitable place found");
+      const nextStops = [...combinedStops];
+      nextStops.splice(insertionIndex, 0, { ...candidates[0], stopType });
+      const succeeded = await applyStops(nextStops);
+      if (succeeded) {
+        if (stopType === "pub") setPubStops((count) => Math.min(10, Number(count) + 1));
+        else setAttractionStops((count) => Math.min(10, Number(count) + 1));
+      }
+    } catch (error) {
+      setRouteError("places-failed");
+    } finally {
+      setUpdatingStopId(null);
+    }
+  };
+
   const handleMapPick = (event) => {
     if (!activePicker || !event.latLng) return;
 
@@ -417,6 +492,7 @@ function App() {
           updatingStopId={updatingStopId}
           onRemoveStop={removeStop}
           onRegenerateStop={regenerateStop}
+          onAddStop={addStop}
           onSelectStop={(stop) => {
             setIsOpenItinerary(false);
             setSelectedPlace(stop);
