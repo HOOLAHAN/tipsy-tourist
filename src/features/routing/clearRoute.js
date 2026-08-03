@@ -12,11 +12,13 @@ const clearRoute = (
   setPickedFinish,
   startRef,
   finishRef,
-  directionsRendererRef
+  directionsRendererRef,
+  setSearchCoverage
 ) => {
   // Reset all state
   setCombinedStops([]);
   setDirectionsResponse(null);
+  setSearchCoverage?.({ points: [], path: [] });
   setDistance("");
   setTime("");
   if (typeof setJourneyWarning === "function") {

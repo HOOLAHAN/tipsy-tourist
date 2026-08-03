@@ -28,7 +28,26 @@ const mixedStopTypes = (pubCount, attractionCount) => {
   });
 };
 
-export async function calculateRoute(startRef, finishRef, pubStops, attractionStops, travelMethod, directionsService, setDirectionsResponse, setDistance, setTime, setCombinedStops, setJourneyWarning, setRouteError) {
+const distanceInMetres = (start, end) => {
+  const toRadians = (degrees) => degrees * (Math.PI / 180);
+  const earthRadius = 6371000;
+  const latitudeDelta = toRadians(end[0] - start[0]);
+  const longitudeDelta = toRadians(end[1] - start[1]);
+  const startLatitude = toRadians(start[0]);
+  const endLatitude = toRadians(end[0]);
+  const a = Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(startLatitude) * Math.cos(endLatitude) * Math.sin(longitudeDelta / 2) ** 2;
+  return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
+const adaptiveSearchRadius = (start, end, searchCount) => {
+  const routeDistance = distanceInMetres(start, end);
+  const gaps = Math.max(searchCount - 1, 1);
+  const radiusForOverlappingCoverage = (routeDistance / gaps) * 0.6;
+  return Math.round(Math.min(3000, Math.max(400, radiusForOverlappingCoverage)));
+};
+
+export async function calculateRoute(startRef, finishRef, pubStops, attractionStops, travelMethod, directionsService, setDirectionsResponse, setDistance, setTime, setCombinedStops, setJourneyWarning, setRouteError, setSearchCoverage) {
   const startInput = startRef.current?.value?.trim();
   const finishInput = finishRef.current?.value?.trim();
 
@@ -57,8 +76,21 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
 
   const stopTypes = mixedStopTypes(Number(pubStops), Number(attractionStops));
   const plotPoints = findPlotPoints(start, end, stopTypes.length);
-  const pubPlotPoints = plotPoints.filter((_, index) => stopTypes[index] === "pub");
-  const attractionPlotPoints = plotPoints.filter((_, index) => stopTypes[index] === "attraction");
+  const searchRadius = adaptiveSearchRadius(start, end, stopTypes.length);
+  setSearchCoverage?.({
+    points: plotPoints.map((point, index) => ({
+      ...point,
+      stopType: stopTypes[index],
+      radius: searchRadius,
+    })),
+    path: [
+      { lat: start[0], lng: start[1] },
+      { lat: end[0], lng: end[1] },
+    ],
+  });
+  const searchPoints = plotPoints.map((point) => ({ ...point, radius: searchRadius }));
+  const pubPlotPoints = searchPoints.filter((_, index) => stopTypes[index] === "pub");
+  const attractionPlotPoints = searchPoints.filter((_, index) => stopTypes[index] === "attraction");
 
   let pubData;
   let attractionData;

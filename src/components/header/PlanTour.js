@@ -39,6 +39,7 @@ const PlanTour = ({
   setDistance,
   setTime,
   setCombinedStops,
+  setSearchCoverage,
   journeyWarning,
   routeError,
   setRouteError,
@@ -117,7 +118,8 @@ const PlanTour = ({
                 setTime,
                 setCombinedStops,
                 setJourneyWarning,
-                setRouteError
+                setRouteError,
+                setSearchCoverage
               );
               if (planned) onAfterSubmit?.();
             } finally {

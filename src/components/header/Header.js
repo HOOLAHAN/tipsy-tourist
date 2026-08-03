@@ -42,6 +42,7 @@ const Header = ({
   setDistance,
   setTime,
   setCombinedStops,
+  setSearchCoverage,
   journeyWarning,
   routeError,
   setRouteError,
@@ -171,6 +172,7 @@ useOutsideClick({
             setDistance={setDistance}
             setTime={setTime}
             setCombinedStops={setCombinedStops}
+            setSearchCoverage={setSearchCoverage}
             journeyWarning={journeyWarning}
             routeError={routeError}
             setRouteError={setRouteError}

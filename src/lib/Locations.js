@@ -1,6 +1,6 @@
 // src/lib/Locations.js
 
-async function Locations(lat, lng) {
+async function Locations(lat, lng, radius) {
   const resp = await fetch("https://t5jalxqqsb.execute-api.eu-west-2.amazonaws.com/places", {
     method: "post",
     headers: {
@@ -12,6 +12,7 @@ async function Locations(lat, lng) {
     body: JSON.stringify({
       lat: lat,
       lng: lng,
+      radius: radius,
     }),
   });
 

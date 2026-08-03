@@ -1,10 +1,10 @@
 // components/common/ActionButtonGroup.js
 
 import { Flex, IconButton, Tooltip } from "@chakra-ui/react";
-import { FaTimes, FaLocationArrow } from "react-icons/fa";
+import { FaTimes, FaLocationArrow, FaSearchLocation } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 
-const ActionButtonGroup = ({ clearRoute, onCenter, hasRoute }) => {
+const ActionButtonGroup = ({ clearRoute, onCenter, hasRoute, hasSearchCoverage, showSearchCoverage, onToggleSearchCoverage }) => {
   const theme = useUITheme();
 
   return (
@@ -22,6 +22,23 @@ const ActionButtonGroup = ({ clearRoute, onCenter, hasRoute }) => {
           size="lg"
         />
       </Tooltip>
+      {hasSearchCoverage && (
+        <Tooltip label={`${showSearchCoverage ? "Hide" : "Show"} search coverage`} hasArrow>
+          <IconButton
+            aria-label={`${showSearchCoverage ? "Hide" : "Show"} search coverage`}
+            aria-pressed={showSearchCoverage}
+            icon={<FaSearchLocation />}
+            onClick={onToggleSearchCoverage}
+            isRound
+            bg={showSearchCoverage ? theme.accent : theme.bg}
+            color={showSearchCoverage ? "white" : theme.text}
+            _hover={{ bg: theme.accent, color: "white" }}
+            border={`1px solid ${theme.accent}`}
+            boxShadow="md"
+            size="lg"
+          />
+        </Tooltip>
+      )}
       {hasRoute && (
         <Tooltip label="Clear route" hasArrow>
           <IconButton

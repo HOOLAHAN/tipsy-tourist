@@ -2,6 +2,8 @@ import {
   GoogleMap,
   Marker,
   DirectionsRenderer,
+  Polyline,
+  Circle,
 } from "@react-google-maps/api";
 import { mapThemes } from "./styles/customMapStyle";
 
@@ -19,6 +21,8 @@ const GoogleMapDisplay = ({
   setSelectedLocation,
   mapTheme = "classic",
   onMarkerClick,
+  searchCoverage = { points: [], path: [] },
+  showSearchCoverage = true,
 }) => {
 
   const validStops = combinedStops.filter(
@@ -67,6 +71,68 @@ const GoogleMapDisplay = ({
       onLoad={(mapInstance) => setMap(mapInstance)}
       onClick={onMapPick}
     >
+      {showSearchCoverage && searchCoverage.path?.length > 1 && (
+        <Polyline
+          path={searchCoverage.path}
+          options={{
+            strokeOpacity: 0,
+            clickable: false,
+            icons: [{
+              icon: {
+                // eslint-disable-next-line no-undef
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: "#0f172a",
+                fillOpacity: 0.8,
+                scale: 2.5,
+                strokeOpacity: 0,
+              },
+              offset: "0",
+              repeat: "14px",
+            }],
+            zIndex: 2,
+          }}
+        />
+      )}
+
+      {showSearchCoverage && searchCoverage.points?.map((point, index) => {
+        const isAttraction = point.stopType === "attraction";
+        const color = isAttraction ? "#7c3aed" : "#e11d48";
+        const radius = point.radius;
+        return (
+          <Circle
+            key={`search-area-${index}`}
+            center={point}
+            radius={radius}
+            options={{
+              clickable: false,
+              fillColor: color,
+              fillOpacity: 0.08,
+              strokeColor: color,
+              strokeOpacity: 0.72,
+              strokeWeight: 2,
+              zIndex: 1,
+            }}
+          />
+        );
+      })}
+
+      {showSearchCoverage && searchCoverage.points?.map((point, index) => (
+        <Circle
+          key={`search-center-${index}`}
+          center={point}
+          radius={28}
+          options={{
+            clickable: false,
+            fillColor: point.stopType === "attraction" ? "#7c3aed" : "#e11d48",
+            fillOpacity: 1,
+            strokeColor: "#ffffff",
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            zIndex: 3,
+          }}
+        />
+      ))}
+
       {directionsResponse && (
         <DirectionsRenderer
           directions={directionsResponse}

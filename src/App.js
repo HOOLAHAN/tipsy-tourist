@@ -50,6 +50,8 @@ function App() {
   const [pubStops, setPubStops] = useState(1);
   const [attractionStops, setAttractionStops] = useState(1);
   const [combinedStops, setCombinedStops] = useState([]);
+  const [searchCoverage, setSearchCoverage] = useState({ points: [], path: [] });
+  const [showSearchCoverage, setShowSearchCoverage] = useState(true);
   const [travelMethod, setTravelMethod] = useState("WALKING");
   const [journeyWarning, setJourneyWarning] = useState("walking");
   const [routeError, setRouteError] = useState("");
@@ -269,7 +271,8 @@ function App() {
         setTime,
         setCombinedStops,
         setJourneyWarning,
-        setRouteError
+        setRouteError,
+        setSearchCoverage
       );
     } finally {
       setIsPlanningRoute(false);
@@ -335,6 +338,7 @@ function App() {
           setDistance={setDistance}
           setTime={setTime}
           setCombinedStops={setCombinedStops}
+          setSearchCoverage={setSearchCoverage}
           journeyWarning={journeyWarning}
           routeError={routeError}
           setRouteError={setRouteError}
@@ -357,7 +361,8 @@ function App() {
               setPickedFinish,
               startRef,
               finishRef,
-              directionsRendererRef
+              directionsRendererRef,
+              setSearchCoverage
             )
           }
           directionsRendererRef={directionsRendererRef}
@@ -382,6 +387,8 @@ function App() {
               setSelectedPlace(location);
               setDetailsFromItinerary(false);
             }}
+            searchCoverage={searchCoverage}
+            showSearchCoverage={showSearchCoverage}
           />
         </Box>
         {activePicker && (
@@ -454,10 +461,14 @@ function App() {
                   setPickedFinish,
                   startRef,
                   finishRef,
-                  directionsRendererRef
+                  directionsRendererRef,
+                  setSearchCoverage
                 )
               }
               onCenter={onCenterMap}
+              hasSearchCoverage={searchCoverage.points.length > 0}
+              showSearchCoverage={showSearchCoverage}
+              onToggleSearchCoverage={() => setShowSearchCoverage((visible) => !visible)}
             />
             <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
             <Tooltip label="About & support" hasArrow placement="left">
