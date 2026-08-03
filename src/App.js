@@ -469,27 +469,29 @@ function App() {
               hasSearchCoverage={searchCoverage.points.length > 0}
               showSearchCoverage={showSearchCoverage}
               onToggleSearchCoverage={() => setShowSearchCoverage((visible) => !visible)}
+              infoControl={(
+                <Tooltip label="About & support" hasArrow placement="left">
+                  <IconButton as={RouterLink} to="/support" aria-label="About and support" icon={<FaInfoCircle />} isRound bg={uiThemes[mapTheme].bg} color={uiThemes[mapTheme].text} _hover={{ bg: `${uiThemes[mapTheme].accent}22` }} border={`1px solid ${uiThemes[mapTheme].accent}`} boxShadow="md" size="lg" />
+                </Tooltip>
+              )}
+              themeControl={<ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />}
+              itineraryControl={directionsResponse ? (
+                <Tooltip label="Itinerary" hasArrow placement="left">
+                  <IconButton
+                    aria-label="Itinerary"
+                    icon={<FaListUl />}
+                    onClick={onOpenItinerary}
+                    isRound
+                    bg={uiThemes[mapTheme].bg}
+                    color={uiThemes[mapTheme].text}
+                    _hover={{ bg: uiThemes[mapTheme].accent }}
+                    border={`1px solid ${uiThemes[mapTheme].accent}`}
+                    boxShadow="md"
+                    size="lg"
+                  />
+                </Tooltip>
+              ) : null}
             />
-            <ThemeMenu mapTheme={mapTheme} setMapTheme={setMapTheme} />
-            <Tooltip label="About & support" hasArrow placement="left">
-              <IconButton as={RouterLink} to="/support" aria-label="About and support" icon={<FaInfoCircle />} isRound bg={uiThemes[mapTheme].bg} color={uiThemes[mapTheme].text} _hover={{ bg: `${uiThemes[mapTheme].accent}22` }} border={`1px solid ${uiThemes[mapTheme].accent}`} boxShadow="md" size="lg" />
-            </Tooltip>
-            {directionsResponse && (
-              <Tooltip label="Itinerary" hasArrow placement="left">
-                <IconButton
-                  aria-label="Itinerary"
-                  icon={<FaListUl />}
-                  onClick={onOpenItinerary}
-                  isRound
-                  bg={uiThemes[mapTheme].bg}
-                  color={uiThemes[mapTheme].text}
-                  _hover={{ bg: uiThemes[mapTheme].accent }}
-                  border={`1px solid ${uiThemes[mapTheme].accent}`}
-                  boxShadow="md"
-                  size="lg"
-                />
-              </Tooltip>
-            )}
           </Flex>
         </Box>
         <ItineraryModal

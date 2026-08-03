@@ -4,7 +4,17 @@ import { Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import { FaTimes, FaLocationArrow, FaSearchLocation } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 
-const ActionButtonGroup = ({ clearRoute, onCenter, hasRoute, hasSearchCoverage, showSearchCoverage, onToggleSearchCoverage }) => {
+const ActionButtonGroup = ({
+  clearRoute,
+  onCenter,
+  hasRoute,
+  hasSearchCoverage,
+  showSearchCoverage,
+  onToggleSearchCoverage,
+  infoControl,
+  themeControl,
+  itineraryControl,
+}) => {
   const theme = useUITheme();
 
   return (
@@ -22,6 +32,8 @@ const ActionButtonGroup = ({ clearRoute, onCenter, hasRoute, hasSearchCoverage, 
           size="lg"
         />
       </Tooltip>
+      {infoControl}
+      {themeControl}
       {hasSearchCoverage && (
         <Tooltip label={`${showSearchCoverage ? "Hide" : "Show"} search coverage`} hasArrow>
           <IconButton
@@ -54,6 +66,7 @@ const ActionButtonGroup = ({ clearRoute, onCenter, hasRoute, hasSearchCoverage, 
           />
         </Tooltip>
       )}
+      {itineraryControl}
     </Flex>
   );
 };
