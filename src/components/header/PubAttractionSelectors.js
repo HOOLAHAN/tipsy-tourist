@@ -19,7 +19,6 @@ const PubAttractionSelectors = ({
   setPubStops,
   attractionStops,
   setAttractionStops,
-  travelMethod,
 }) => {
   const theme = useUITheme();
 
@@ -96,7 +95,7 @@ const PubAttractionSelectors = ({
         label="Pubs"
         icon={<MdLocalBar color={theme.primary} />}
         value={pubStops}
-        min={1}
+        min={Number(attractionStops) === 0 ? 1 : 0}
         max={10}
         onChange={(value) => handlePubs(setPubStops, value)}
       />
@@ -104,7 +103,7 @@ const PubAttractionSelectors = ({
         label="Attractions"
         icon={<FaCameraRetro color={theme.primary} />}
         value={attractionStops}
-        min={1}
+        min={Number(pubStops) === 0 ? 1 : 0}
         max={10}
         onChange={(value) => handleAttractions(setAttractionStops, value)}
       />

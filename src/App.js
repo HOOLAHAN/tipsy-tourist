@@ -5,10 +5,10 @@ import GoogleMapDisplay from './components/map/GoogleMapDisplay';
 import ActionButtonGroup from './components/common/ActionButtonGroup';
 import LocationModal from './components/itinerary/LocationModal';
 import { calculateRoute } from "./features/routing/calculateRoute";
-import { handleCar, handleBicycling, handleWalking } from './features/routing/stateHandlers';
 import { clearRoute } from './features/routing/clearRoute';
 import calculateDistance from "./utils/calculateDistance";
 import calculateTime from "./utils/calculateTime";
+import calculateLegDetails from "./utils/calculateLegDetails";
 import Locations from "./lib/Locations";
 import Attractions from "./lib/Attractions";
 import { ThemeContext } from "./context/ThemeContext";
@@ -52,7 +52,11 @@ function App() {
   const [combinedStops, setCombinedStops] = useState([]);
   const [searchCoverage, setSearchCoverage] = useState({ points: [], path: [] });
   const [showSearchCoverage, setShowSearchCoverage] = useState(true);
-  const [travelMethod, setTravelMethod] = useState("WALKING");
+  const [routeLegs, setRouteLegs] = useState([]);
+  const [showRouteLegs, setShowRouteLegs] = useState(true);
+  const [plannerMode, setPlannerMode] = useState("journey");
+  const [localRadius, setLocalRadius] = useState(1500);
+  const travelMethod = "WALKING";
   const [journeyWarning, setJourneyWarning] = useState("walking");
   const [routeError, setRouteError] = useState("");
   const [isPlanningRoute, setIsPlanningRoute] = useState(false);
@@ -88,7 +92,7 @@ function App() {
     try {
       const results = await directionsService.route({
         origin: startRef.current?.value,
-        destination: finishRef.current?.value,
+        destination: plannerMode === "local" ? startRef.current?.value : finishRef.current?.value,
         waypoints: nextStops.map((stop) => ({ location: stop.geometry.location, stopover: true })),
         optimizeWaypoints: false,
         // eslint-disable-next-line no-undef
@@ -97,6 +101,7 @@ function App() {
       setDirectionsResponse(results);
       setDistance(calculateDistance(results));
       setTime(calculateTime(results));
+      setRouteLegs(calculateLegDetails(results));
     } catch (error) {
       setCombinedStops(previousStops);
       setRouteError("non-viable");
@@ -111,7 +116,7 @@ function App() {
     try {
       const results = await directionsService.route({
         origin: startRef.current?.value,
-        destination: finishRef.current?.value,
+        destination: plannerMode === "local" ? startRef.current?.value : finishRef.current?.value,
         waypoints: nextStops.map((stop) => ({ location: stop.geometry.location, stopover: true })),
         optimizeWaypoints: false,
         // eslint-disable-next-line no-undef
@@ -120,6 +125,7 @@ function App() {
       setDirectionsResponse(results);
       setDistance(calculateDistance(results));
       setTime(calculateTime(results));
+      setRouteLegs(calculateLegDetails(results));
       return true;
     } catch (error) {
       setCombinedStops(previousStops);
@@ -131,6 +137,10 @@ function App() {
   };
 
   const removeStop = async (place) => {
+    if (combinedStops.length <= 1) {
+      window.alert("A tour must contain at least one stop.");
+      return;
+    }
     if (updatingStopId || !window.confirm(`Remove ${place.name} and recalculate the route?`)) return;
     setUpdatingStopId(place.place_id);
     const succeeded = await applyStops(combinedStops.filter((stop) => stop.place_id !== place.place_id));
@@ -143,7 +153,8 @@ function App() {
     setUpdatingStopId(place.place_id);
     try {
       const { lat, lng } = place.geometry.location;
-      const response = place.stopType === "attraction" ? await Attractions(lat, lng) : await Locations(lat, lng);
+      const radius = plannerMode === "local" ? localRadius : undefined;
+      const response = place.stopType === "attraction" ? await Attractions(lat, lng, radius) : await Locations(lat, lng, radius);
       const excluded = new Set(combinedStops.map((stop) => stop.place_id));
       const candidates = (response?.results || [])
         .filter((item) => item.place_id && item.geometry?.location && !excluded.has(item.place_id) && item.business_status !== "CLOSED_PERMANENTLY")
@@ -204,8 +215,8 @@ function App() {
     setRouteError("");
     try {
       const response = stopType === "attraction"
-        ? await Attractions(searchPoint.lat, searchPoint.lng)
-        : await Locations(searchPoint.lat, searchPoint.lng);
+        ? await Attractions(searchPoint.lat, searchPoint.lng, plannerMode === "local" ? localRadius : undefined)
+        : await Locations(searchPoint.lat, searchPoint.lng, plannerMode === "local" ? localRadius : undefined);
       const excluded = new Set(combinedStops.map((stop) => stop.place_id));
       const candidates = (response?.results || [])
         .filter((item) =>
@@ -253,33 +264,6 @@ function App() {
     setIsPlannerOpen(true);
   };
 
-  const recalculateRouteForMode = async (nextTravelMethod, nextPubStops = pubStops) => {
-    if (!directionsResponse || isPlanningRoute) return;
-
-    setIsPlanningRoute(true);
-    setRouteError("");
-    try {
-      await calculateRoute(
-        startRef,
-        finishRef,
-        nextPubStops,
-        attractionStops,
-        nextTravelMethod,
-        directionsService,
-        setDirectionsResponse,
-        setDistance,
-        setTime,
-        setCombinedStops,
-        setJourneyWarning,
-        setRouteError,
-        setSearchCoverage
-      );
-    } finally {
-      setIsPlanningRoute(false);
-    }
-  };
-
-
   useEffect(() => {
     localStorage.setItem("mapTheme", mapTheme);
   }, [mapTheme]);
@@ -321,12 +305,7 @@ function App() {
           setIsPlannerOpen={setIsPlannerOpen}
           startRef={startRef}
           finishRef={finishRef}
-          handleCar={handleCar}
-          handleBicycling={handleBicycling}
-          handleWalking={handleWalking}
-          recalculateRouteForMode={recalculateRouteForMode}
           travelMethod={travelMethod}
-          setTravelMethod={setTravelMethod}
           setJourneyWarning={setJourneyWarning}
           pubStops={pubStops}
           setPubStops={setPubStops}
@@ -339,6 +318,11 @@ function App() {
           setTime={setTime}
           setCombinedStops={setCombinedStops}
           setSearchCoverage={setSearchCoverage}
+          setRouteLegs={setRouteLegs}
+          plannerMode={plannerMode}
+          setPlannerMode={setPlannerMode}
+          localRadius={localRadius}
+          setLocalRadius={setLocalRadius}
           journeyWarning={journeyWarning}
           routeError={routeError}
           setRouteError={setRouteError}
@@ -362,7 +346,8 @@ function App() {
               startRef,
               finishRef,
               directionsRendererRef,
-              setSearchCoverage
+              setSearchCoverage,
+              setRouteLegs
             )
           }
           directionsRendererRef={directionsRendererRef}
@@ -389,6 +374,8 @@ function App() {
             }}
             searchCoverage={searchCoverage}
             showSearchCoverage={showSearchCoverage}
+            routeLegs={routeLegs}
+            showRouteLegs={showRouteLegs}
           />
         </Box>
         {activePicker && (
@@ -436,7 +423,7 @@ function App() {
           border={`1px solid ${uiThemes[mapTheme].accent}`}
           borderRadius="full"
           boxShadow="lg"
-          px={{ base: 3, md: 2 }}
+          px={{ base: 1.5, md: 2 }}
           py={{ base: 2, md: 3 }}
           minW="auto"
         >
@@ -462,13 +449,16 @@ function App() {
                   startRef,
                   finishRef,
                   directionsRendererRef,
-                  setSearchCoverage
+                  setSearchCoverage,
+                  setRouteLegs
                 )
               }
               onCenter={onCenterMap}
               hasSearchCoverage={searchCoverage.points.length > 0}
               showSearchCoverage={showSearchCoverage}
               onToggleSearchCoverage={() => setShowSearchCoverage((visible) => !visible)}
+              showRouteLegs={showRouteLegs}
+              onToggleRouteLegs={() => setShowRouteLegs((visible) => !visible)}
               infoControl={(
                 <Tooltip label="About & support" hasArrow placement="left">
                   <IconButton as={RouterLink} to="/support" aria-label="About and support" icon={<FaInfoCircle />} isRound bg={uiThemes[mapTheme].bg} color={uiThemes[mapTheme].text} _hover={{ bg: `${uiThemes[mapTheme].accent}22` }} border={`1px solid ${uiThemes[mapTheme].accent}`} boxShadow="md" size="lg" />
@@ -501,6 +491,7 @@ function App() {
           distance={distance}
           time={time}
           travelMethod={travelMethod}
+          routeLegs={routeLegs}
           onMoveStop={moveStop}
           updatingStopId={updatingStopId}
           onRemoveStop={removeStop}

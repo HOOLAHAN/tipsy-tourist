@@ -5,7 +5,7 @@ import { Autocomplete } from "@react-google-maps/api";
 import { useUITheme } from "../../context/ThemeContext";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
-const StartFinishInput = ({ startRef, finishRef, activePicker, setActivePicker, onPlannerClose }) => {
+const StartFinishInput = ({ startRef, finishRef, activePicker, setActivePicker, onPlannerClose, plannerMode = "journey" }) => {
   const theme = useUITheme();
 
   const inputStyle = {
@@ -43,10 +43,10 @@ const StartFinishInput = ({ startRef, finishRef, activePicker, setActivePicker, 
     <VStack spacing={2} align="stretch">
       <HStack spacing={2}>
         <Box flex="1">
-          <Autocomplete>
+          <Autocomplete onPlaceChanged={() => startRef.current?.blur()}>
             <Input
               type="text"
-              placeholder="Start location"
+              placeholder={plannerMode === "local" ? "Tour location" : "Start location"}
               ref={startRef}
               size="md"
               {...inputStyle}
@@ -55,9 +55,9 @@ const StartFinishInput = ({ startRef, finishRef, activePicker, setActivePicker, 
         </Box>
         <IconButton {...pickerButtonProps("start", "Pick start on map")} />
       </HStack>
-      <HStack spacing={2}>
+      {plannerMode === "journey" && <HStack spacing={2}>
         <Box flex="1">
-          <Autocomplete>
+          <Autocomplete onPlaceChanged={() => finishRef.current?.blur()}>
             <Input
               type="text"
               placeholder="Finish location"
@@ -68,7 +68,7 @@ const StartFinishInput = ({ startRef, finishRef, activePicker, setActivePicker, 
           </Autocomplete>
         </Box>
         <IconButton {...pickerButtonProps("finish", "Pick finish on map")} />
-      </HStack>
+      </HStack>}
       {activePicker && (
         <Text fontSize="xs" color={theme.text} opacity={0.75} textAlign="center">
           Click the map to set your {activePicker} point.

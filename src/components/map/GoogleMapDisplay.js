@@ -4,8 +4,11 @@ import {
   DirectionsRenderer,
   Polyline,
   Circle,
+  OverlayView,
 } from "@react-google-maps/api";
 import { mapThemes } from "./styles/customMapStyle";
+import { Box } from "@chakra-ui/react";
+import { FaWalking } from "react-icons/fa";
 
 const GoogleMapDisplay = ({
   center,
@@ -23,6 +26,8 @@ const GoogleMapDisplay = ({
   onMarkerClick,
   searchCoverage = { points: [], path: [] },
   showSearchCoverage = true,
+  routeLegs = [],
+  showRouteLegs = true,
 }) => {
 
   const validStops = combinedStops.filter(
@@ -82,8 +87,8 @@ const GoogleMapDisplay = ({
                 // eslint-disable-next-line no-undef
                 path: google.maps.SymbolPath.CIRCLE,
                 fillColor: "#0f172a",
-                fillOpacity: 0.8,
-                scale: 2.5,
+                fillOpacity: 0.42,
+                scale: 2,
                 strokeOpacity: 0,
               },
               offset: "0",
@@ -95,8 +100,7 @@ const GoogleMapDisplay = ({
       )}
 
       {showSearchCoverage && searchCoverage.points?.map((point, index) => {
-        const isAttraction = point.stopType === "attraction";
-        const color = isAttraction ? "#7c3aed" : "#e11d48";
+        const color = point.stopType === "local" ? "#3b82f6" : point.stopType === "attraction" ? "#7c3aed" : "#e11d48";
         const radius = point.radius;
         return (
           <Circle
@@ -106,9 +110,9 @@ const GoogleMapDisplay = ({
             options={{
               clickable: false,
               fillColor: color,
-              fillOpacity: 0.08,
+              fillOpacity: point.stopType === "local" ? 0.05 : 0.035,
               strokeColor: color,
-              strokeOpacity: 0.72,
+              strokeOpacity: point.stopType === "local" ? 0.42 : 0.34,
               strokeWeight: 2,
               zIndex: 1,
             }}
@@ -116,14 +120,14 @@ const GoogleMapDisplay = ({
         );
       })}
 
-      {showSearchCoverage && searchCoverage.points?.map((point, index) => (
+      {showSearchCoverage && !directionsResponse && searchCoverage.points?.map((point, index) => (
         <Circle
           key={`search-center-${index}`}
           center={point}
-          radius={28}
+          radius={14}
           options={{
             clickable: false,
-            fillColor: point.stopType === "attraction" ? "#7c3aed" : "#e11d48",
+            fillColor: point.stopType === "local" ? "#3b82f6" : point.stopType === "attraction" ? "#7c3aed" : "#e11d48",
             fillOpacity: 1,
             strokeColor: "#ffffff",
             strokeOpacity: 1,
@@ -136,9 +140,45 @@ const GoogleMapDisplay = ({
       {directionsResponse && (
         <DirectionsRenderer
           directions={directionsResponse}
-          options={{ suppressMarkers: true, polylineOptions: { strokeColor: "#4285f4", strokeWeight: 6, strokeOpacity: 0.9 } }}
+          options={{ suppressMarkers: true, polylineOptions: { strokeColor: "#4285f4", strokeWeight: 6, strokeOpacity: 0.92, zIndex: 5 } }}
         />
       )}
+
+      {showRouteLegs && routeLegs.map((leg, index) => leg.midpoint && (
+        <OverlayView
+          key={`route-leg-${index}`}
+          position={leg.midpoint}
+          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          getPixelPositionOffset={(width, height) => ({
+            x: -(width / 2),
+            y: -(height / 2) + (index % 2 === 0 ? -18 : 18),
+          })}
+        >
+          <Box
+            display="inline-flex"
+            alignItems="center"
+            gap={1}
+            width="max-content"
+            minWidth="max-content"
+            bg="white"
+            color="#172033"
+            border="1px solid #4285f4"
+            borderRadius="full"
+            boxShadow="0 2px 8px rgba(15,23,42,.14)"
+            px={2}
+            py={1}
+            fontSize="10px"
+            fontWeight="800"
+            whiteSpace="nowrap"
+            pointerEvents="none"
+          >
+            <FaWalking color="#4285f4" aria-hidden="true" />
+            <Box as="span">
+              {leg.duration.replace(" mins", "m").replace(" min", "m")} · {leg.distance.replace(" km", "km").replace(" m", "m")}
+            </Box>
+          </Box>
+        </OverlayView>
+      ))}
 
       {firstLeg?.start_location && (
         <Marker

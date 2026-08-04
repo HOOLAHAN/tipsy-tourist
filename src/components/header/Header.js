@@ -26,11 +26,7 @@ const Header = ({
   setIsPlannerOpen,
   startRef,
   finishRef,
-  handleBicycling,
-  handleWalking,
-  recalculateRouteForMode,
   travelMethod,
-  setTravelMethod,
   setJourneyWarning,
   pubStops,
   setPubStops,
@@ -43,6 +39,11 @@ const Header = ({
   setTime,
   setCombinedStops,
   setSearchCoverage,
+  setRouteLegs,
+  plannerMode,
+  setPlannerMode,
+  localRadius,
+  setLocalRadius,
   journeyWarning,
   routeError,
   setRouteError,
@@ -150,17 +151,13 @@ useOutsideClick({
         <Box ref={collapseRef} position="fixed" zIndex="998" left={{ base: 0, md: "50%" }} right={{ base: 0, md: "auto" }} bottom={0} transform={{ base: "none", md: "translateX(-50%)" }} w={{ base: "100%", md: "520px" }} maxH="82dvh" overflowY="auto" bg={theme.bg} color={theme.text} border={`1px solid ${theme.accent}`} borderBottomWidth={0} borderTopRadius="3xl" boxShadow="0 -18px 55px rgba(15,23,42,.18)" px={{ base: 5, md: 6 }} pt={3} pb="calc(env(safe-area-inset-bottom, 0px) + 24px)">
           <Box w="44px" h="5px" bg={theme.accent} opacity={0.45} borderRadius="full" mx="auto" mb={4} />
           <Text color={theme.primary} fontSize="xs" fontWeight="extrabold" letterSpacing="0.18em">BUILD A ROUTE</Text>
-          <Heading size="lg" mt={1}>Where are we going?</Heading>
-          <Text fontSize="sm" opacity={0.68} mt={1} mb={4}>Choose your route and we’ll find the stops.</Text>
+          <Heading size="lg" mt={1}>{plannerMode === "local" ? "Explore nearby" : "Where are we going?"}</Heading>
+          <Text fontSize="sm" opacity={0.68} mt={1} mb={4}>{plannerMode === "local" ? "Pick an area and we’ll create a circular walking tour." : "Choose your route and we’ll find the stops."}</Text>
           <VStack spacing={3} align="stretch">
             <PlanTour
             startRef={startRef}
             finishRef={finishRef}
-            handleBicycling={handleBicycling}
-            handleWalking={handleWalking}
-            recalculateRouteForMode={recalculateRouteForMode}
             travelMethod={travelMethod}
-            setTravelMethod={setTravelMethod}
             setJourneyWarning={setJourneyWarning}
             pubStops={pubStops}
             setPubStops={setPubStops}
@@ -173,6 +170,11 @@ useOutsideClick({
             setTime={setTime}
             setCombinedStops={setCombinedStops}
             setSearchCoverage={setSearchCoverage}
+            setRouteLegs={setRouteLegs}
+            plannerMode={plannerMode}
+            setPlannerMode={setPlannerMode}
+            localRadius={localRadius}
+            setLocalRadius={setLocalRadius}
             journeyWarning={journeyWarning}
             routeError={routeError}
             setRouteError={setRouteError}

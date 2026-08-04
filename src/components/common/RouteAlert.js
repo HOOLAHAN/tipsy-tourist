@@ -24,24 +24,6 @@ function RouteAlert({ error }) {
     </Box>
   );
 
-  if (error === "driving") {
-    return container(
-      "error",
-      <>
-        Never drink and drive! Be sure to have a designated driver.
-      </>
-    );
-  }
-
-  if (error === "bicycling") {
-    return container(
-      "warning",
-      <>
-        We do not recommend drinking and cycling!
-      </>
-    );
-  }
-
   if (error === "shortened") {
     return container(
       "warning",
@@ -55,6 +37,14 @@ function RouteAlert({ error }) {
 
   if (error === "missing-inputs") {
     return container("warning", <>Choose both a start and finish location.</>);
+  }
+
+  if (error === "missing-location") {
+    return container("warning", <>Choose an area for your local tour.</>);
+  }
+
+  if (error === "missing-stops") {
+    return container("warning", <>Choose at least one pub or attraction.</>);
   }
 
   if (error === "geocode-failed") {

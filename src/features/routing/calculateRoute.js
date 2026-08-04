@@ -7,6 +7,9 @@ import getAllAttractions from "../../lib/getAllAttractions";
 import calculateDistance from "../../utils/calculateDistance";
 import calculateTime from "../../utils/calculateTime";
 import onlyUnique from "../../utils/onlyUnique";
+import Locations from "../../lib/Locations";
+import Attractions from "../../lib/Attractions";
+import calculateLegDetails from "../../utils/calculateLegDetails";
 
 const withStopType = (stop, stopType) => {
   if (!stop) return undefined;
@@ -47,12 +50,16 @@ const adaptiveSearchRadius = (start, end, searchCount) => {
   return Math.round(Math.min(3000, Math.max(400, radiusForOverlappingCoverage)));
 };
 
-export async function calculateRoute(startRef, finishRef, pubStops, attractionStops, travelMethod, directionsService, setDirectionsResponse, setDistance, setTime, setCombinedStops, setJourneyWarning, setRouteError, setSearchCoverage) {
+export async function calculateRoute(startRef, finishRef, pubStops, attractionStops, travelMethod, directionsService, setDirectionsResponse, setDistance, setTime, setCombinedStops, setJourneyWarning, setRouteError, setSearchCoverage, setRouteLegs, plannerMode = "journey", localRadius = 1500) {
   const startInput = startRef.current?.value?.trim();
   const finishInput = finishRef.current?.value?.trim();
 
-  if (!startInput || !finishInput) {
-    setRouteError?.("missing-inputs");
+  if (Number(pubStops) + Number(attractionStops) < 1) {
+    setRouteError?.("missing-stops");
+    return false;
+  }
+  if (!startInput || (plannerMode === "journey" && !finishInput)) {
+    setRouteError?.(plannerMode === "local" ? "missing-location" : "missing-inputs");
     return false;
   }
 
@@ -63,7 +70,7 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
   let end;
   try {
     start = await geocode(startInput);
-    end = await geocode(finishInput);
+    end = plannerMode === "local" ? start : await geocode(finishInput);
   } catch (error) {
     setRouteError?.("geocode-failed");
     return false;
@@ -75,37 +82,57 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
   }
 
   const stopTypes = mixedStopTypes(Number(pubStops), Number(attractionStops));
-  const plotPoints = findPlotPoints(start, end, stopTypes.length);
-  const searchRadius = adaptiveSearchRadius(start, end, stopTypes.length);
-  setSearchCoverage?.({
-    points: plotPoints.map((point, index) => ({
-      ...point,
-      stopType: stopTypes[index],
-      radius: searchRadius,
-    })),
-    path: [
-      { lat: start[0], lng: start[1] },
-      { lat: end[0], lng: end[1] },
-    ],
-  });
-  const searchPoints = plotPoints.map((point) => ({ ...point, radius: searchRadius }));
-  const pubPlotPoints = searchPoints.filter((_, index) => stopTypes[index] === "pub");
-  const attractionPlotPoints = searchPoints.filter((_, index) => stopTypes[index] === "attraction");
-
-  let pubData;
-  let attractionData;
-  try {
-    pubData = await getAllPubs(pubPlotPoints);
-    attractionData = await getAllAttractions(attractionPlotPoints);
-  } catch (error) {
-    setRouteError?.("places-failed");
-    return false;
+  let filteredCombinationArray = [];
+  if (plannerMode === "local") {
+    const radius = Math.round(Math.min(5000, Math.max(500, Number(localRadius))));
+    const centre = { lat: start[0], lng: start[1] };
+    setSearchCoverage?.({ points: [{ ...centre, stopType: "local", radius }], path: [centre, centre] });
+    try {
+      const [pubResponse, attractionResponse] = await Promise.all([
+        Number(pubStops) ? Locations(centre.lat, centre.lng, radius) : Promise.resolve({ results: [] }),
+        Number(attractionStops) ? Attractions(centre.lat, centre.lng, radius) : Promise.resolve({ results: [] }),
+      ]);
+      const rank = (response, type) => (response?.results || [])
+        .filter((place) => place.place_id && place.geometry?.location && place.business_status !== "CLOSED_PERMANENTLY" && (place.rating || 0) >= 3.8)
+        .sort((a, b) => ((b.rating || 0) * 2.2 + Math.log10((b.user_ratings_total || 0) + 1) * 1.4) - ((a.rating || 0) * 2.2 + Math.log10((a.user_ratings_total || 0) + 1) * 1.4))
+        .map((place) => withStopType(place, type));
+      const candidates = { pub: rank(pubResponse, "pub"), attraction: rank(attractionResponse, "attraction") };
+      const indices = { pub: 0, attraction: 0 };
+      const selectedIds = new Set();
+      filteredCombinationArray = stopTypes.map((type) => {
+        while (indices[type] < candidates[type].length && selectedIds.has(candidates[type][indices[type]].place_id)) indices[type] += 1;
+        const place = candidates[type][indices[type]++];
+        if (place) selectedIds.add(place.place_id);
+        return place;
+      }).filter(Boolean).sort((a, b) =>
+        Math.atan2(a.geometry.location.lng - centre.lng, a.geometry.location.lat - centre.lat) -
+        Math.atan2(b.geometry.location.lng - centre.lng, b.geometry.location.lat - centre.lat)
+      );
+    } catch (error) {
+      setRouteError?.("places-failed");
+      return false;
+    }
+  } else {
+    const plotPoints = findPlotPoints(start, end, stopTypes.length);
+    const searchRadius = adaptiveSearchRadius(start, end, stopTypes.length);
+    setSearchCoverage?.({
+      points: plotPoints.map((point, index) => ({ ...point, stopType: stopTypes[index], radius: searchRadius })),
+      path: [{ lat: start[0], lng: start[1] }, { lat: end[0], lng: end[1] }],
+    });
+    const searchPoints = plotPoints.map((point) => ({ ...point, radius: searchRadius }));
+    try {
+      const pubData = await getAllPubs(searchPoints.filter((_, index) => stopTypes[index] === "pub"));
+      const attractionData = await getAllAttractions(searchPoints.filter((_, index) => stopTypes[index] === "attraction"));
+      let pubIndex = 0;
+      let attractionIndex = 0;
+      filteredCombinationArray = stopTypes
+        .map((type) => type === "pub" ? withStopType(pubData[pubIndex++], "pub") : withStopType(attractionData[attractionIndex++], "attraction"))
+        .filter(Boolean).filter(onlyUnique);
+    } catch (error) {
+      setRouteError?.("places-failed");
+      return false;
+    }
   }
-
-  let pubIndex = 0;
-  let attractionIndex = 0;
-  const mixedStops = stopTypes.map((type) => type === "pub" ? withStopType(pubData[pubIndex++], "pub") : withStopType(attractionData[attractionIndex++], "attraction"));
-  const filteredCombinationArray = mixedStops.filter(Boolean).filter(onlyUnique);
   if (filteredCombinationArray.length < stopTypes.length) setJourneyWarning("shortened");
   const waypoints = filteredCombinationArray.map((stop) => ({ location: stop.geometry.location, stopover: true }));
 
@@ -113,7 +140,7 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
   try {
     results = await directionsService.route({
       origin: startInput,
-      destination: finishInput,
+      destination: plannerMode === "local" ? startInput : finishInput,
       waypoints: waypoints,
       optimizeWaypoints: false,
       // eslint-disable-next-line no-undef
@@ -129,5 +156,6 @@ export async function calculateRoute(startRef, finishRef, pubStops, attractionSt
   setCombinedStops(filteredCombinationArray);
   setDistance(calculateDistance(results));
   setTime(calculateTime(results));
+  setRouteLegs?.(calculateLegDetails(results));
   return true;
 }

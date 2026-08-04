@@ -4,7 +4,7 @@ import { FaBeer, FaCamera } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 import Itinerary from "./Itinerary";
 
-export default function ItineraryModal({ isOpen, onClose, combinedStops, distance, time, travelMethod, onMoveStop, onSelectStop, onRemoveStop, onRegenerateStop, onAddStop, updatingStopId }) {
+export default function ItineraryModal({ isOpen, onClose, combinedStops, distance, time, travelMethod, routeLegs = [], onMoveStop, onSelectStop, onRemoveStop, onRegenerateStop, onAddStop, updatingStopId }) {
   const theme = useUITheme();
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom" scrollBehavior="inside">
@@ -42,7 +42,7 @@ export default function ItineraryModal({ isOpen, onClose, combinedStops, distanc
           {travelMethod && <Badge borderRadius="full" px={3} py={2} bg={theme.primary} color="white">{travelMethod}</Badge>}
         </HStack>
         <ModalBody px={5} pt={2} pb="calc(env(safe-area-inset-bottom, 0px) + 24px)">
-          {combinedStops.length ? <Itinerary combinedStops={combinedStops} onMoveStop={onMoveStop} onSelectStop={onSelectStop} onRemoveStop={onRemoveStop} onRegenerateStop={onRegenerateStop} updatingStopId={updatingStopId} /> : <Text>No stops in your itinerary yet.</Text>}
+          {combinedStops.length ? <Itinerary combinedStops={combinedStops} routeLegs={routeLegs} onMoveStop={onMoveStop} onSelectStop={onSelectStop} onRemoveStop={onRemoveStop} onRegenerateStop={onRegenerateStop} updatingStopId={updatingStopId} /> : <Text>No stops in your itinerary yet.</Text>}
         </ModalBody>
       </ModalContent>
     </Modal>

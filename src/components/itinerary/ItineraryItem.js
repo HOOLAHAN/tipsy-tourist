@@ -1,8 +1,8 @@
 import { Box, HStack, IconButton, Text, Tooltip, VStack } from "@chakra-ui/react";
-import { FaBeer, FaCameraRetro, FaChevronDown, FaChevronUp, FaRedo, FaTrash } from "react-icons/fa";
+import { FaBeer, FaCameraRetro, FaChevronDown, FaChevronUp, FaRedo, FaTrash, FaWalking } from "react-icons/fa";
 import { useUITheme } from "../../context/ThemeContext";
 
-export default function ItineraryItem({ place, stopNumber, isLast, canMoveUp, canMoveDown, onMoveUp, onMoveDown, onOpen, onRemove, onRegenerate, updating }) {
+export default function ItineraryItem({ place, stopNumber, isLast, canMoveUp, canMoveDown, onMoveUp, onMoveDown, onOpen, onRemove, onRegenerate, updating, leg }) {
   const theme = useUITheme();
   if (!place) return null;
   const attraction = place.stopType === "attraction";
@@ -18,6 +18,7 @@ export default function ItineraryItem({ place, stopNumber, isLast, canMoveUp, ca
           <HStack color={color} spacing={2} mb={1}>{attraction ? <FaCameraRetro /> : <FaBeer />}<Text fontSize="xs" fontWeight="extrabold" letterSpacing="0.12em">{attraction ? "ATTRACTION" : "PUB"}</Text></HStack>
           <Text fontSize="lg" fontWeight="extrabold" noOfLines={1}>{place.name}</Text>
           <Text fontSize="sm" opacity={0.65} noOfLines={1}>{place.vicinity || "Place details available from the map pin"}</Text>
+          {leg && <HStack mt={1} spacing={1} color={theme.primary}><FaWalking /><Text fontSize="xs" fontWeight="bold">{stopNumber === 1 ? "From start" : "From previous stop"} · {leg.duration} · {leg.distance}</Text></HStack>}
         </Box>
         <VStack spacing={1}>
           <Tooltip label="Replace stop"><IconButton aria-label="Replace stop" icon={<FaRedo />} size="xs" isRound isLoading={updating} onClick={(event) => { event.stopPropagation(); onRegenerate?.(); }} color={theme.primary} /></Tooltip>
