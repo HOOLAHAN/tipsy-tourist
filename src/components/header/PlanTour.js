@@ -59,7 +59,9 @@ const PlanTour = ({
 }) => {
   const theme = useUITheme();
 
-  const planButtonText = plannerMode === "local" ? "Plan my local tour" : "Plan my Tipsy Tour";
+  const planButtonText = Number(pubStops) === 0
+    ? "Plan my Sober Sejour"
+    : "Plan my Tipsy Tour";
 
   return (
     <Box px={1}>
